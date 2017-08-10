@@ -3,11 +3,8 @@
   "version": "1.0.0",
   "description": "Major project for deco1800 2017",
   "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "test": "npm test"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -18,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/STAB-Inc/DECO1800-Project/issues"
   },
-  "homepage": "https://github.com/STAB-Inc/DECO1800-Project#readme"
+  "homepage": "https://github.com/STAB-Inc/DECO1800-Project#readme",
+  "dependencies": {
+    "mocha": "^3.5.0",
+    "request": "^2.81.0"
+  }
 }
