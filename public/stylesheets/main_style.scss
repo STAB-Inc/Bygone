@@ -6,15 +6,26 @@ ul {
   list-style: none;
 }
 
+a {
+  color: black;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 main {
   width: 800px;
   margin: auto;
   text-align: center;
-  padding-top: 150px;
-  nav {
-    #index-nav {
-      li {
-        margin: 30px 0 30px 0;
+  padding-top: 100px;
+  nav#index-nav {
+    padding-top: 25px;
+    li {
+      padding: 5px 0 5px 0;
+      margin: 20px 0 20px 0;
+      &:hover {
+        background-color: black;
+        color: white;
       }
     }
   }
