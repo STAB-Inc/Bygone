@@ -1,0 +1,22 @@
+{
+  "name": "deco1800project",
+  "version": "1.0.0",
+  "description": "Major project for deco1800 2017",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/STAB-Inc/DECO1800-Project.git"
+  },
+  "author": "STAB Inc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/STAB-Inc/DECO1800-Project/issues"
+  },
+  "homepage": "https://github.com/STAB-Inc/DECO1800-Project#readme"
+}
