@@ -9,29 +9,92 @@ ul {
 }
 
 a {
+  cursor: pointer;
   color: black;
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration: none;
+    outline: none;
+    color: inherit;
   }
 }
 
 main {
-  width: 800px;
-  margin: auto;
-  text-align: center;
+  height: 100vh;
+  text-align: left;
   padding-top: 100px;
+  position: relative;
   nav#index-nav {
-    padding-top: 25px;
-    width: 200px;
+    padding-top: 20px;
+    width: 100%;
     margin: auto;
-    li {
-      padding: 5px 0 5px 0;
-      margin: 20px 0 20px 0;
-      &:hover {
-        background-color: black;
-        color: white;
+    position: absolute;
+    @include centerXY();
+    h1 {
+      padding-left: 170px;
+    }
+    ul {
+      padding-top: 50px;
+      li {
+        padding: 10px 0 10px 170px;
+        margin: 20px 0 20px 0;
+        position: relative;
+        &:hover {
+          color: white;
+          .bg {
+            width: 500px;
+          }
+        }
+        @include transition-ease(0.2s);
+        p {
+          color: white;
+          pointer-events: none;
+        }
+        .bg,
+        .chapter-selection {
+          background-color: black;
+          width: 0px;
+          height: 65px;
+          position: absolute;
+          top: 10px;
+          left: 150px;
+          z-index: -1;
+          @include transition-cubic(0.4s);
+        }
+        .chapter-selection {
+          width: 500px;
+          left: 55%;
+          z-index: 0;
+          background-color: transparent;
+          @include centerY();
+          top: 53%;
+          margin-left: 60px;
+          ul,
+          li {
+            padding: 0;
+          }
+          a {
+            width: 60px;
+            height: 60px;
+            float: left;
+            top: 0;
+            border: 1px solid white;
+            border-radius: 5px;
+            margin: 0 30px 0 30px;
+            left: 50px;
+            transform: rotate(45deg);
+            opacity: 0;
+            @include transition-ease(0.5s);
+            li {
+              width: 100%;
+              text-align: center;
+              margin: 0;
+              color: white;
+              @include centerXY();
+            }
+          }
+        }
       }
-      @include transition-ease(0.2s);
     }
   }
 }
