@@ -22,6 +22,8 @@ main {
   padding-top: 100px;
   nav#index-nav {
     padding-top: 25px;
+    width: 200px;
+    margin: auto;
     li {
       padding: 5px 0 5px 0;
       margin: 20px 0 20px 0;
@@ -29,7 +31,7 @@ main {
         background-color: black;
         color: white;
       }
-      @include transition-ease(0.3s);
+      @include transition-ease(0.2s);
     }
   }
 }
