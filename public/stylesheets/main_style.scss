@@ -45,7 +45,7 @@ main {
             width: 500px;
           }
         }
-        @include transition-ease(0.2s);
+        @include transition(0.2s, ease-in-out);
         p {
           color: white;
           pointer-events: none;
@@ -59,7 +59,7 @@ main {
           top: 10px;
           left: 150px;
           z-index: -1;
-          @include transition-cubic(0.4s);
+          @include transition(0.4s, ease-out);
         }
         .chapter-selection {
           width: 500px;
@@ -84,7 +84,7 @@ main {
             left: 50px;
             transform: rotate(45deg);
             opacity: 0;
-            @include transition-ease(0.5s);
+            @include transition(0.5s, ease-out);
             li {
               width: 100%;
               text-align: center;
