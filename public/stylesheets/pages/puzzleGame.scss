@@ -9,7 +9,7 @@ main#puzzleGame {
       position: relative;
       width: 640px;
       height: 480px;
-      background-image: url('http://lorempixel.com/640/480');
+      background-image: url('https://lorempixel.com/640/480');
       @include centerX();
     }
     .tile {

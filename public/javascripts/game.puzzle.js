@@ -67,7 +67,7 @@
     };
     retrieveResources = function() {
       return $.ajax({
-        url: 'http://data.gov.au/api/action/datastore_search',
+        url: 'https://data.gov.au/api/action/datastore_search',
         data: reqParam,
         dataType: 'jsonp',
         cache: true
