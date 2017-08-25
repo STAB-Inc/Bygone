@@ -7147,14 +7147,25 @@ main#puzzleGame {
   margin: auto;
 }
 
-main#puzzleGame #defaultImg {
+main#puzzleGame #gameArea {
+  margin-top: 100px;
+  height: 1000px;
+}
+
+main#puzzleGame #gameArea #defaultImg {
   float: left;
-  background-color: grey;
   position: relative;
   width: 640px;
   height: 480px;
-  background-repeat: no-repeat;
   background-image: url("http://lorempixel.com/640/480");
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+main#puzzleGame #gameArea .tile {
+  float: left;
+  background-color: grey;
+  background-repeat: no-repeat;
 }
  
 

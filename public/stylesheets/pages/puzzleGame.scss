@@ -1,13 +1,21 @@
 main#puzzleGame {
   width: 1000px;
   margin: auto;
-  #defaultImg {
-    float: left;
-    background-color: grey;
-    position: relative;
-    width: 640px;
-    height: 480px;
-    background-repeat: no-repeat;
-    background-image: url('http://lorempixel.com/640/480');
+  #gameArea {
+    margin-top: 100px;
+    height: 1000px;
+    #defaultImg {
+      float: left;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      background-image: url('http://lorempixel.com/640/480');
+      @include centerX();
+    }
+    .tile {
+      float: left;
+      background-color: grey;
+      background-repeat: no-repeat;
+    }
   }
 }
