@@ -14,15 +14,14 @@
     "reset.less",
     "_reset.scss"
   ],
-  "version": "2.2.0",
-  "_release": "2.2.0",
+  "version": "2.2.1",
+  "_release": "2.2.1",
   "_resolution": {
     "type": "version",
-    "tag": "v2.2.0",
-    "commit": "893e44c21d3a99d98714ccd45b29b6e2b41885cd"
+    "tag": "v2.2.1",
+    "commit": "67ff5fcdc0f49da68b8d2a4a9dc885dc6a0f146a"
   },
   "_source": "https://github.com/shannonmoeller/reset-css.git",
   "_target": "^2.2.0",
-  "_originalSource": "reset-css",
-  "_direct": true
+  "_originalSource": "reset-css"
 }

@@ -14,6 +14,8 @@ $(document).ready( function () {
 
   function initButtonToggle(_this) {
     if (!toggleState) {
+      $(_this).children().css('width', '100%');
+      $(_this).css('width', '100%');
       $(_this).find('.bg').css({
         'width': '100%',
         'left': '0' 
@@ -22,7 +24,8 @@ $(document).ready( function () {
         'color': 'white',
       });
       $(_this).find('.chapter-selection').css({
-        'margin-left': '0'
+        'margin-left': '0',
+        'pointer-events': 'all'
       });
       $(_this).find('.chapter-selection a').css({
         'transform': 'rotate(0)',
@@ -31,6 +34,7 @@ $(document).ready( function () {
       });
     }
     else {
+      //$(_this).children().css('width', '');
       $(_this).find('.bg').css({
         'width': '',
         'left': '' 
@@ -39,7 +43,8 @@ $(document).ready( function () {
         'color': '',
       });
       $(_this).find('.chapter-selection').css({
-        'margin-left': ''
+        'margin-left': '',
+        'pointer-events': ''
       });
       $(_this).find('.chapter-selection a').css({
         'transform': '',

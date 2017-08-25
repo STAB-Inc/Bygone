@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,IAAI,AAAA,WAAW,CAAC;EACd,KAAK,EAAE,MAAM;EACb,MAAM,EAAE,IAAI;CAUb;;AAZD,AAGE,IAHE,AAAA,WAAW,CAGb,WAAW,CAAC;EACV,KAAK,EAAE,IAAI;EACX,gBAAgB,EAAE,IAAI;EACtB,QAAQ,EAAE,QAAQ;EAClB,KAAK,EAAE,KAAK;EACZ,MAAM,EAAE,KAAK;EACb,iBAAiB,EAAE,SAAS;EAC5B,gBAAgB,EAAE,oCAAoC;CACvD",
+    "sources": [
+        "pages/puzzleGame.scss"
+    ],
+    "names": [],
+    "file": "puzzleGame.min.css"
+}

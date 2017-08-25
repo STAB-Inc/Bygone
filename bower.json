@@ -1,0 +1,25 @@
+{
+  "name": "bygone",
+  "description": "Major project for deco1800 2017",
+  "main": "index.js",
+  "authors": [
+    "STAB Inc"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/STAB-Inc/Bygone",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "reset-css": "^2.2.0",
+    "imagesloaded": "^4.1.3",
+    "ev-emitter": "^1.1.1",
+    "jquery": "^3.2.1",
+    "jquery-ui": "^1.12.1"
+  }
+}
