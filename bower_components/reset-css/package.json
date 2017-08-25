@@ -1,12 +1,12 @@
 {
   "name": "reset-css",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "An unmodified copy of Eric Meyer's CSS reset.",
   "homepage": "http://meyerweb.com/eric/tools/css/reset/",
   "authors": [
     "Eric Meyer"
   ],
-  "license": "PUBLIC DOMAIN (UNLICENSED)",
+  "license": "Unlicense",
   "repository": "shannonmoeller/reset-css",
   "style": "reset.css",
   "main": "reset.css",
