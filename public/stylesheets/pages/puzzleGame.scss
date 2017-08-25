@@ -1,0 +1,21 @@
+main#puzzleGame {
+  width: 1000px;
+  margin: auto;
+  #gameArea {
+    margin-top: 100px;
+    height: 1000px;
+    #defaultImg {
+      float: left;
+      position: relative;
+      width: 640px;
+      height: 480px;
+      background-image: url('https://lorempixel.com/640/480');
+      @include centerX();
+    }
+    .tile {
+      float: left;
+      background-color: grey;
+      background-repeat: no-repeat;
+    }
+  }
+}
