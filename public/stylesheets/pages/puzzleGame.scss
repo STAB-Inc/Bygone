@@ -1,0 +1,13 @@
+main#puzzleGame {
+  width: 1000px;
+  margin: auto;
+  #defaultImg {
+    float: left;
+    background-color: grey;
+    position: relative;
+    width: 640px;
+    height: 480px;
+    background-repeat: no-repeat;
+    background-image: url('http://lorempixel.com/640/480');
+  }
+}
