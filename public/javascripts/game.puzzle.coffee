@@ -40,7 +40,33 @@ jQuery(document).ready ->
     reset: ->
       console.log(@resources)
       console.log('abstract reset method')
+
   currentGame = new puzzleGame true, 4, 4, 8
+
+  reqParam = {
+    resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
+    limit: 10
+  };
+
+  retrieveResources = ->
+    $.ajax {
+      url: 'http://data.gov.au/api/action/datastore_search',
+      data: reqParam,
+      dataType: 'jsonp',
+      cache: true
+    }
+
+  processData = (data) ->
+    processedData = []
+    for item in data.result.records
+      if item['High resolution image']
+        processedData.push(item)
+    return processedData
+
+  $('#play').click ->
+    retrieveResources().then (res) ->
+      currentGame.init(processData(res))
+      return
     return
 
   $('#reset').click ->
