@@ -1,20 +1,39 @@
 main#puzzleGame {
   width: 1000px;
   margin: auto;
+  #selectionArea {
+    margin-top: 100px;
+    width: 100%;
+    overflow: auto;
+    .choice {
+      float: left;
+      width: 10%;
+      cursor: pointer;
+      padding: 0;
+      margin: 1px;
+      pointer-events: all;
+      &:hover {
+        border: 1px solid red;
+      }
+      img {
+        pointer-events: none;
+      }
+    }
+  }
+  #tileTemplate {
+    float: left;
+    position: relative;
+    width: 650px;
+    height: 1000px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    @include centerX();
+  }
   #gameArea {
     margin-top: 100px;
     height: 1000px;
-    #defaultImg {
-      float: left;
-      position: relative;
-      width: 640px;
-      height: 480px;
-      background-image: url('https://lorempixel.com/640/480');
-      @include centerX();
-    }
     .tile {
       float: left;
-      background-color: grey;
       background-repeat: no-repeat;
     }
   }
