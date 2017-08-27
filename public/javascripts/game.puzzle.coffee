@@ -32,9 +32,10 @@ jQuery(document).ready ->
             'background-image': 'url(' + solution['High resolution image'] + ')',
             'background-position': -row*tileWidth+'px ' + -col*tileHeight+'px',
             'width': tileWidth,
-            'height': tileHeight
+            'height': tileHeight,
+            'left': Math.floor(Math.random() * 400) + 'px',
+            'top': Math.floor(Math.random() * 200) + 'px'
           }
-          tile
           $('#gameArea').append(tile)
           i++
           row++
@@ -69,12 +70,13 @@ jQuery(document).ready ->
 
   currentGame = new puzzleGame true, 4, 4
 
-  reqParam = {
-    resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
-    limit: 10
-  };
 
-  retrieveResources = ->
+
+  retrieveResources = (amount) ->
+    reqParam = {
+      resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
+      limit: amount
+    }
     $.ajax {
       url: 'http://data.gov.au/api/action/datastore_search',
       data: reqParam,
@@ -90,13 +92,14 @@ jQuery(document).ready ->
     return processedData
 
   $('#play').click ->
-    retrieveResources().then (res) ->
+    retrieveResources(50).then (res) ->
       currentGame.init(processData(res))
       return
     return
 
   $('#selectionArea').on 'click', '.choice', ->
-    if parseInt($(this).attr('id').slice(-1)) == currentGame.getAnswer()[1]
+    console.log(parseInt($(this).attr('id').match(/[0-9]+/)), currentGame.getAnswer()[1])
+    if parseInt($(this).attr('id').match(/[0-9]+/)) == currentGame.getAnswer()[1]
       console.log('correct')
     else
       console.log('wrong')
