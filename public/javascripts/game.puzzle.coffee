@@ -1,21 +1,36 @@
 jQuery(document).ready ->
 
   class puzzleGame
-    constructor: (@debug, @xsplit, @ysplit) ->
+    constructor: (@debug, @xsplit, @ysplit, @time) ->
 
     init: (@resources) ->
+      @solution = @resources[Math.floor(Math.random() * @resources.length)]
       @reset()
-      console.log(@resources)
-      solution = @resources[Math.floor(Math.random() * @resources.length)]
-      @generateChoiceField(@resources, solution)
-      @generateTiles(solution)
-    
-    generateTiles: (solution) ->
+      @generateChoiceField(@resources)
+      @generateTiles()
+      @initTimer()
+
+    initTimer: (method) ->
+      timeLeft = @time
+      gameLoseLocal = @gameLose
+      $('#timer').text('Time remaining: ' + timeLeft)
+      updateTimer = ->
+        timeLeft--
+        $('#timer').text('Time remaining: ' + timeLeft)
+        if timeLeft == 0
+          gameLoseLocal()
+          clearInterval(interval)
+        return
+      interval = window.setInterval updateTimer, 1000
+      if method == 'stop'
+        clearInterval(interval)
+      return
+
+    generateTiles: ->
       tileTemplate = $('#tileTemplate')
       tiles = @xsplit * @ysplit
       imgWidth = $('#tileTemplate').width()
       imgHeight = $('#tileTemplate').height()
-      console.log()
       tileWidth = imgWidth/@xsplit
       tileHeight = imgHeight/@ysplit
       i = 0
@@ -29,7 +44,7 @@ jQuery(document).ready ->
           tile.addClass 'tile'
           tile.removeAttr 'id', ''
           tile.css {
-            'background-image': 'url(' + solution['High resolution image'] + ')',
+            'background-image': 'url(' + @solution['High resolution image'] + ')',
             'background-position': -row*tileWidth+'px ' + -col*tileHeight+'px',
             'width': tileWidth,
             'height': tileHeight,
@@ -40,37 +55,39 @@ jQuery(document).ready ->
           i++
           row++
           if @debug
-            console.log('created', i, 'tile at', row, col)
+            console.log('created', i, 'tile at', row-1, col)
         col++
       tileTemplate.hide()
       if @debug
         console.log('--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight',tileHeight)
         console.log('solution', @getAnswer())
 
-    generateChoiceField: (choices, solution) ->
+    generateChoiceField: (choices) ->
       i = 1
       for choice in choices
-        if choice == solution 
+        if choice == @solution 
           $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
-          @setAnswer(solution, i)
+          @setAnswerValue(i)
         else
           $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
         i++
 
-    setAnswer:(answer, value) ->
-      @answer = answer
+    setAnswerValue:(value) ->
       @solutionValue = value
 
     getAnswer: ->
-      return [@answer, @solutionValue]
+      return [@solution, @solutionValue]
 
     reset: ->
       $('#selectionArea, #gameArea').empty()
-      console.log('abstract reset method')
 
-  currentGame = new puzzleGame true, 4, 4
+    gameWin: ->
+      alert('you won')
 
+    gameLose: ->
+      alert('you lost')
 
+  currentGame = new puzzleGame true, 8, 8, 4
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -98,11 +115,10 @@ jQuery(document).ready ->
     return
 
   $('#selectionArea').on 'click', '.choice', ->
-    console.log(parseInt($(this).attr('id').match(/[0-9]+/)), currentGame.getAnswer()[1])
     if parseInt($(this).attr('id').match(/[0-9]+/)) == currentGame.getAnswer()[1]
-      console.log('correct')
+      currentGame.gameWin()
     else
-      console.log('wrong')
+      currentGame.gameLose()
     return
 
   $('#reset').click ->

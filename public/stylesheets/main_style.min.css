@@ -7171,6 +7171,14 @@ main#puzzleGame #selectionArea .choice img {
   pointer-events: none;
 }
 
+main#puzzleGame #timer {
+  width: 200px;
+  height: 50px;
+  position: fixed;
+  left: 50px;
+  top: 50px;
+}
+
 main#puzzleGame #tileTemplate {
   float: left;
   position: relative;

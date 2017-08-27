@@ -3,29 +3,47 @@
   jQuery(document).ready(function() {
     var currentGame, processData, puzzleGame, retrieveResources;
     puzzleGame = (function() {
-      function puzzleGame(debug, xsplit, ysplit) {
+      function puzzleGame(debug, xsplit, ysplit, time) {
         this.debug = debug;
         this.xsplit = xsplit;
         this.ysplit = ysplit;
+        this.time = time;
       }
 
       puzzleGame.prototype.init = function(resources) {
-        var solution;
         this.resources = resources;
+        this.solution = this.resources[Math.floor(Math.random() * this.resources.length)];
         this.reset();
-        console.log(this.resources);
-        solution = this.resources[Math.floor(Math.random() * this.resources.length)];
-        this.generateChoiceField(this.resources, solution);
-        return this.generateTiles(solution);
+        this.generateChoiceField(this.resources);
+        this.generateTiles();
+        return this.initTimer();
       };
 
-      puzzleGame.prototype.generateTiles = function(solution) {
+      puzzleGame.prototype.initTimer = function(method) {
+        var gameLoseLocal, interval, timeLeft, updateTimer;
+        timeLeft = this.time;
+        gameLoseLocal = this.gameLose;
+        $('#timer').text('Time remaining: ' + timeLeft);
+        updateTimer = function() {
+          timeLeft--;
+          $('#timer').text('Time remaining: ' + timeLeft);
+          if (timeLeft === 0) {
+            gameLoseLocal();
+            clearInterval(interval);
+          }
+        };
+        interval = window.setInterval(updateTimer, 1000);
+        if (method === 'stop') {
+          clearInterval(interval);
+        }
+      };
+
+      puzzleGame.prototype.generateTiles = function() {
         var col, i, imgHeight, imgWidth, row, tile, tileHeight, tileTemplate, tileWidth, tiles;
         tileTemplate = $('#tileTemplate');
         tiles = this.xsplit * this.ysplit;
         imgWidth = $('#tileTemplate').width();
         imgHeight = $('#tileTemplate').height();
-        console.log();
         tileWidth = imgWidth / this.xsplit;
         tileHeight = imgHeight / this.ysplit;
         i = 0;
@@ -39,7 +57,7 @@
             tile.addClass('tile');
             tile.removeAttr('id', '');
             tile.css({
-              'background-image': 'url(' + solution['High resolution image'] + ')',
+              'background-image': 'url(' + this.solution['High resolution image'] + ')',
               'background-position': -row * tileWidth + 'px ' + -col * tileHeight + 'px',
               'width': tileWidth,
               'height': tileHeight,
@@ -50,7 +68,7 @@
             i++;
             row++;
             if (this.debug) {
-              console.log('created', i, 'tile at', row, col);
+              console.log('created', i, 'tile at', row - 1, col);
             }
           }
           col++;
@@ -62,15 +80,15 @@
         }
       };
 
-      puzzleGame.prototype.generateChoiceField = function(choices, solution) {
+      puzzleGame.prototype.generateChoiceField = function(choices) {
         var choice, i, j, len, results;
         i = 1;
         results = [];
         for (j = 0, len = choices.length; j < len; j++) {
           choice = choices[j];
-          if (choice === solution) {
+          if (choice === this.solution) {
             $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
-            this.setAnswer(solution, i);
+            this.setAnswerValue(i);
           } else {
             $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
           }
@@ -79,24 +97,30 @@
         return results;
       };
 
-      puzzleGame.prototype.setAnswer = function(answer, value) {
-        this.answer = answer;
+      puzzleGame.prototype.setAnswerValue = function(value) {
         return this.solutionValue = value;
       };
 
       puzzleGame.prototype.getAnswer = function() {
-        return [this.answer, this.solutionValue];
+        return [this.solution, this.solutionValue];
       };
 
       puzzleGame.prototype.reset = function() {
-        $('#selectionArea, #gameArea').empty();
-        return console.log('abstract reset method');
+        return $('#selectionArea, #gameArea').empty();
+      };
+
+      puzzleGame.prototype.gameWin = function() {
+        return alert('you won');
+      };
+
+      puzzleGame.prototype.gameLose = function() {
+        return alert('you lost');
       };
 
       return puzzleGame;
 
     })();
-    currentGame = new puzzleGame(true, 4, 4);
+    currentGame = new puzzleGame(true, 8, 8, 4);
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
@@ -128,11 +152,10 @@
       });
     });
     $('#selectionArea').on('click', '.choice', function() {
-      console.log(parseInt($(this).attr('id').match(/[0-9]+/)), currentGame.getAnswer()[1]);
       if (parseInt($(this).attr('id').match(/[0-9]+/)) === currentGame.getAnswer()[1]) {
-        console.log('correct');
+        currentGame.gameWin();
       } else {
-        console.log('wrong');
+        currentGame.gameLose();
       }
     });
     $('#reset').click(function() {

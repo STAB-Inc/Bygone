@@ -21,6 +21,13 @@ main#puzzleGame {
       }
     }
   }
+  #timer {
+    width: 200px;
+    height: 50px;
+    position: fixed;
+    left: 50px;
+    top: 50px;
+  }
   #tileTemplate {
     float: left;
     position: relative;
