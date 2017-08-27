@@ -1,14 +1,36 @@
 jQuery(document).ready ->
 
   class puzzleGame
-    constructor: (@debug, @xsplit, @ysplit, @answers) ->
+    constructor: (@debug, @xsplit, @ysplit, @time) ->
 
     init: (@resources) ->
-      primImg = $('#defaultImg')
-      $(primImg).css 'background-image', 'url(' + @resources[0]['High resolution image'] + ')'
+      @solution = @resources[Math.floor(Math.random() * @resources.length)]
+      @reset()
+      @generateChoiceField(@resources)
+      @generateTiles()
+      @initTimer()
+
+    initTimer: (method) ->
+      timeLeft = @time
+      gameLoseLocal = @gameLose
+      $('#timer').text('Time remaining: ' + timeLeft)
+      updateTimer = ->
+        timeLeft--
+        $('#timer').text('Time remaining: ' + timeLeft)
+        if timeLeft == 0
+          gameLoseLocal()
+          clearInterval(interval)
+        return
+      interval = window.setInterval updateTimer, 1000
+      if method == 'stop'
+        clearInterval(interval)
+      return
+
+    generateTiles: ->
+      tileTemplate = $('#tileTemplate')
       tiles = @xsplit * @ysplit
-      imgWidth = primImg.width()
-      imgHeight = primImg.height()
+      imgWidth = $('#tileTemplate').width()
+      imgHeight = $('#tileTemplate').height()
       tileWidth = imgWidth/@xsplit
       tileHeight = imgHeight/@ysplit
       i = 0
@@ -16,39 +38,62 @@ jQuery(document).ready ->
       while col < @ysplit
         row = 0
         while row < @xsplit
-          tile = $(primImg.clone())
+          tile = $(tileTemplate.clone())
           tile.draggable()
+          tile.show()
           tile.addClass 'tile'
           tile.removeAttr 'id', ''
           tile.css {
-            'background-image': primImg.css 'background-image'
+            'background-image': 'url(' + @solution['High resolution image'] + ')',
             'background-position': -row*tileWidth+'px ' + -col*tileHeight+'px',
             'width': tileWidth,
-            'height': tileHeight
+            'height': tileHeight,
+            'left': Math.floor(Math.random() * 400) + 'px',
+            'top': Math.floor(Math.random() * 200) + 'px'
           }
-          tile
           $('#gameArea').append(tile)
           i++
           row++
           if @debug
-            console.log('created', i, 'tile at', row, col)
+            console.log('created', i, 'tile at', row-1, col)
         col++
-      primImg.hide()
+      tileTemplate.hide()
       if @debug
-        console.log('current selector', primImg, '--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight',tileHeight)
-        console.log('solution', @resources[0])
+        console.log('--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight',tileHeight)
+        console.log('solution', @getAnswer())
+
+    generateChoiceField: (choices) ->
+      i = 1
+      for choice in choices
+        if choice == @solution 
+          $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
+          @setAnswerValue(i)
+        else
+          $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
+        i++
+
+    setAnswerValue:(value) ->
+      @solutionValue = value
+
+    getAnswer: ->
+      return [@solution, @solutionValue]
+
     reset: ->
-      console.log(@resources)
-      console.log('abstract reset method')
+      $('#selectionArea, #gameArea').empty()
 
-  currentGame = new puzzleGame true, 4, 4, 8
+    gameWin: ->
+      alert('you won')
 
-  reqParam = {
-    resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
-    limit: 10
-  };
+    gameLose: ->
+      alert('you lost')
 
-  retrieveResources = ->
+  currentGame = new puzzleGame true, 8, 8, 4
+
+  retrieveResources = (amount) ->
+    reqParam = {
+      resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
+      limit: amount
+    }
     $.ajax {
       url: 'http://data.gov.au/api/action/datastore_search',
       data: reqParam,
@@ -64,9 +109,16 @@ jQuery(document).ready ->
     return processedData
 
   $('#play').click ->
-    retrieveResources().then (res) ->
+    retrieveResources(50).then (res) ->
       currentGame.init(processData(res))
       return
+    return
+
+  $('#selectionArea').on 'click', '.choice', ->
+    if parseInt($(this).attr('id').match(/[0-9]+/)) == currentGame.getAnswer()[1]
+      currentGame.gameWin()
+    else
+      currentGame.gameLose()
     return
 
   $('#reset').click ->
