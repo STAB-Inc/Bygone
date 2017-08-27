@@ -3,21 +3,29 @@
   jQuery(document).ready(function() {
     var currentGame, processData, puzzleGame, reqParam, retrieveResources;
     puzzleGame = (function() {
-      function puzzleGame(debug, xsplit, ysplit, answers) {
+      function puzzleGame(debug, xsplit, ysplit) {
         this.debug = debug;
         this.xsplit = xsplit;
         this.ysplit = ysplit;
-        this.answers = answers;
       }
 
       puzzleGame.prototype.init = function(resources) {
-        var col, i, imgHeight, imgWidth, primImg, row, tile, tileHeight, tileWidth, tiles;
+        var solution;
         this.resources = resources;
-        primImg = $('#defaultImg');
-        $(primImg).css('background-image', 'url(' + this.resources[0]['High resolution image'] + ')');
+        this.reset();
+        console.log(this.resources);
+        solution = this.resources[Math.floor(Math.random() * this.resources.length)];
+        this.generateChoiceField(this.resources, solution);
+        return this.generateTiles(solution);
+      };
+
+      puzzleGame.prototype.generateTiles = function(solution) {
+        var col, i, imgHeight, imgWidth, row, tile, tileHeight, tileTemplate, tileWidth, tiles;
+        tileTemplate = $('#tileTemplate');
         tiles = this.xsplit * this.ysplit;
-        imgWidth = primImg.width();
-        imgHeight = primImg.height();
+        imgWidth = $('#tileTemplate').width();
+        imgHeight = $('#tileTemplate').height();
+        console.log();
         tileWidth = imgWidth / this.xsplit;
         tileHeight = imgHeight / this.ysplit;
         i = 0;
@@ -25,12 +33,13 @@
         while (col < this.ysplit) {
           row = 0;
           while (row < this.xsplit) {
-            tile = $(primImg.clone());
+            tile = $(tileTemplate.clone());
             tile.draggable();
+            tile.show();
             tile.addClass('tile');
             tile.removeAttr('id', '');
             tile.css({
-              'background-image': primImg.css('background-image'),
+              'background-image': 'url(' + solution['High resolution image'] + ')',
               'background-position': -row * tileWidth + 'px ' + -col * tileHeight + 'px',
               'width': tileWidth,
               'height': tileHeight
@@ -45,29 +54,55 @@
           }
           col++;
         }
-        primImg.hide();
+        tileTemplate.hide();
         if (this.debug) {
-          console.log('current selector', primImg, '--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight', tileHeight);
-          return console.log('solution', this.resources[0]);
+          console.log('--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight', tileHeight);
+          return console.log('solution', this.getAnswer());
         }
       };
 
+      puzzleGame.prototype.generateChoiceField = function(choices, solution) {
+        var choice, i, j, len, results;
+        i = 1;
+        results = [];
+        for (j = 0, len = choices.length; j < len; j++) {
+          choice = choices[j];
+          if (choice === solution) {
+            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
+            this.setAnswer(solution, i);
+          } else {
+            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
+          }
+          results.push(i++);
+        }
+        return results;
+      };
+
+      puzzleGame.prototype.setAnswer = function(answer, value) {
+        this.answer = answer;
+        return this.solutionValue = value;
+      };
+
+      puzzleGame.prototype.getAnswer = function() {
+        return [this.answer, this.solutionValue];
+      };
+
       puzzleGame.prototype.reset = function() {
-        console.log(this.resources);
+        $('#selectionArea, #gameArea').empty();
         return console.log('abstract reset method');
       };
 
       return puzzleGame;
 
     })();
-    currentGame = new puzzleGame(true, 4, 4, 8);
+    currentGame = new puzzleGame(true, 4, 4);
     reqParam = {
       resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
       limit: 10
     };
     retrieveResources = function() {
       return $.ajax({
-        url: 'https://data.gov.au/api/action/datastore_search',
+        url: 'http://data.gov.au/api/action/datastore_search',
         data: reqParam,
         dataType: 'jsonp',
         cache: true
@@ -89,6 +124,13 @@
       retrieveResources().then(function(res) {
         currentGame.init(processData(res));
       });
+    });
+    $('#selectionArea').on('click', '.choice', function() {
+      if (parseInt($(this).attr('id').slice(-1)) === currentGame.getAnswer()[1]) {
+        console.log('correct');
+      } else {
+        console.log('wrong');
+      }
     });
     $('#reset').click(function() {
       currentGame.reset();

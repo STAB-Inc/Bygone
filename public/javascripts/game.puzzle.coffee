@@ -1,14 +1,21 @@
 jQuery(document).ready ->
 
   class puzzleGame
-    constructor: (@debug, @xsplit, @ysplit, @answers) ->
+    constructor: (@debug, @xsplit, @ysplit) ->
 
     init: (@resources) ->
-      primImg = $('#defaultImg')
-      $(primImg).css 'background-image', 'url(' + @resources[0]['High resolution image'] + ')'
+      @reset()
+      console.log(@resources)
+      solution = @resources[Math.floor(Math.random() * @resources.length)]
+      @generateChoiceField(@resources, solution)
+      @generateTiles(solution)
+    
+    generateTiles: (solution) ->
+      tileTemplate = $('#tileTemplate')
       tiles = @xsplit * @ysplit
-      imgWidth = primImg.width()
-      imgHeight = primImg.height()
+      imgWidth = $('#tileTemplate').width()
+      imgHeight = $('#tileTemplate').height()
+      console.log()
       tileWidth = imgWidth/@xsplit
       tileHeight = imgHeight/@ysplit
       i = 0
@@ -16,12 +23,13 @@ jQuery(document).ready ->
       while col < @ysplit
         row = 0
         while row < @xsplit
-          tile = $(primImg.clone())
+          tile = $(tileTemplate.clone())
           tile.draggable()
+          tile.show()
           tile.addClass 'tile'
           tile.removeAttr 'id', ''
           tile.css {
-            'background-image': primImg.css 'background-image'
+            'background-image': 'url(' + solution['High resolution image'] + ')',
             'background-position': -row*tileWidth+'px ' + -col*tileHeight+'px',
             'width': tileWidth,
             'height': tileHeight
@@ -33,15 +41,33 @@ jQuery(document).ready ->
           if @debug
             console.log('created', i, 'tile at', row, col)
         col++
-      primImg.hide()
+      tileTemplate.hide()
       if @debug
-        console.log('current selector', primImg, '--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight',tileHeight)
-        console.log('solution', @resources[0])
+        console.log('--- Width', imgWidth, 'Height', imgHeight, 'TileWidth', tileWidth, 'TileHight',tileHeight)
+        console.log('solution', @getAnswer())
+
+    generateChoiceField: (choices, solution) ->
+      i = 1
+      for choice in choices
+        if choice == solution 
+          $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
+          @setAnswer(solution, i)
+        else
+          $('#selectionArea').append('<div class="choice" id="choice'+i+'"><img class="img-responsive" src="'+ choice['High resolution image']+'"</div>')
+        i++
+
+    setAnswer:(answer, value) ->
+      @answer = answer
+      @solutionValue = value
+
+    getAnswer: ->
+      return [@answer, @solutionValue]
+
     reset: ->
-      console.log(@resources)
+      $('#selectionArea, #gameArea').empty()
       console.log('abstract reset method')
 
-  currentGame = new puzzleGame true, 4, 4, 8
+  currentGame = new puzzleGame true, 4, 4
 
   reqParam = {
     resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
@@ -67,6 +93,13 @@ jQuery(document).ready ->
     retrieveResources().then (res) ->
       currentGame.init(processData(res))
       return
+    return
+
+  $('#selectionArea').on 'click', '.choice', ->
+    if parseInt($(this).attr('id').slice(-1)) == currentGame.getAnswer()[1]
+      console.log('correct')
+    else
+      console.log('wrong')
     return
 
   $('#reset').click ->

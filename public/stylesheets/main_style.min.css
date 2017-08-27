@@ -7147,24 +7147,47 @@ main#puzzleGame {
   margin: auto;
 }
 
+main#puzzleGame #selectionArea {
+  margin-top: 100px;
+  width: 100%;
+  overflow: auto;
+}
+
+main#puzzleGame #selectionArea .choice {
+  float: left;
+  width: 10%;
+  cursor: pointer;
+  padding: 0;
+  margin: 1px;
+  pointer-events: all;
+}
+
+main#puzzleGame #selectionArea .choice:hover {
+  border: 1px solid red;
+}
+
+main#puzzleGame #selectionArea .choice img {
+  pointer-events: none;
+}
+
+main#puzzleGame #tileTemplate {
+  float: left;
+  position: relative;
+  width: 650px;
+  height: 1000px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 main#puzzleGame #gameArea {
   margin-top: 100px;
   height: 1000px;
 }
 
-main#puzzleGame #gameArea #defaultImg {
-  float: left;
-  position: relative;
-  width: 640px;
-  height: 480px;
-  background-image: url("http://lorempixel.com/640/480");
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 main#puzzleGame #gameArea .tile {
   float: left;
-  background-color: grey;
   background-repeat: no-repeat;
 }
  
