@@ -8,22 +8,25 @@ jQuery(document).ready ->
       @reset()
       @generateChoiceField(@resources)
       @generateTiles()
-      @initTimer()
+      @initTimer('start')
 
     initTimer: (method) ->
-      timeLeft = @time
       gameLoseLocal = @gameLose
-      $('#timer').text('Time remaining: ' + timeLeft)
-      updateTimer = ->
+      timeLeft = @time
+      @setTime;
+      timer = ->
         timeLeft--
         $('#timer').text('Time remaining: ' + timeLeft)
         if timeLeft == 0
           gameLoseLocal()
-          clearInterval(interval)
         return
-      interval = window.setInterval updateTimer, 1000
       if method == 'stop'
-        clearInterval(interval)
+        console.log('stopped')
+        clearInterval(@setTime)
+        @setTime = null
+      else if method == 'start'
+        console.log('started')
+        @setTime = window.setInterval timer, 1000
       return
 
     generateTiles: ->
@@ -39,7 +42,7 @@ jQuery(document).ready ->
         row = 0
         while row < @xsplit
           tile = $(tileTemplate.clone())
-          tile.draggable()
+          tile.draggable({containment:$('#gameArea')})
           tile.show()
           tile.addClass 'tile'
           tile.removeAttr 'id', ''
@@ -48,8 +51,8 @@ jQuery(document).ready ->
             'background-position': -row*tileWidth+'px ' + -col*tileHeight+'px',
             'width': tileWidth,
             'height': tileHeight,
-            'left': Math.floor(Math.random() * 400) + 'px',
-            'top': Math.floor(Math.random() * 200) + 'px'
+            'left': Math.floor(Math.random() * 50) + 'px',
+            'top': Math.floor(Math.random() * 50) + 'px'
           }
           $('#gameArea').append(tile)
           i++
@@ -80,14 +83,14 @@ jQuery(document).ready ->
 
     reset: ->
       $('#selectionArea, #gameArea').empty()
+      @initTimer('stop')
+      
 
     gameWin: ->
       alert('you won')
 
     gameLose: ->
       alert('you lost')
-
-  currentGame = new puzzleGame true, 8, 8, 4
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -108,7 +111,9 @@ jQuery(document).ready ->
         processedData.push(item)
     return processedData
 
+  currentGame = null
   $('#play').click ->
+    currentGame = new puzzleGame false, 8, 8, 60
     retrieveResources(50).then (res) ->
       currentGame.init(processData(res))
       return
