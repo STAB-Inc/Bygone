@@ -16,25 +16,28 @@
         this.reset();
         this.generateChoiceField(this.resources);
         this.generateTiles();
-        return this.initTimer();
+        return this.initTimer('start');
       };
 
       puzzleGame.prototype.initTimer = function(method) {
-        var gameLoseLocal, interval, timeLeft, updateTimer;
-        timeLeft = this.time;
+        var gameLoseLocal, timeLeft, timer;
         gameLoseLocal = this.gameLose;
-        $('#timer').text('Time remaining: ' + timeLeft);
-        updateTimer = function() {
+        timeLeft = this.time;
+        this.setTime;
+        timer = function() {
           timeLeft--;
           $('#timer').text('Time remaining: ' + timeLeft);
           if (timeLeft === 0) {
             gameLoseLocal();
-            clearInterval(interval);
           }
         };
-        interval = window.setInterval(updateTimer, 1000);
         if (method === 'stop') {
-          clearInterval(interval);
+          console.log('stopped');
+          clearInterval(this.setTime);
+          this.setTime = null;
+        } else if (method === 'start') {
+          console.log('started');
+          this.setTime = window.setInterval(timer, 1000);
         }
       };
 
@@ -52,7 +55,9 @@
           row = 0;
           while (row < this.xsplit) {
             tile = $(tileTemplate.clone());
-            tile.draggable();
+            tile.draggable({
+              containment: $('#gameArea')
+            });
             tile.show();
             tile.addClass('tile');
             tile.removeAttr('id', '');
@@ -61,8 +66,8 @@
               'background-position': -row * tileWidth + 'px ' + -col * tileHeight + 'px',
               'width': tileWidth,
               'height': tileHeight,
-              'left': Math.floor(Math.random() * 400) + 'px',
-              'top': Math.floor(Math.random() * 200) + 'px'
+              'left': Math.floor(Math.random() * 50) + 'px',
+              'top': Math.floor(Math.random() * 50) + 'px'
             });
             $('#gameArea').append(tile);
             i++;
@@ -106,7 +111,8 @@
       };
 
       puzzleGame.prototype.reset = function() {
-        return $('#selectionArea, #gameArea').empty();
+        $('#selectionArea, #gameArea').empty();
+        return this.initTimer('stop');
       };
 
       puzzleGame.prototype.gameWin = function() {
@@ -120,7 +126,6 @@
       return puzzleGame;
 
     })();
-    currentGame = new puzzleGame(true, 8, 8, 4);
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
@@ -146,7 +151,9 @@
       }
       return processedData;
     };
+    currentGame = null;
     $('#play').click(function() {
+      currentGame = new puzzleGame(false, 8, 8, 60);
       retrieveResources(50).then(function(res) {
         currentGame.init(processData(res));
       });
