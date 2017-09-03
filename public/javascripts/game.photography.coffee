@@ -1,4 +1,21 @@
 jQuery(document).ready ->
+
+  deg2rad = (deg) ->
+    return deg * (Math.PI/180)
+
+  distanceTravelled = (from, to) ->
+    lat1 = from.lat
+    lng1 = from.lng
+    lat2 = to.lat
+    lng2 = to.lng
+    R = 6371
+    dLat = deg2rad(lat2-lat1)
+    dLng = deg2rad(lng2-lng1);
+    a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLng/2) * Math.sin(dLng/2)
+    c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    dist = R * c
+    return dist;
+
   class photographyGame
     constructor: (@debug, @map) ->
 
@@ -92,3 +109,5 @@ jQuery(document).ready ->
   retrieveResources(100).then (res) ->
     generateMarkers(processData(res))
     return
+
+  return
