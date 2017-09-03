@@ -47,6 +47,38 @@ jQuery(document).ready ->
       console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
       @position = location.position
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
+
+  retrieveResources = (amount) ->
+    reqParam = {
+      resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
+      limit: amount
+    }
+    $.ajax {
+      url: 'http://data.gov.au/api/action/datastore_search',
+      data: reqParam,
+      dataType: 'jsonp',
+      cache: true
+  }
+
+  processData = (data) ->
+    processedData = []
+    for item in data.result.records
+      if item['dcterms:spatial']
+        if item['dcterms:spatial'].split(';')[1]
+          processedData.push(item['dcterms:spatial'].split(';'))
+    return processedData
+
+  generateMarkers = (set) ->
+    marker = []
+    i = 0
+    for place in set
+      lat = parseFloat(place[1].split(',')[0])
+      lng = parseFloat(place[1].split(',')[1])
+      marker[i] = new location {lat, lng}, place[0]
+      marker[i].addTo(googleMap)
+      i++
+    return
+
   googleMap = new google.maps.Map($('#map')[0], {
     zoom: 6,
     center: {lat:-27.4698, lng: 153.0251}
@@ -56,3 +88,7 @@ jQuery(document).ready ->
   mark.initTo(googleMap)
   #brisbane = new location {lat:-27.4698, lng: 153.0251}, 'brisbane'
   #brisbane.addTo(@map)
+
+  retrieveResources(100).then (res) ->
+    generateMarkers(processData(res))
+    return
