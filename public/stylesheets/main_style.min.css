@@ -7199,6 +7199,11 @@ main#puzzleGame #gameArea .tile {
   float: left;
   background-repeat: no-repeat;
 }
+
+#photographyGame #map {
+  width: 100%;
+  height: 100%;
+}
  
 
  /*# sourceMappingURL= main_style.min.css.map */
