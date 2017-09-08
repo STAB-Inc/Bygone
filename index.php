@@ -1,6 +1,6 @@
 <?php include "views/layout.html" ?>
   <body id="index">
-    <img src="index.jpg" />
+    <img src="Bygone.Resources/index.jpg" />
     <main>
       <div class="container-fluid">
         <div class="row header">
