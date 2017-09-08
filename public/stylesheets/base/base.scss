@@ -2,6 +2,10 @@ ul {
   list-style: none;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 a {
   cursor: pointer;
   color: black;
