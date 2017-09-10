@@ -25,6 +25,7 @@ jQuery(document).ready ->
     constructor: (@position, @name, @data, @icon) ->
       @marker
       @value
+      @travelExpense
 
     addTo: (map) ->
       if @icon
@@ -50,17 +51,18 @@ jQuery(document).ready ->
 
       marker.addListener 'mouseover', ->
         $('#infoOverlay img').attr 'src', self.data.img
+        $('#infoOverlay #title').text self.data.title
         $('#infoOverlay #description').text self.data.description
         $('#infoOverlay #position').text 'Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km'
         $('#infoOverlay #value').text 'Potential Revenue $' + self.value
-        $('#infoOverlay #travelExpense').text 'Travel Expense $' + parseInt(distanceTravelled(mark.position, self.position)*0.8)
+        $('#infoOverlay #travelExpense').text 'Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position)*0.6)/10)
         @value = self.value
-        @travelExpense = parseInt(distanceTravelled(mark.position, self.position)*0.6)
 
   class player extends location
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
+      @inventory = []
 
     initTo: (map) ->
       @playerMarker = new google.maps.Marker({
@@ -73,10 +75,17 @@ jQuery(document).ready ->
       })
     
     moveTo: (location) ->
+      console.log(location)
       console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
+      location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
       @position = location.position
+      @playerAt = location
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
       updateMarkers()
+      $('#takePic').show()
+      newStats = @stats
+      newStats.workingCapital -= mark.playerAt.travelExpense
+      @updateStats(newStats)
 
     updateStats: (stats) ->
       @stats = stats
@@ -97,6 +106,9 @@ jQuery(document).ready ->
       cache: true
   }
 
+  class photo
+    constructor: (@value, @washed, @img, @title) ->
+
   processData = (data) ->
     processedData = []
     for item in data.result.records
@@ -115,11 +127,13 @@ jQuery(document).ready ->
       marker[i] = new location {lat, lng}, place[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}
       marker[i].addTo(googleMap)
       locations.push(marker[i])
+      setValue(marker[i])
       i++
+    updateMarkers()
     return
 
   setValue = (location) ->
-    location.value = parseInt(Math.random()*distanceTravelled(mark.position, location.position) + 100)
+    location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)
@@ -132,13 +146,30 @@ jQuery(document).ready ->
     for location in locations
       hide = Math.random() >= 0.8;
       show = Math.random() <= 0.2;
-      setValue(location)
       if hide
         location.marker.setVisible(false)
-      if show
-        location.marker.setVisible(true)
   
-  $('#gm').click ->
-    removeMarkers()
+  $('#takePic').click ->
+    shotTaken = new photo mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title
+    mark.inventory.push(shotTaken)
+    mark.playerAt.marker.setVisible(false)
+    newStats = mark.stats
+    newStats.capital += mark.playerAt.value
+    newStats.workingCapital -= mark.playerAt.travelExpense/2
+    mark.updateStats(newStats)
+    mark.updateStats
+    $('#takePic').hide()
 
+  $('#checkInv').click ->
+    $('#inventory').show()
+    value = 0
+    for item in mark.inventory
+      $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'))
+      value += item.value
+    $('#invValue').text('Value $' + value)
+
+  $('.close').click ->
+    $('#inventory .photo').remove()
+    $('#inventory').hide()
+    
   return
