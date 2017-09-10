@@ -7313,7 +7313,8 @@ main#puzzleGame #gameArea .tile {
   height: 100vh;
 }
 
-#photographyGame #inventory {
+#photographyGame #inventory,
+#photographyGame #loanOverlay {
   position: fixed;
   width: 1000px;
   height: 800px;
@@ -7327,7 +7328,8 @@ main#puzzleGame #gameArea .tile {
   display: none;
 }
 
-#photographyGame #inventory .close {
+#photographyGame #inventory .close,
+#photographyGame #loanOverlay .close {
   float: left;
   color: white;
   position: absolute;
@@ -7335,12 +7337,19 @@ main#puzzleGame #gameArea .tile {
   left: 10px;
   opacity: 1;
   font-weight: 300;
+  text-shadow: none;
 }
 
-#photographyGame #inventory #invValue {
+#photographyGame #inventory #invValue,
+#photographyGame #loanOverlay #invValue {
   position: absolute;
   right: 20px;
   bottom: 20px;
+}
+
+#photographyGame #loanOverlay {
+  width: 600px;
+  height: 300px;
 }
 
 #photographyGame #infoOverlay {
@@ -7383,6 +7392,7 @@ main#puzzleGame #gameArea .tile {
 
 #photographyGame #infoOverlay #actions {
   position: absolute;
+  width: 300px;
   bottom: 50px;
 }
 
