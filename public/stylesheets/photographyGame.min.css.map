@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AACE,gBADc,CACd,IAAI,CAAC;EACH,KAAK,EAAC,IAAI;EACV,MAAM,EAAE,IAAI;CACb",
-    "sources": [
-        "pages/photographyGame.scss"
-    ],
-    "names": [],
-    "file": "photographyGame.min.css"
-}
