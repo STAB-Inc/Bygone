@@ -1,33 +1,23 @@
 jQuery(document).ready ->
 
   class puzzleGame
-    constructor: (@debug, @xsplit, @ysplit, @time) ->
+    constructor: (@debug, @xsplit, @ysplit) ->
+      @time = 0
 
     init: (@resources) ->
       @solution = @resources[Math.floor(Math.random() * @resources.length)]
       @reset()
       @generateChoiceField(@resources)
       @generateTiles()
-      @initTimer('start')
+      @initTimer()
 
-    initTimer: (method) ->
-      gameLoseLocal = @gameLose
-      timeLeft = @time
-      @setTime;
-      timer = ->
-        timeLeft--
-        $('#timer').text('Time remaining: ' + timeLeft)
-        if timeLeft == 0
-          gameLoseLocal()
-        return
-      if method == 'stop'
-        console.log('stopped')
-        clearInterval(@setTime)
-        @setTime = null
-      else if method == 'start'
-        console.log('started')
-        @setTime = window.setInterval timer, 1000
-      return
+    initTimer: () ->
+      console.log @time
+      time = 0
+      counter = ->
+        time += 1
+        $('#timer').text('Time: ' + time)
+      setInterval(counter, 1000)
 
     generateTiles: ->
       tileTemplate = $('#tileTemplate')
@@ -83,8 +73,6 @@ jQuery(document).ready ->
 
     reset: ->
       $('#selectionArea, #gameArea').empty()
-      @initTimer('stop')
-      
 
     gameWin: ->
       alert('you won')
@@ -113,7 +101,7 @@ jQuery(document).ready ->
 
   currentGame = null
   $('#play').click ->
-    currentGame = new puzzleGame false, 8, 8, 60
+    currentGame = new puzzleGame false, 8, 8
     retrieveResources(50).then (res) ->
       currentGame.init(processData(res))
       return

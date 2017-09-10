@@ -3,11 +3,11 @@
   jQuery(document).ready(function() {
     var currentGame, processData, puzzleGame, retrieveResources;
     puzzleGame = (function() {
-      function puzzleGame(debug, xsplit, ysplit, time) {
+      function puzzleGame(debug, xsplit, ysplit) {
         this.debug = debug;
         this.xsplit = xsplit;
         this.ysplit = ysplit;
-        this.time = time;
+        this.time = 0;
       }
 
       puzzleGame.prototype.init = function(resources) {
@@ -16,29 +16,18 @@
         this.reset();
         this.generateChoiceField(this.resources);
         this.generateTiles();
-        return this.initTimer('start');
+        return this.initTimer();
       };
 
-      puzzleGame.prototype.initTimer = function(method) {
-        var gameLoseLocal, timeLeft, timer;
-        gameLoseLocal = this.gameLose;
-        timeLeft = this.time;
-        this.setTime;
-        timer = function() {
-          timeLeft--;
-          $('#timer').text('Time remaining: ' + timeLeft);
-          if (timeLeft === 0) {
-            gameLoseLocal();
-          }
+      puzzleGame.prototype.initTimer = function() {
+        var counter, time;
+        console.log(this.time);
+        time = 0;
+        counter = function() {
+          time += 1;
+          return $('#timer').text('Time: ' + time);
         };
-        if (method === 'stop') {
-          console.log('stopped');
-          clearInterval(this.setTime);
-          this.setTime = null;
-        } else if (method === 'start') {
-          console.log('started');
-          this.setTime = window.setInterval(timer, 1000);
-        }
+        return setInterval(counter, 1000);
       };
 
       puzzleGame.prototype.generateTiles = function() {
@@ -111,8 +100,7 @@
       };
 
       puzzleGame.prototype.reset = function() {
-        $('#selectionArea, #gameArea').empty();
-        return this.initTimer('stop');
+        return $('#selectionArea, #gameArea').empty();
       };
 
       puzzleGame.prototype.gameWin = function() {
@@ -153,7 +141,7 @@
     };
     currentGame = null;
     $('#play').click(function() {
-      currentGame = new puzzleGame(false, 8, 8, 60);
+      currentGame = new puzzleGame(false, 8, 8);
       retrieveResources(50).then(function(res) {
         currentGame.init(processData(res));
       });
