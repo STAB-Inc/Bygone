@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var deg2rad, distanceTravelled, generateMarkers, googleMap, location, mark, photographyGame, player, processData, retrieveResources;
+    var deg2rad, distanceTravelled, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -34,11 +34,13 @@
 
     })();
     location = (function() {
-      function location(position, name, icon) {
+      function location(position, name, data1, icon) {
         this.position = position;
         this.name = name;
+        this.data = data1;
         this.icon = icon;
         this.marker;
+        this.value;
       }
 
       location.prototype.addTo = function(map) {
@@ -64,8 +66,17 @@
       location.prototype.setListener = function(marker) {
         var self;
         self = this;
-        return marker.addListener('click', function() {
+        marker.addListener('click', function() {
           return mark.moveTo(self);
+        });
+        return marker.addListener('mouseover', function() {
+          $('#infoOverlay img').attr('src', self.data.img);
+          $('#infoOverlay #description').text(self.data.description);
+          $('#infoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
+          $('#infoOverlay #value').text('Potential Revenue $' + self.value);
+          $('#infoOverlay #travelExpense').text('Travel Expense $' + parseInt(distanceTravelled(mark.position, self.position) * 0.8));
+          this.value = self.value;
+          return this.travelExpense = parseInt(distanceTravelled(mark.position, self.position) * 0.6);
         });
       };
 
@@ -75,11 +86,13 @@
     player = (function(superClass) {
       extend(player, superClass);
 
-      function player(position, name, icon) {
+      function player(position, name, data1, icon, stats1) {
         this.position = position;
         this.name = name;
+        this.data = data1;
         this.icon = icon;
-        player.__super__.constructor.call(this, this.position, this.name, this.icon);
+        this.stats = stats1;
+        player.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
         this.playerMarker;
       }
 
@@ -88,14 +101,25 @@
           position: this.position,
           map: map,
           icon: this.icon,
-          title: 'Mark'
+          title: this.name,
+          optimized: false,
+          zIndex: 100
         });
       };
 
       player.prototype.moveTo = function(location) {
         console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km');
         this.position = location.position;
-        return this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
+        this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
+        return updateMarkers();
+      };
+
+      player.prototype.updateStats = function(stats) {
+        this.stats = stats;
+        $('#infoOverlay #stats #workingCapital').text('Working Capital $' + this.stats.workingCapital);
+        $('#infoOverlay #stats #capital').text('Capital $' + this.stats.capital);
+        $('#infoOverlay #stats #assets').text('Assets $' + this.stats.assets);
+        return $('#infoOverlay #stats #liabilities').text('Liabilities $' + this.stats.liabilities);
       };
 
       return player;
@@ -122,42 +146,74 @@
         item = ref[j];
         if (item['dcterms:spatial']) {
           if (item['dcterms:spatial'].split(';')[1]) {
-            processedData.push(item['dcterms:spatial'].split(';'));
+            processedData.push(item);
           }
         }
       }
       return processedData;
     };
-    generateMarkers = function(set) {
+    locations = [];
+    generateMarkers = function(data) {
       var i, j, lat, len, lng, marker, place;
       marker = [];
       i = 0;
-      for (j = 0, len = set.length; j < len; j++) {
-        place = set[j];
-        lat = parseFloat(place[1].split(',')[0]);
-        lng = parseFloat(place[1].split(',')[1]);
+      for (j = 0, len = data.length; j < len; j++) {
+        place = data[j];
+        lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0]);
+        lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1]);
         marker[i] = new location({
           lat: lat,
           lng: lng
-        }, place[0]);
+        }, place[0], {
+          'title': place['dc:title'],
+          'description': place['dc:description'],
+          'img': place['150_pixel_jpg']
+        });
         marker[i].addTo(googleMap);
+        locations.push(marker[i]);
         i++;
       }
     };
-    googleMap = new google.maps.Map($('#map')[0], {
-      zoom: 6,
-      center: {
-        lat: -27.4698,
-        lng: 153.0251
-      }
-    });
+    setValue = function(location) {
+      return location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+    };
     mark = new player({
       lat: -25.363,
       lng: 151.044
-    }, 'Mark', 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
+    }, 'Mark', {
+      'type': 'self'
+    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
     mark.initTo(googleMap);
-    retrieveResources(100).then(function(res) {
-      generateMarkers(processData(res));
+    mark.updateStats({
+      'workingCapital': 1000,
+      'capital': 700,
+      'assets': 200,
+      'liabilities': 500
+    });
+    retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then(function(res) {
+      return generateMarkers(processData(res));
+    });
+    updateMarkers = function() {
+      var hide, j, len, results, show;
+      results = [];
+      for (j = 0, len = locations.length; j < len; j++) {
+        location = locations[j];
+        hide = Math.random() >= 0.8;
+        show = Math.random() <= 0.2;
+        setValue(location);
+        if (hide) {
+          location.marker.setVisible(false);
+        }
+        if (show) {
+          results.push(location.marker.setVisible(true));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    };
+    $('#gm').click(function() {
+      return removeMarkers();
     });
   });
 
