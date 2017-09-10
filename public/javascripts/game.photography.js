@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var deg2rad, distanceTravelled, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var deg2rad, distanceTravelled, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -41,6 +41,7 @@
         this.icon = icon;
         this.marker;
         this.value;
+        this.travelExpense;
       }
 
       location.prototype.addTo = function(map) {
@@ -71,12 +72,12 @@
         });
         return marker.addListener('mouseover', function() {
           $('#infoOverlay img').attr('src', self.data.img);
+          $('#infoOverlay #title').text(self.data.title);
           $('#infoOverlay #description').text(self.data.description);
           $('#infoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
           $('#infoOverlay #value').text('Potential Revenue $' + self.value);
-          $('#infoOverlay #travelExpense').text('Travel Expense $' + parseInt(distanceTravelled(mark.position, self.position) * 0.8));
-          this.value = self.value;
-          return this.travelExpense = parseInt(distanceTravelled(mark.position, self.position) * 0.6);
+          $('#infoOverlay #travelExpense').text('Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position) * 0.6) / 10));
+          return this.value = self.value;
         });
       };
 
@@ -94,6 +95,7 @@
         this.stats = stats1;
         player.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
         this.playerMarker;
+        this.inventory = [];
       }
 
       player.prototype.initTo = function(map) {
@@ -108,10 +110,18 @@
       };
 
       player.prototype.moveTo = function(location) {
+        var newStats;
+        console.log(location);
         console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km');
+        location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         this.position = location.position;
+        this.playerAt = location;
         this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
-        return updateMarkers();
+        updateMarkers();
+        $('#takePic').show();
+        newStats = this.stats;
+        newStats.workingCapital -= mark.playerAt.travelExpense;
+        return this.updateStats(newStats);
       };
 
       player.prototype.updateStats = function(stats) {
@@ -138,6 +148,17 @@
         cache: true
       });
     };
+    photo = (function() {
+      function photo(value1, washed, img, title) {
+        this.value = value1;
+        this.washed = washed;
+        this.img = img;
+        this.title = title;
+      }
+
+      return photo;
+
+    })();
     processData = function(data) {
       var item, j, len, processedData, ref;
       processedData = [];
@@ -171,11 +192,13 @@
         });
         marker[i].addTo(googleMap);
         locations.push(marker[i]);
+        setValue(marker[i]);
         i++;
       }
+      updateMarkers();
     };
     setValue = function(location) {
-      return location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+      return location.value = parseInt((Math.random() * distanceTravelled(mark.position, location.position) + 100) / 10);
     };
     mark = new player({
       lat: -25.363,
@@ -200,20 +223,41 @@
         location = locations[j];
         hide = Math.random() >= 0.8;
         show = Math.random() <= 0.2;
-        setValue(location);
         if (hide) {
-          location.marker.setVisible(false);
-        }
-        if (show) {
-          results.push(location.marker.setVisible(true));
+          results.push(location.marker.setVisible(false));
         } else {
           results.push(void 0);
         }
       }
       return results;
     };
-    $('#gm').click(function() {
-      return removeMarkers();
+    $('#takePic').click(function() {
+      var newStats, shotTaken;
+      shotTaken = new photo(mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title);
+      mark.inventory.push(shotTaken);
+      mark.playerAt.marker.setVisible(false);
+      newStats = mark.stats;
+      newStats.capital += mark.playerAt.value;
+      newStats.workingCapital -= mark.playerAt.travelExpense / 2;
+      mark.updateStats(newStats);
+      mark.updateStats;
+      return $('#takePic').hide();
+    });
+    $('#checkInv').click(function() {
+      var item, j, len, ref, value;
+      $('#inventory').show();
+      value = 0;
+      ref = mark.inventory;
+      for (j = 0, len = ref.length; j < len; j++) {
+        item = ref[j];
+        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'));
+        value += item.value;
+      }
+      return $('#invValue').text('Value $' + value);
+    });
+    $('.close').click(function() {
+      $('#inventory .photo').remove();
+      return $('#inventory').hide();
     });
   });
 

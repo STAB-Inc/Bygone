@@ -7313,6 +7313,36 @@ main#puzzleGame #gameArea .tile {
   height: 100vh;
 }
 
+#photographyGame #inventory {
+  position: fixed;
+  width: 1000px;
+  height: 800px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 50px;
+  display: none;
+}
+
+#photographyGame #inventory .close {
+  float: left;
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 1;
+  font-weight: 300;
+}
+
+#photographyGame #inventory #invValue {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
 #photographyGame #infoOverlay {
   position: fixed;
   height: 100vh;
@@ -7349,6 +7379,15 @@ main#puzzleGame #gameArea .tile {
 
 #photographyGame #infoOverlay #stats h4 {
   text-align: left;
+}
+
+#photographyGame #infoOverlay #actions {
+  position: absolute;
+  bottom: 50px;
+}
+
+#photographyGame #infoOverlay #actions #takePic {
+  display: none;
 }
  
 
