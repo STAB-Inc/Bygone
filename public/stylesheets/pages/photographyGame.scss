@@ -3,6 +3,29 @@
     width:100%;
     height: 100vh;
   }
+  #inventory {
+    position: fixed;
+    width: 1000px;
+    height: 800px;
+    @include centerXY;
+    background-color: rgba(0,0,0, 0.8);;
+    padding: 50px;
+    display: none;
+    .close {
+      float: left;
+      color: white;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      opacity: 1;
+      font-weight: 300;
+    }
+    #invValue {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+    }
+  }
   #infoOverlay {
     position: fixed;
     height: 100vh;
@@ -31,6 +54,13 @@
       bottom: 150px;
       h4 {
         text-align: left;
+      }
+    }
+    #actions {
+      position: absolute;
+      bottom: 50px;
+      #takePic {
+        display: none;
       }
     }
   }
