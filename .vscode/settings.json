@@ -1,7 +1,7 @@
 {
   "liveSassCompile.settings.savePath": "/public/stylesheets",
   "liveSassCompile.settings.format": "expanded",
-  "liveSassCompile.settings.extensionName" : ".min.css",
+  "liveSassCompile.settings.extensionName" : ".css",
   "liveSassCompile.settings.excludeList": [
      "**/node_modules/**",
      ".vscode/**"
