@@ -22,8 +22,9 @@ jQuery(document).ready ->
     init: () ->
 
   class location
-    constructor: (@position, @name, @icon) ->
+    constructor: (@position, @name, @data, @icon) ->
       @marker
+      @value
 
     addTo: (map) ->
       if @icon
@@ -47,9 +48,18 @@ jQuery(document).ready ->
       marker.addListener 'click', ->
         mark.moveTo(self)
 
+      marker.addListener 'mouseover', ->
+        $('#infoOverlay img').attr 'src', self.data.img
+        $('#infoOverlay #description').text self.data.description
+        $('#infoOverlay #position').text 'Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km'
+        $('#infoOverlay #value').text 'Potential Revenue $' + self.value
+        $('#infoOverlay #travelExpense').text 'Travel Expense $' + parseInt(distanceTravelled(mark.position, self.position)*0.8)
+        @value = self.value
+        @travelExpense = parseInt(distanceTravelled(mark.position, self.position)*0.6)
+
   class player extends location
-    constructor: (@position, @name, @icon) ->
-      super(@position, @name, @icon)
+    constructor: (@position, @name, @data, @icon, @stats) ->
+      super(@position, @name, @data, @icon)
       @playerMarker
 
     initTo: (map) ->
@@ -57,13 +67,23 @@ jQuery(document).ready ->
         position: @position,
         map: map,
         icon: @icon,
-        title: 'Mark'
+        title: @name,
+        optimized: false,
+        zIndex: 100
       })
     
     moveTo: (location) ->
       console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
       @position = location.position
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
+      updateMarkers()
+
+    updateStats: (stats) ->
+      @stats = stats
+      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + @stats.workingCapital
+      $('#infoOverlay #stats #capital').text 'Capital $' + @stats.capital
+      $('#infoOverlay #stats #assets').text 'Assets $' + @stats.assets
+      $('#infoOverlay #stats #liabilities').text 'Liabilities $' + @stats.liabilities
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -82,32 +102,43 @@ jQuery(document).ready ->
     for item in data.result.records
       if item['dcterms:spatial']
         if item['dcterms:spatial'].split(';')[1]
-          processedData.push(item['dcterms:spatial'].split(';'))
+          processedData.push(item)
     return processedData
 
-  generateMarkers = (set) ->
+  locations = []
+  generateMarkers = (data) ->
     marker = []
     i = 0
-    for place in set
-      lat = parseFloat(place[1].split(',')[0])
-      lng = parseFloat(place[1].split(',')[1])
-      marker[i] = new location {lat, lng}, place[0]
+    for place in data
+      lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
+      lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
+      marker[i] = new location {lat, lng}, place[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}
       marker[i].addTo(googleMap)
+      locations.push(marker[i])
       i++
     return
 
-  googleMap = new google.maps.Map($('#map')[0], {
-    zoom: 6,
-    center: {lat:-27.4698, lng: 153.0251}
-  })
+  setValue = (location) ->
+    location.value = parseInt(Math.random()*distanceTravelled(mark.position, location.position) + 100)
 
-  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
+  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)
-  #brisbane = new location {lat:-27.4698, lng: 153.0251}, 'brisbane'
-  #brisbane.addTo(@map)
+  mark.updateStats({'workingCapital':1000, 'capital':700, 'assets': 200, 'liabilities': 500 })
 
-  retrieveResources(100).then (res) ->
+  retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then (res) ->
     generateMarkers(processData(res))
-    return
+
+  updateMarkers = ->
+    for location in locations
+      hide = Math.random() >= 0.8;
+      show = Math.random() <= 0.2;
+      setValue(location)
+      if hide
+        location.marker.setVisible(false)
+      if show
+        location.marker.setVisible(true)
+  
+  $('#gm').click ->
+    removeMarkers()
 
   return
