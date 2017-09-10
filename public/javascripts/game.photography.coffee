@@ -89,10 +89,10 @@ jQuery(document).ready ->
 
     updateStats: (stats) ->
       @stats = stats
-      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + @stats.workingCapital
-      $('#infoOverlay #stats #capital').text 'Capital $' + @stats.capital
-      $('#infoOverlay #stats #assets').text 'Assets $' + @stats.assets
-      $('#infoOverlay #stats #liabilities').text 'Liabilities $' + @stats.liabilities
+      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + parseInt(@stats.workingCapital)
+      $('#infoOverlay #stats #capital').text 'Capital $' + parseInt((@stats.assets - @stats.liabilities))
+      $('#infoOverlay #stats #assets').text 'Current Assets $' + parseInt(@stats.assets)
+      $('#infoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -133,11 +133,15 @@ jQuery(document).ready ->
     return
 
   setValue = (location) ->
-    location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
+    rare = Math.random() <= 0.1;
+    if rare
+      location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100))
+    else
+      location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)
-  mark.updateStats({'workingCapital':1000, 'capital':700, 'assets': 200, 'liabilities': 500 })
+  mark.updateStats({'workingCapital':1000, 'assets': 0, 'liabilities': 300 })
 
   retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then (res) ->
     generateMarkers(processData(res))
@@ -148,28 +152,67 @@ jQuery(document).ready ->
       show = Math.random() <= 0.2;
       if hide
         location.marker.setVisible(false)
+
+  interest = 1.5
+  endTurn = ->
+    newStats = mark.stats
+    newStats.workingCapital -= mark.stats.liabilities
+    mark.updateStats(newStats)
+    for location in locations
+      location.marker.setVisible(true)
+    interest = (Math.random()*5).toFixed(2)
+    console.log interest
   
   $('#takePic').click ->
     shotTaken = new photo mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title
     mark.inventory.push(shotTaken)
     mark.playerAt.marker.setVisible(false)
     newStats = mark.stats
-    newStats.capital += mark.playerAt.value
+    newStats.assets += mark.playerAt.value
     newStats.workingCapital -= mark.playerAt.travelExpense/2
     mark.updateStats(newStats)
-    mark.updateStats
     $('#takePic').hide()
 
+  
   $('#checkInv').click ->
     $('#inventory').show()
+    $('#inventory .photo').remove()
     value = 0
     for item in mark.inventory
       $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'))
       value += item.value
-    $('#invValue').text('Value $' + value)
+    $('#invValue').text('Photo value $' + value)
 
   $('.close').click ->
-    $('#inventory .photo').remove()
-    $('#inventory').hide()
+    $(this).parent().hide()
     
+  $('#endTurn').click ->
+    endTurn()
+
+  $('#washPic').click ->
+    if mark.inventory.length == 0
+      alert('There are no pictures to wash')
+    else
+      newStats = mark.stats
+      totalValue = 0
+      for item in mark.inventory
+        totalValue += item.value
+      newStats.workingCapital += totalValue
+      newStats.assets -= totalValue
+      mark.updateStats(newStats)
+      mark.inventory = []
+      endTurn()
+
+  $('#takeLoan').click ->
+    $('#IR').text('Current interest rate '+interest+'%')
+    $('#loanOverlay').show()
+
+  $('#confirmLoan').click ->
+    console.log $('#loanInput').val(), parseInt($('#loanInput').val())*(interest/10)
+    newStats = mark.stats
+    newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(interest/10)
+    newStats.workingCapital += parseInt($('#loanInput').val())
+    console.log typeof(newStats.workingCapital)
+    mark.updateStats(newStats)
+
   return
