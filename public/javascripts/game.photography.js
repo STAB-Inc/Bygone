@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var deg2rad, distanceTravelled, generateMarkers, googleMap, location, mark, photographyGame, player, processData, retrieveResources;
+    var deg2rad, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -34,11 +34,14 @@
 
     })();
     location = (function() {
-      function location(position, name, icon) {
+      function location(position, name, data1, icon) {
         this.position = position;
         this.name = name;
+        this.data = data1;
         this.icon = icon;
         this.marker;
+        this.value;
+        this.travelExpense;
       }
 
       location.prototype.addTo = function(map) {
@@ -64,8 +67,17 @@
       location.prototype.setListener = function(marker) {
         var self;
         self = this;
-        return marker.addListener('click', function() {
+        marker.addListener('click', function() {
           return mark.moveTo(self);
+        });
+        return marker.addListener('mouseover', function() {
+          $('#infoOverlay img').attr('src', self.data.img);
+          $('#infoOverlay #title').text(self.data.title);
+          $('#infoOverlay #description').text(self.data.description);
+          $('#infoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
+          $('#infoOverlay #value').text('Potential Revenue $' + self.value);
+          $('#infoOverlay #travelExpense').text('Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position) * 0.6) / 10));
+          return this.value = self.value;
         });
       };
 
@@ -75,12 +87,15 @@
     player = (function(superClass) {
       extend(player, superClass);
 
-      function player(position, name, icon) {
+      function player(position, name, data1, icon, stats1) {
         this.position = position;
         this.name = name;
+        this.data = data1;
         this.icon = icon;
-        player.__super__.constructor.call(this, this.position, this.name, this.icon);
+        this.stats = stats1;
+        player.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
         this.playerMarker;
+        this.inventory = [];
       }
 
       player.prototype.initTo = function(map) {
@@ -88,14 +103,33 @@
           position: this.position,
           map: map,
           icon: this.icon,
-          title: 'Mark'
+          title: this.name,
+          optimized: false,
+          zIndex: 100
         });
       };
 
       player.prototype.moveTo = function(location) {
+        var newStats;
+        console.log(location);
         console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km');
+        location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         this.position = location.position;
-        return this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
+        this.playerAt = location;
+        this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
+        updateMarkers();
+        $('#takePic').show();
+        newStats = this.stats;
+        newStats.workingCapital -= mark.playerAt.travelExpense;
+        return this.updateStats(newStats);
+      };
+
+      player.prototype.updateStats = function(stats) {
+        this.stats = stats;
+        $('#infoOverlay #stats #workingCapital').text('Working Capital $' + parseInt(this.stats.workingCapital));
+        $('#infoOverlay #stats #capital').text('Capital $' + parseInt(this.stats.assets - this.stats.liabilities));
+        $('#infoOverlay #stats #assets').text('Current Assets $' + parseInt(this.stats.assets));
+        return $('#infoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
       };
 
       return player;
@@ -114,6 +148,17 @@
         cache: true
       });
     };
+    photo = (function() {
+      function photo(value1, washed, img, title) {
+        this.value = value1;
+        this.washed = washed;
+        this.img = img;
+        this.title = title;
+      }
+
+      return photo;
+
+    })();
     processData = function(data) {
       var item, j, len, processedData, ref;
       processedData = [];
@@ -122,42 +167,149 @@
         item = ref[j];
         if (item['dcterms:spatial']) {
           if (item['dcterms:spatial'].split(';')[1]) {
-            processedData.push(item['dcterms:spatial'].split(';'));
+            processedData.push(item);
           }
         }
       }
       return processedData;
     };
-    generateMarkers = function(set) {
+    locations = [];
+    generateMarkers = function(data) {
       var i, j, lat, len, lng, marker, place;
       marker = [];
       i = 0;
-      for (j = 0, len = set.length; j < len; j++) {
-        place = set[j];
-        lat = parseFloat(place[1].split(',')[0]);
-        lng = parseFloat(place[1].split(',')[1]);
+      for (j = 0, len = data.length; j < len; j++) {
+        place = data[j];
+        lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0]);
+        lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1]);
         marker[i] = new location({
           lat: lat,
           lng: lng
-        }, place[0]);
+        }, place[0], {
+          'title': place['dc:title'],
+          'description': place['dc:description'],
+          'img': place['150_pixel_jpg']
+        });
         marker[i].addTo(googleMap);
+        locations.push(marker[i]);
+        setValue(marker[i]);
         i++;
       }
+      updateMarkers();
     };
-    googleMap = new google.maps.Map($('#map')[0], {
-      zoom: 6,
-      center: {
-        lat: -27.4698,
-        lng: 153.0251
+    setValue = function(location) {
+      var rare;
+      rare = Math.random() <= 0.1;
+      if (rare) {
+        return location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+      } else {
+        return location.value = parseInt((Math.random() * distanceTravelled(mark.position, location.position) + 100) / 10);
       }
-    });
+    };
     mark = new player({
       lat: -25.363,
       lng: 151.044
-    }, 'Mark', 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
+    }, 'Mark', {
+      'type': 'self'
+    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
     mark.initTo(googleMap);
-    retrieveResources(100).then(function(res) {
-      generateMarkers(processData(res));
+    mark.updateStats({
+      'workingCapital': 1000,
+      'assets': 0,
+      'liabilities': 300
+    });
+    retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then(function(res) {
+      return generateMarkers(processData(res));
+    });
+    updateMarkers = function() {
+      var hide, j, len, results, show;
+      results = [];
+      for (j = 0, len = locations.length; j < len; j++) {
+        location = locations[j];
+        hide = Math.random() >= 0.8;
+        show = Math.random() <= 0.2;
+        if (hide) {
+          results.push(location.marker.setVisible(false));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
+    };
+    interest = 1.5;
+    endTurn = function() {
+      var j, len, newStats;
+      newStats = mark.stats;
+      newStats.workingCapital -= mark.stats.liabilities;
+      mark.updateStats(newStats);
+      for (j = 0, len = locations.length; j < len; j++) {
+        location = locations[j];
+        location.marker.setVisible(true);
+      }
+      interest = (Math.random() * 5).toFixed(2);
+      return console.log(interest);
+    };
+    $('#takePic').click(function() {
+      var newStats, shotTaken;
+      shotTaken = new photo(mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title);
+      mark.inventory.push(shotTaken);
+      mark.playerAt.marker.setVisible(false);
+      newStats = mark.stats;
+      newStats.assets += mark.playerAt.value;
+      newStats.workingCapital -= mark.playerAt.travelExpense / 2;
+      mark.updateStats(newStats);
+      return $('#takePic').hide();
+    });
+    $('#checkInv').click(function() {
+      var item, j, len, ref, value;
+      $('#inventory').show();
+      $('#inventory .photo').remove();
+      value = 0;
+      ref = mark.inventory;
+      for (j = 0, len = ref.length; j < len; j++) {
+        item = ref[j];
+        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'));
+        value += item.value;
+      }
+      return $('#invValue').text('Photo value $' + value);
+    });
+    $('.close').click(function() {
+      return $(this).parent().hide();
+    });
+    $('#endTurn').click(function() {
+      return endTurn();
+    });
+    $('#washPic').click(function() {
+      var item, j, len, newStats, ref, totalValue;
+      if (mark.inventory.length === 0) {
+        return alert('There are no pictures to wash');
+      } else {
+        newStats = mark.stats;
+        totalValue = 0;
+        ref = mark.inventory;
+        for (j = 0, len = ref.length; j < len; j++) {
+          item = ref[j];
+          totalValue += item.value;
+        }
+        newStats.workingCapital += totalValue;
+        newStats.assets -= totalValue;
+        mark.updateStats(newStats);
+        mark.inventory = [];
+        return endTurn();
+      }
+    });
+    $('#takeLoan').click(function() {
+      $('#IR').text('Current interest rate ' + interest + '%');
+      return $('#loanOverlay').show();
+    });
+    $('#confirmLoan').click(function() {
+      var newStats;
+      console.log($('#loanInput').val(), parseInt($('#loanInput').val()) * (interest / 10));
+      newStats = mark.stats;
+      newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (interest / 10);
+      newStats.workingCapital += parseInt($('#loanInput').val());
+      console.log(typeof newStats.workingCapital);
+      return mark.updateStats(newStats);
     });
   });
 

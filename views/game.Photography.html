@@ -13,11 +13,51 @@
 </head>
 <body>
   <main id="photographyGame">
-    Abstract Photography Game
-    <button id="debug">debug</button>
-    <button id="play">play</button>
-    <button id="reset">reset</button>
     <div id="map">
+    </div>
+    <div id="inventory">
+      <div class="close">Close</div>
+      <h4>Camera Roll</h4>
+      <p id="invValue"></p>
+    </div>
+    <div id="loanOverlay">
+      <h4>Take Loan</h4>
+      <p>Amount</p>
+      <input id="loanInput" type="text">
+      <button id="confirmLoan">Confirm Loan</button>
+      <p id="IR">Current interest rate 1.5%</p>
+      <div class="close">Close</div>
+    </div>
+    <div id="infoOverlay">
+      <div class="container-fluid">
+        <div class="row">
+          <h4 id="title">Location Info</h4>
+        </div>
+        <div class="row">
+          <img src="">
+        </div>
+        <div class="row">
+          <p id="description"></p>
+          <p id="position"></p>
+          <p id="value"></p>
+          <p id="travelExpense"></p>
+        </div>
+        <div class="row" id="stats">
+          <h4><b>Player Stats</b></h4>
+          <p id="workingCapital">Working Capital:</p>
+          <p id="capital">Capital:</p>
+          <p id="assets">Current Assets:</p>
+          <p id="liabilities">Current Liabilities:</p>
+        </div>
+        <div class="row" id="actions">
+          <button id="checkInv">Inventory</button>
+          <button id="endTurn">End Turn</button>
+          <button id="washPic">Wash</button>
+          <button id="sellPic">Sell</button>
+          <button id="takeLoan">Take Loan</button>
+          <button id="takePic">Take Picture</button>
+        </div>
+      </div>
     </div>
   </main>
 </body>
@@ -26,6 +66,21 @@
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../public/javascripts/main_script.js"></script>
 <script src="../public/javascripts/game.base.js"></script>
+<script>
+  googleMap = null
+  function initMap(){
+    return googleMap = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: {
+        lat: -27.4698,
+        lng: 153.0251
+      },
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false
+    });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>
 <script src="../public/javascripts/game.photography.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>
 </html>
