@@ -92,10 +92,10 @@
         for (j = 0, len = choices.length; j < len; j++) {
           choice = choices[j];
           if (choice === this.solution) {
-            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
+            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['Thumbnail image'] + '"</div>');
             this.setAnswerValue(i);
           } else {
-            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['High resolution image'] + '"</div>');
+            $('#selectionArea').append('<div class="choice" id="choice' + i + '"><img class="img-responsive" src="' + choice['Thumbnail image'] + '"</div>');
           }
           results.push(i++);
         }
