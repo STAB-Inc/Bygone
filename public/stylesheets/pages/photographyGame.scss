@@ -3,7 +3,8 @@
     width:100%;
     height: 100vh;
   }
-  #inventory {
+  #inventory,
+  #loanOverlay  {
     position: fixed;
     width: 1000px;
     height: 800px;
@@ -19,12 +20,17 @@
       left: 10px;
       opacity: 1;
       font-weight: 300;
+      text-shadow: none;
     }
     #invValue {
       position: absolute;
       right: 20px;
       bottom: 20px;
     }
+  }
+  #loanOverlay {
+    width: 600px;
+    height: 300px;
   }
   #infoOverlay {
     position: fixed;
@@ -58,6 +64,7 @@
     }
     #actions {
       position: absolute;
+      width: 300px;
       bottom: 50px;
       #takePic {
         display: none;
