@@ -7191,6 +7191,12 @@ nav#index-nav ul li .chapter-selection a li {
   border-right: 1px solid #7A9EF6;
 }
 
+@media (max-width: 500px) {
+  #index main .header h1 {
+    font-size: 2em;
+  }
+}
+
 #index main .header h3 {
   padding-left: 15px;
 }
@@ -7218,6 +7224,18 @@ nav#index-nav ul li .chapter-selection a li {
   margin-top: 150px;
 }
 
+@media (max-width: 1650px) {
+  #index main .buttons {
+    margin-top: 100px;
+  }
+}
+
+@media (max-width: 1300px) {
+  #index main .buttons {
+    margin-top: 50px;
+  }
+}
+
 #index main .buttonContainer {
   width: 100%;
   height: 200px;
@@ -7240,14 +7258,87 @@ nav#index-nav ul li .chapter-selection a li {
   transform: translate(-50%, -50%);
 }
 
+@media (max-width: 1200px) {
+  #index main .buttonContainer {
+    height: 100px;
+  }
+}
+
 #index main .buttonContainer:hover {
   background-color: rgba(122, 158, 246, 0.5);
 }
 
 #index section#campaign {
   width: 100%;
+}
+
+#index section#campaign h3 {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+#index section#campaign .chapter {
   height: 100vh;
-  background-color: grey;
+  padding: 100px;
+  cursor: pointer;
+}
+
+@media (max-width: 1400px) {
+  #index section#campaign .chapter {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  #index section#campaign .chapter {
+    padding: 100px;
+  }
+}
+
+#index section#campaign .ch1 {
+  background-color: #52768a;
+}
+
+#index section#campaign .ch2 {
+  background-color: #46637e;
+}
+
+#index section#campaign .ch3 {
+  background-color: #394658;
+}
+
+#index section#campaign .ch4 {
+  background-color: #2f3844;
+}
+
+#index section#campaign .stateContainer {
+  height: 25%;
+  position: relative;
+}
+
+#index section#campaign .stateContainer i {
+  color: white;
+  font-size: 2em;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+}
+
+#index section#campaign .textContainer {
+  height: 50%;
+}
+
+#index section#campaign .unlockContainer {
+  height: 25%;
+}
+
+#index section#campaign .unlockContainer p {
+  font-size: 12px;
+  color: #dadad2;
+  text-align: center;
 }
 
 main#puzzleGame {
