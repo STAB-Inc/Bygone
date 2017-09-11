@@ -7021,6 +7021,7 @@ ul {
 
 body {
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 a {
@@ -7153,6 +7154,105 @@ nav#index-nav ul li .chapter-selection a li {
   transform: translate(-50%, -50%);
 }
 
+#loader {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: #101010;
+  z-index: 101;
+  transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+}
+
+#loader .loaderContent {
+  position: absolute;
+  height: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+}
+
+#loader .loaderContent h1,
+#loader .loaderContent .spinnerContainer {
+  display: inline-block;
+  font-size: 4em;
+}
+
+#loader .loaderContent h1 {
+  font-size: 4.2em;
+}
+
+#loader .loaderContent .loaderBar {
+  position: absolute;
+  width: 2%;
+  height: 2px;
+  background-color: #7A9EF6;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#loader .loaderContent .spinnerContainer {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  padding-top: 4px;
+  margin-left: 50px;
+}
+
+#loader .loaderContent .spinnerContainer .spinner,
+#loader .loaderContent .spinnerContainer .spinner2,
+#loader .loaderContent .spinnerContainer .spinner3 {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: dashed 2px white;
+  animation: spinLeft 5s infinite none;
+}
+
+#loader .loaderContent .spinnerContainer .spinner2 {
+  width: 30px;
+  height: 30px;
+  top: 14px;
+  left: 10px;
+  animation: spinRight 3s infinite none;
+}
+
+#loader .loaderContent .spinnerContainer .spinner3 {
+  width: 10px;
+  height: 10px;
+  top: 24px;
+  left: 20px;
+  animation: spinLeft 1s infinite none;
+}
+
+@keyframes spinLeft {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinRight {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
 #index {
   width: 100%;
   height: 100vh;
@@ -7240,7 +7340,6 @@ nav#index-nav ul li .chapter-selection a li {
   width: 100%;
   height: 200px;
   background-color: rgba(0, 0, 0, 0.4);
-  cursor: pointer;
   transition: all 0.2s ease;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
@@ -7272,6 +7371,10 @@ nav#index-nav ul li .chapter-selection a li {
   width: 100%;
 }
 
+#index section#campaign img {
+  top: 100vh;
+}
+
 #index section#campaign h3 {
   text-align: center;
   margin-bottom: 50px;
@@ -7280,7 +7383,9 @@ nav#index-nav ul li .chapter-selection a li {
 #index section#campaign .chapter {
   height: 100vh;
   padding: 100px;
-  cursor: pointer;
+  transition: all 0.2s ease-out;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
 }
 
 @media (max-width: 1400px) {
@@ -7293,6 +7398,10 @@ nav#index-nav ul li .chapter-selection a li {
   #index section#campaign .chapter {
     padding: 100px;
   }
+}
+
+#index section#campaign .chapter:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 #index section#campaign .ch1 {
@@ -7339,6 +7448,12 @@ nav#index-nav ul li .chapter-selection a li {
   font-size: 12px;
   color: #dadad2;
   text-align: center;
+}
+
+#index section#freeMode {
+  width: 100%;
+  height: 100vh;
+  background-color: grey;
 }
 
 main#puzzleGame {
