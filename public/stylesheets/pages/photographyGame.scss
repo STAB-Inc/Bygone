@@ -12,16 +12,6 @@
     background-color: rgba(0,0,0, 0.8);;
     padding: 50px;
     display: none;
-    .close {
-      float: left;
-      color: white;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      opacity: 1;
-      font-weight: 300;
-      text-shadow: none;
-    }
     #invValue {
       position: absolute;
       right: 20px;
@@ -71,5 +61,5 @@
       }
     }
   }
-
 }
+
