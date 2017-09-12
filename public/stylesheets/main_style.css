@@ -7021,7 +7021,6 @@ ul {
 
 body {
   overflow-x: hidden;
-  overflow-y: hidden;
 }
 
 a {
@@ -7053,105 +7052,12 @@ p {
   font-weight: 300;
 }
 
-nav#index-nav {
-  padding-top: 100px;
+nav#global {
+  position: fixed;
   width: 100%;
-  margin: auto;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 50%;
-  transform: translateY(-50%);
-  transform: translate(-50%, -50%);
-}
-
-nav#index-nav h1 {
-  padding-left: 170px;
-}
-
-nav#index-nav ul {
-  padding-top: 50px;
-}
-
-nav#index-nav ul li {
-  width: 800px;
-  padding: 10px 0 10px 170px;
-  margin: 20px 0 20px 0;
-  position: relative;
-  transition: all 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-}
-
-nav#index-nav ul li:hover {
-  color: white;
-}
-
-nav#index-nav ul li:hover .bg {
-  width: 500px;
-}
-
-nav#index-nav ul li p {
-  color: white;
-  pointer-events: none;
-}
-
-nav#index-nav ul li .bg,
-nav#index-nav ul li .chapter-selection {
-  background-color: black;
-  width: 0px;
-  height: 65px;
-  position: absolute;
-  top: 10px;
-  left: 150px;
-  z-index: -1;
-  transition: all 0.4s ease-out;
-  -webkit-transition: all 0.4s ease-out;
-  -moz-transition: all 0.4s ease-out;
-}
-
-nav#index-nav ul li .chapter-selection {
-  pointer-events: none;
-  width: 500px;
-  left: 55%;
-  z-index: 0;
-  background-color: transparent;
-  top: 50%;
-  transform: translateY(-50%);
-  top: 53%;
-  margin-left: 60px;
-}
-
-nav#index-nav ul li .chapter-selection ul,
-nav#index-nav ul li .chapter-selection li {
-  padding: 0;
-}
-
-nav#index-nav ul li .chapter-selection a {
-  width: 60px;
-  height: 60px;
-  float: left;
-  top: 0;
-  border: 2px solid white;
-  margin: 0 30px 0 30px;
-  left: 50px;
-  transform: rotate(45deg);
-  opacity: 0;
-  transition: all 0.5s ease-out;
-  -webkit-transition: all 0.5s ease-out;
-  -moz-transition: all 0.5s ease-out;
-}
-
-nav#index-nav ul li .chapter-selection a li {
-  width: 100%;
-  text-align: center;
-  margin: 0;
-  color: white;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 50%;
-  transform: translateY(-50%);
-  transform: translate(-50%, -50%);
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
 }
 
 #loader {
@@ -7401,7 +7307,7 @@ nav#index-nav ul li .chapter-selection a li {
 }
 
 #index section#campaign .chapter:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 #index section#campaign .ch1 {

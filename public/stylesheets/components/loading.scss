@@ -2,7 +2,7 @@
   position: fixed;
   width: 100%;
   height: 100vh;
-  background-color: #101010;
+  background-color: $dark-shade;
   z-index: 101;
   @include transition(0.5s, ease-in-out);
   .loaderContent {

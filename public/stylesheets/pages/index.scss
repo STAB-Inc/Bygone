@@ -15,7 +15,7 @@
     width: 50vw;
     height: 100vh;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: $trans-const;
     padding: 100px;
     .header {
       display: inline-block;
@@ -93,21 +93,21 @@
         padding: 100px;
       }
       &:hover {
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: $trans-const;
       }
       @include transition(0.2s, ease-out);
     }
     .ch1 {
-      background-color: rgba(82, 118, 138, 1)
+      background-color: rgba(82, 118, 138, 1);
     }
     .ch2 {
       background-color: rgba(70, 99, 126, 1);
     }
     .ch3 {
-      background-color: rgba(57, 70, 88, 1)
+      background-color: rgba(57, 70, 88, 1);
     }
     .ch4 {
-      background-color: rgba(47, 56, 68, 1)
+      background-color: rgba(47, 56, 68, 1);
     }
     .stateContainer {
       height: 25%;
