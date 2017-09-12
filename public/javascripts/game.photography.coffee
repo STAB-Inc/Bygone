@@ -170,15 +170,40 @@ jQuery(document).ready ->
     interest = (Math.random()*5).toFixed(2)
   
   $('#takePic').click ->
-    shotTaken = new photo mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title
+    $('#takingPic .section3').css 'width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%'
+    $('#takingPic .section2').css 'width', (Math.floor(Math.random() * (19 + 2))) + '%'
+    $('#takingPic .section4').css 'width', (Math.floor(Math.random() * (19 + 2))) + '%'
+    $('#takingPic .slider').css 'left', 0
+    $('#takingPic .start, #takingPic .stop').prop 'disabled', false
+    $('#takingPic .shotStats').hide()
+    $('#takingPic').show()
+    $('#takingPic .viewInv').hide()
+    $(this).hide()
+    
+  addShotToInv = (multiplier) ->
+    photoValue = mark.playerAt.value*multiplier
+    shotTaken = new photo photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title
+    #console.log multiplier, photoValue, shotTaken
     mark.inventory.push(shotTaken)
     mark.playerAt.marker.setVisible(false)
     newStats = mark.stats
-    newStats.assets += mark.playerAt.value
+    newStats.assets += photoValue
     newStats.workingCapital -= mark.playerAt.travelExpense/2
     mark.updateStats(newStats)
-    $('#takePic').hide()
-  
+
+  $('#takingPic .start').click ->
+    $(this).prop 'disabled', true
+    $('#takingPic .slider').animate({
+      'left': $('#takingPic .section1').width() + $('#takingPic .section2').width() + $('#takingPic .section3').width() + $('#takingPic .section4').width() + $('#takingPic .section5').width() + 'px';
+    }, 1000, ->
+      calculatePicValue()
+    )
+
+  $('#takingPic .stop').click ->
+    $(this).prop 'disabled', true
+    $('#takingPic .slider').stop()
+    calculatePicValue()
+      
   $('#checkInv').click ->
     $('#inventory').show()
     $('#inventory .photo').remove()
@@ -191,9 +216,10 @@ jQuery(document).ready ->
       else
         $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .washedPics'))
         sellableValue += item.value
-    $('#rollValue').text('Potential value $' + parseInt(potentialValue + sellableValue))
+    $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
-    
+
+
   $('#endTurn').click ->
     $('#endTurnInfo p').text 'End this month?'
     $('#endTurnInfo').show()
@@ -251,6 +277,6 @@ jQuery(document).ready ->
     $('#soldInfoOverlay p').text 'Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s'
 
   $('.confirm').click ->
-    $(this).parent().hide();
+    $(this).parent().hide()
 
   return
