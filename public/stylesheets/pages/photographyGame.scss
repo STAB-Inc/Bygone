@@ -1,10 +1,20 @@
 #photographyGame {
+  .photo {
+    max-width: 100%;
+  }
   #map {
     width:100%;
     height: 100vh;
   }
+  .overlay {
+    
+  }
   #inventory,
-  #loanOverlay  {
+  #loanOverlay,
+  #soldInfoOverlay,
+  #endTurnInfo,
+  #gameEnd,
+  #takingPic  {
     position: fixed;
     width: 1000px;
     height: 800px;
@@ -12,13 +22,22 @@
     background-color: rgba(0,0,0, 0.8);;
     padding: 50px;
     display: none;
-    #invValue {
+    overflow-x: hidden;
+    overflow-y: auto;
+    #rollValue,
+    #sellableValue {
       position: absolute;
       right: 20px;
+      bottom: 40px;
+    }
+    #sellableValue {
       bottom: 20px;
     }
   }
-  #loanOverlay {
+  #loanOverlay,
+  #soldInfoOverlay,
+  #endTurnInfo,
+  #gameEnd  {
     width: 600px;
     height: 300px;
   }

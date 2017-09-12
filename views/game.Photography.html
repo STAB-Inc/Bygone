@@ -15,20 +15,48 @@
   <main id="photographyGame">
     <div id="map">
     </div>
-    <div id="inventory">
+    <div id="inventory" class="overlay">
       <div class="close">Close</div>
       <h4>Camera Roll</h4>
-      <p id="invValue"></p>
+      <div class="cameraRoll"></div>
+      <h4>Washed Pictures</h4>
+      <div class="washedPics"></div>
+      <p id="rollValue"></p>
+      <p id="sellableValue"></p>
     </div>
-    <div id="loanOverlay">
+    <div id="loanOverlay" class="overlay">
       <h4>Take Loan</h4>
       <p>Amount</p>
       <input id="loanInput" type="text">
-      <button id="confirmLoan">Confirm Loan</button>
+      <button id="confirmLoan" class="confirm">Confirm Loan</button>
       <p id="IR">Current interest rate 1.5%</p>
       <div class="close">Close</div>
     </div>
-    <div id="infoOverlay">
+    <div id="soldInfoOverlay" class="overlay">
+      <h4>Potential Earnings</h4>
+      <p></p>
+      <button id="sellPhotos" class="confirm">Sell Photos</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="endTurnInfo" class="overlay">
+      <h4>End Turn</h4>
+      <p>Washing Photos ends the turn.</p>
+      <button id="confirmEndTurn" class="confirm">End Turn</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="gameEnd" class="overlay">
+      <h4>Game Over</h4>
+      <p></p>
+      <button id="playAgain" class="confirm">Play Again</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="takingPic" class="overlay">
+      <h4>Game Over</h4>
+      <p></p>
+      <button id="playAgain" class="confirm">Play Again</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="infoOverlay" class="overlay">
       <div class="container-fluid">
         <div class="row">
           <h4 id="title">Location Info</h4>
@@ -44,8 +72,8 @@
         </div>
         <div class="row" id="stats">
           <h4><b>Player Stats</b></h4>
+          <p id="CAB">Working Capital:</p>
           <p id="workingCapital">Working Capital:</p>
-          <p id="capital">Capital:</p>
           <p id="assets">Current Assets:</p>
           <p id="liabilities">Current Liabilities:</p>
         </div>
