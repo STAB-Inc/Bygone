@@ -37,9 +37,57 @@
   #loanOverlay,
   #soldInfoOverlay,
   #endTurnInfo,
-  #gameEnd  {
+  #gameEnd,
+  #takingPic  {
     width: 600px;
     height: 300px;
+  }
+  #takingPic {
+    height: 400px;
+    .shotStats {
+      margin-top: 20px;
+    }
+    .subContainer{
+      padding: 20px 0 35px 0;
+      .bar {
+        width: 100%;
+        height: 5px;
+        background-color: transparent;
+        position: relative;
+        .section {
+          height: 100%;
+          float: left;
+        }
+        .section1 {
+          width: 25%;
+          background-color: red;
+        }
+        .section2 {
+          width: 20%;
+          background-color: #2E4CA9;
+        }
+        .section3 {
+          width: 10%;
+          background-color: #18EB18;
+        }
+        .section4 {
+          width: 20%;
+          background-color: #2E4CA9;
+        }
+        .section5 {
+          width: 25%;
+          background-color: red;
+        }
+        .slider {
+          position: absolute;
+          top: -8px;
+          width: 20px;
+          height: 20px;
+          background-color: rgb(22, 243, 189);;
+          border-radius: 10px;
+        }
+      }
+    }
   }
   #infoOverlay {
     position: fixed;

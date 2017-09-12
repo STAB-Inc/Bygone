@@ -7034,6 +7034,22 @@ a:hover, a:focus {
   color: inherit;
 }
 
+.close {
+  float: left;
+  color: #9B9B9B;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 1;
+  font-weight: 300;
+  text-shadow: none;
+}
+
+.close:hover {
+  color: #dadad2;
+  opacity: 1;
+}
+
 h1, h2, h3, h4, h5, h6, p {
   color: #e8e8e6;
   font-family: 'Raleway', sans-serif;
@@ -7136,9 +7152,9 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
   color: white;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
 }
 
 #navToggle i.ionClose {
@@ -7369,6 +7385,7 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
 
 #index section#campaign {
   width: 100%;
+  height: 100vh;
 }
 
 #index section#campaign img {
@@ -7380,8 +7397,14 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
   margin-bottom: 50px;
 }
 
+@media (max-width: 992px) {
+  #index section#campaign h3 {
+    margin-bottom: 0;
+  }
+}
+
 #index section#campaign .chapter {
-  height: 100vh;
+  height: 100%;
   padding: 100px;
   transition: all 0.2s ease-out;
   -webkit-transition: all 0.2s ease-out;
@@ -7397,6 +7420,13 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
 @media (max-width: 1200px) {
   #index section#campaign .chapter {
     padding: 100px;
+  }
+}
+
+@media (max-width: 992px) {
+  #index section#campaign .chapter {
+    height: 25%;
+    padding: 20px;
   }
 }
 
@@ -7450,6 +7480,14 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
   text-align: center;
 }
 
+@media (max-width: 992px) {
+  #index section#campaign .unlockContainer p {
+    width: 50%;
+    display: inline-block;
+    float: left;
+  }
+}
+
 #index section#freeMode {
   width: 100%;
   height: 100vh;
@@ -7470,7 +7508,7 @@ main#puzzleGame #selectionArea {
 main#puzzleGame #selectionArea .choice {
   float: left;
   width: 10%;
-  height: 160px;
+  height: 150px;
   cursor: pointer;
   padding: 0;
   margin: 1px;
@@ -7514,13 +7552,45 @@ main#puzzleGame #gameArea .tile {
   background-repeat: no-repeat;
 }
 
+main#puzzleGame .winScreen {
+  display: none;
+  width: 500px;
+  height: 800px;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  padding: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+}
+
+main#puzzleGame .winScreen img {
+  width: 300px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+main#puzzleGame .winScreen p {
+  text-align: center;
+}
+
+#photographyGame .photo {
+  max-width: 100%;
+}
+
 #photographyGame #map {
   width: 100%;
   height: 100vh;
 }
 
 #photographyGame #inventory,
-#photographyGame #loanOverlay {
+#photographyGame #loanOverlay,
+#photographyGame #soldInfoOverlay,
+#photographyGame #endTurnInfo,
+#photographyGame #gameEnd,
+#photographyGame #takingPic {
   position: fixed;
   width: 1000px;
   height: 800px;
@@ -7532,30 +7602,101 @@ main#puzzleGame #gameArea .tile {
   background-color: rgba(0, 0, 0, 0.8);
   padding: 50px;
   display: none;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-#photographyGame #inventory .close,
-#photographyGame #loanOverlay .close {
-  float: left;
-  color: white;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  opacity: 1;
-  font-weight: 300;
-  text-shadow: none;
-}
-
-#photographyGame #inventory #invValue,
-#photographyGame #loanOverlay #invValue {
+#photographyGame #inventory #rollValue,
+#photographyGame #inventory #sellableValue,
+#photographyGame #loanOverlay #rollValue,
+#photographyGame #loanOverlay #sellableValue,
+#photographyGame #soldInfoOverlay #rollValue,
+#photographyGame #soldInfoOverlay #sellableValue,
+#photographyGame #endTurnInfo #rollValue,
+#photographyGame #endTurnInfo #sellableValue,
+#photographyGame #gameEnd #rollValue,
+#photographyGame #gameEnd #sellableValue,
+#photographyGame #takingPic #rollValue,
+#photographyGame #takingPic #sellableValue {
   position: absolute;
   right: 20px;
+  bottom: 40px;
+}
+
+#photographyGame #inventory #sellableValue,
+#photographyGame #loanOverlay #sellableValue,
+#photographyGame #soldInfoOverlay #sellableValue,
+#photographyGame #endTurnInfo #sellableValue,
+#photographyGame #gameEnd #sellableValue,
+#photographyGame #takingPic #sellableValue {
   bottom: 20px;
 }
 
-#photographyGame #loanOverlay {
+#photographyGame #loanOverlay,
+#photographyGame #soldInfoOverlay,
+#photographyGame #endTurnInfo,
+#photographyGame #gameEnd,
+#photographyGame #takingPic {
   width: 600px;
   height: 300px;
+}
+
+#photographyGame #takingPic {
+  height: 400px;
+}
+
+#photographyGame #takingPic .shotStats {
+  margin-top: 20px;
+}
+
+#photographyGame #takingPic .subContainer {
+  padding: 20px 0 35px 0;
+}
+
+#photographyGame #takingPic .subContainer .bar {
+  width: 100%;
+  height: 5px;
+  background-color: transparent;
+  position: relative;
+}
+
+#photographyGame #takingPic .subContainer .bar .section {
+  height: 100%;
+  float: left;
+}
+
+#photographyGame #takingPic .subContainer .bar .section1 {
+  width: 25%;
+  background-color: red;
+}
+
+#photographyGame #takingPic .subContainer .bar .section2 {
+  width: 20%;
+  background-color: #2E4CA9;
+}
+
+#photographyGame #takingPic .subContainer .bar .section3 {
+  width: 10%;
+  background-color: #18EB18;
+}
+
+#photographyGame #takingPic .subContainer .bar .section4 {
+  width: 20%;
+  background-color: #2E4CA9;
+}
+
+#photographyGame #takingPic .subContainer .bar .section5 {
+  width: 25%;
+  background-color: red;
+}
+
+#photographyGame #takingPic .subContainer .bar .slider {
+  position: absolute;
+  top: -8px;
+  width: 20px;
+  height: 20px;
+  background-color: #16f3bd;
+  border-radius: 10px;
 }
 
 #photographyGame #infoOverlay {
