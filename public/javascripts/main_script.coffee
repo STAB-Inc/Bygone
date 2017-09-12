@@ -9,8 +9,28 @@ $(document).ready ->
 
   $('#navToggle, .navContainer').click ->
     navToggle()
+
+  toHash = (hash) ->
+    $('body').animate({
+      'scrollTop': $(hash).offset().top
+    }, 750)
+    return
+
+  toLink= (link) ->
+
+  $('a').click (e) ->
+    e.preventDefault()
+    href = $(this).attr 'href'
+    if href.charAt(0) == '#'
+      toHash href
+    else
+      console.log 'standard link'
+
   load = ->
-    $('#loader').css 'opacity', 0
+    $('#loader').css {
+      'opacity': 0,
+      'pointer-events': 'none'
+    }
     $('body').css 'overflow-y', 'auto'
     setTimeout ->
       $('#loader').css 'display', 'none'
@@ -36,7 +56,6 @@ $(document).ready ->
       load()
     , 2000
     return
-
   return
 
 # ---
