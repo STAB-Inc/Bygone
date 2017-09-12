@@ -8,7 +8,7 @@ main#puzzleGame {
     .choice {
       float: left;
       width: 10%;
-      height: 160px;
+      height: 150px;
       cursor: pointer;
       padding: 0;
       margin: 1px;
@@ -43,6 +43,23 @@ main#puzzleGame {
     .tile {
       float: left;
       background-repeat: no-repeat;
+    }
+  }
+  .winScreen {
+    display: none;
+    width: 500px;
+    height: 800px;
+    background-color: $trans-const;
+    position: fixed;
+    padding: 20px;
+    @include centerXY;
+    img {
+      width: 300px;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    p {
+      text-align: center;
     }
   }
 }

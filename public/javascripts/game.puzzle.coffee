@@ -2,22 +2,23 @@ jQuery(document).ready ->
 
   class puzzleGame
     constructor: (@debug, @xsplit, @ysplit) ->
-      @time = 0
+      @timePassed
 
     init: (@resources) ->
       @solution = @resources[Math.floor(Math.random() * @resources.length)]
+      console.log @solution
       @reset()
       @generateChoiceField(@resources)
       @generateTiles()
       @initTimer()
 
     initTimer: () ->
-      console.log @time
       time = 0
       counter = ->
         time += 1
-        $('#timer').text('Time: ' + time)
-      setInterval(counter, 1000)
+        $('#timer').text 'Time: ' + time
+        $('#timer').attr 'value', time
+      @timer = setInterval(counter, 1000)
 
     generateTiles: ->
       tileTemplate = $('#tileTemplate')
@@ -73,12 +74,21 @@ jQuery(document).ready ->
 
     reset: ->
       $('#selectionArea, #gameArea').empty()
+      clearInterval(@timer);
+      @time = 0;
 
     gameWin: ->
-      alert('you won')
+      $('.winScreen .timeTaken').text 'Time taken ' + $('#timer').attr('value') + ' seconds'
+      $('.winScreen').show()
+      $('.winScreen img').attr 'src', @solution['High resolution image']
+      $('.winScreen .soldierName').text @solution['Full name (from National Archives of Australia)']
+      $('.winScreen .soldierDesc').text @solution['Title of image']
+      $('.play').show()
+      @reset()
 
     gameLose: ->
-      alert('you lost')
+      alert('Wrong Answer')
+      $('.play').show()
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -100,11 +110,13 @@ jQuery(document).ready ->
     return processedData
 
   currentGame = null
-  $('#play').click ->
+  $('.play').click ->
     currentGame = new puzzleGame false, 8, 8
     retrieveResources(50).then (res) ->
       currentGame.init(processData(res))
       return
+    $(this).hide()
+    $('.winScreen').hide();
     return
 
   $('#selectionArea').on 'click', '.choice', ->

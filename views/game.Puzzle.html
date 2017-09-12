@@ -15,7 +15,7 @@
   <main id="puzzleGame">
     Abstract Puzzle Game
     <button id="debug">debug</button>
-    <button id="play">play</button>
+    <button class="play debug">play</button>
     <button id="reset">reset</button>
     <br>
     <div id="selectionArea">
@@ -24,10 +24,20 @@
     </div>
     <div id="tileTemplate"></div>
     <div id="timer"></div>
+    <div class="winScreen">
+      <div class="close">Close</div>
+      <h3>Correct!</h3>
+      <p class="timeTaken"></p>
+      <img>
+      <p class="soldierName"></p>
+      <p class="soldierDesc"></p>
+      <button class="play">Play Again</button>
+    </div>
   </main>
 </body>
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
 <script src="../public/javascripts/main_script.js"></script>
 <script src="../public/javascripts/game.base.js"></script>
 <script src="../public/javascripts/game.puzzle.js"></script>

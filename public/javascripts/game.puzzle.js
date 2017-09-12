@@ -7,12 +7,13 @@
         this.debug = debug;
         this.xsplit = xsplit;
         this.ysplit = ysplit;
-        this.time = 0;
+        this.timePassed;
       }
 
       puzzleGame.prototype.init = function(resources) {
         this.resources = resources;
         this.solution = this.resources[Math.floor(Math.random() * this.resources.length)];
+        console.log(this.solution);
         this.reset();
         this.generateChoiceField(this.resources);
         this.generateTiles();
@@ -21,13 +22,13 @@
 
       puzzleGame.prototype.initTimer = function() {
         var counter, time;
-        console.log(this.time);
         time = 0;
         counter = function() {
           time += 1;
-          return $('#timer').text('Time: ' + time);
+          $('#timer').text('Time: ' + time);
+          return $('#timer').attr('value', time);
         };
-        return setInterval(counter, 1000);
+        return this.timer = setInterval(counter, 1000);
       };
 
       puzzleGame.prototype.generateTiles = function() {
@@ -100,15 +101,24 @@
       };
 
       puzzleGame.prototype.reset = function() {
-        return $('#selectionArea, #gameArea').empty();
+        $('#selectionArea, #gameArea').empty();
+        clearInterval(this.timer);
+        return this.time = 0;
       };
 
       puzzleGame.prototype.gameWin = function() {
-        return alert('you won');
+        $('.winScreen .timeTaken').text('Time taken ' + $('#timer').attr('value') + ' seconds');
+        $('.winScreen').show();
+        $('.winScreen img').attr('src', this.solution['High resolution image']);
+        $('.winScreen .soldierName').text(this.solution['Full name (from National Archives of Australia)']);
+        $('.winScreen .soldierDesc').text(this.solution['Title of image']);
+        $('.play').show();
+        return this.reset();
       };
 
       puzzleGame.prototype.gameLose = function() {
-        return alert('you lost');
+        alert('Wrong Answer');
+        return $('.play').show();
       };
 
       return puzzleGame;
@@ -140,11 +150,13 @@
       return processedData;
     };
     currentGame = null;
-    $('#play').click(function() {
+    $('.play').click(function() {
       currentGame = new puzzleGame(false, 8, 8);
       retrieveResources(50).then(function(res) {
         currentGame.init(processData(res));
       });
+      $(this).hide();
+      $('.winScreen').hide();
     });
     $('#selectionArea').on('click', '.choice', function() {
       if (parseInt($(this).attr('id').match(/[0-9]+/)) === currentGame.getAnswer()[1]) {
