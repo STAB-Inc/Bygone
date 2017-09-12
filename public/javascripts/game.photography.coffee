@@ -84,15 +84,20 @@ jQuery(document).ready ->
       updateMarkers()
       $('#takePic').show()
       newStats = @stats
-      newStats.workingCapital -= mark.playerAt.travelExpense
+      newStats.CAB -= mark.playerAt.travelExpense
       @updateStats(newStats)
 
     updateStats: (stats) ->
       @stats = stats
-      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + parseInt(@stats.workingCapital)
-      $('#infoOverlay #stats #capital').text 'Capital $' + parseInt((@stats.assets - @stats.liabilities))
-      $('#infoOverlay #stats #assets').text 'Current Assets $' + parseInt(@stats.assets)
+      assets = parseInt(@stats.assets + @stats.CAB)
+      workingCapital = parseInt(assets - @stats.liabilities)
+      $('#infoOverlay #stats #CAB').text 'Cash at Bank $' + parseInt(@stats.CAB)
       $('#infoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
+      $('#infoOverlay #stats #assets').text 'Current Assets $' + assets
+      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + workingCapital
+      if workingCapital <= -1000
+        $('#gameEnd p').text 'You survived for ' + monthPassed + ' Months.';
+        $('#gameEnd').show();
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -141,7 +146,7 @@ jQuery(document).ready ->
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)
-  mark.updateStats({'workingCapital':1000, 'assets': 0, 'liabilities': 300 })
+  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
 
   retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then (res) ->
     generateMarkers(processData(res))
@@ -156,7 +161,7 @@ jQuery(document).ready ->
   interest = 1.5
   endTurn = ->
     newStats = mark.stats
-    newStats.workingCapital -= mark.stats.liabilities
+    newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
     for location in locations
       location.marker.setVisible(true)
@@ -205,11 +210,9 @@ jQuery(document).ready ->
     $('#loanOverlay').show()
 
   $('#confirmLoan').click ->
-    console.log $('#loanInput').val(), parseInt($('#loanInput').val())*(interest/10)
     newStats = mark.stats
     newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(interest/10)
-    newStats.workingCapital += parseInt($('#loanInput').val())
-    console.log typeof(newStats.workingCapital)
+    newStats.CAB += parseInt($('#loanInput').val())
     mark.updateStats(newStats)
 
   return
