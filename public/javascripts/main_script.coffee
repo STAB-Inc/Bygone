@@ -1,5 +1,14 @@
 $(document).ready ->
 
+  navToggle = ->
+    navToggled = !navToggled
+    $('nav#global').toggleClass 'navOn'
+    $('.ionClose, .ionOpen').toggleClass 'buttonActive'
+
+  navToggled = false
+
+  $('#navToggle, .navContainer').click ->
+    navToggle()
   load = ->
     $('#loader').css 'opacity', 0
     $('body').css 'overflow-y', 'auto'
