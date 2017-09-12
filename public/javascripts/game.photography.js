@@ -273,9 +273,6 @@
       }
       return $('#invValue').text('Photo value $' + value);
     });
-    $('.close').click(function() {
-      return $(this).parent().hide();
-    });
     $('#endTurn').click(function() {
       return endTurn();
     });

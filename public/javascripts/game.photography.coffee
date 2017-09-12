@@ -182,9 +182,6 @@ jQuery(document).ready ->
       $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'))
       value += item.value
     $('#invValue').text('Photo value $' + value)
-
-  $('.close').click ->
-    $(this).parent().hide()
     
   $('#endTurn').click ->
     endTurn()
