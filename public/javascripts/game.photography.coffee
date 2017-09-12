@@ -75,8 +75,8 @@ jQuery(document).ready ->
       })
     
     moveTo: (location) ->
-      console.log(location)
-      console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
+      #console.log(location)
+      #console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
       location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
       @position = location.position
       @playerAt = location
@@ -159,14 +159,15 @@ jQuery(document).ready ->
         location.marker.setVisible(false)
 
   interest = 1.5
+  monthPassed = 0
   endTurn = ->
+    monthPassed += 1
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
     for location in locations
       location.marker.setVisible(true)
     interest = (Math.random()*5).toFixed(2)
-    console.log interest
   
   $('#takePic').click ->
     shotTaken = new photo mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title
@@ -177,33 +178,37 @@ jQuery(document).ready ->
     newStats.workingCapital -= mark.playerAt.travelExpense/2
     mark.updateStats(newStats)
     $('#takePic').hide()
-
   
   $('#checkInv').click ->
     $('#inventory').show()
     $('#inventory .photo').remove()
-    value = 0
+    potentialValue = 0;
+    sellableValue = 0;
     for item in mark.inventory
-      $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'))
-      value += item.value
-    $('#invValue').text('Photo value $' + value)
+      if !item.washed
+        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .cameraRoll'))
+        potentialValue += item.value
+      else
+        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .washedPics'))
+        sellableValue += item.value
+    $('#rollValue').text('Potential value $' + parseInt(potentialValue + sellableValue))
+    $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
     
   $('#endTurn').click ->
+    $('#endTurnInfo p').text 'End this month?'
+    $('#endTurnInfo').show()
+
+  $('#confirmEndTurn').click ->
     endTurn()
 
   $('#washPic').click ->
     if mark.inventory.length == 0
       alert('There are no pictures to wash')
     else
-      newStats = mark.stats
-      totalValue = 0
       for item in mark.inventory
-        totalValue += item.value
-      newStats.workingCapital += totalValue
-      newStats.assets -= totalValue
-      mark.updateStats(newStats)
-      mark.inventory = []
-      endTurn()
+        item.washed = true
+      $('#endTurnInfo p').text 'Washing photos ends this month. End this month?'
+      $('#endTurnInfo').show()
 
   $('#takeLoan').click ->
     $('#IR').text('Current interest rate '+interest+'%')
@@ -214,5 +219,38 @@ jQuery(document).ready ->
     newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(interest/10)
     newStats.CAB += parseInt($('#loanInput').val())
     mark.updateStats(newStats)
+
+  $('#sellPic').click ->
+    sellablePhotos = 0
+    photosValue = 0
+    for photo in mark.inventory
+      if photo.washed
+        sellablePhotos += 1
+        photosValue += photo.value
+    $('#soldInfoOverlay p').text 'Potential Earnings $' + photosValue + ' from ' + sellablePhotos + ' Photo/s'
+    if sellablePhotos == 0 then $('#soldInfoOverlay button').hide() else $('#soldInfoOverlay button').show()
+    $('#soldInfoOverlay').show()
+
+  $('#sellPhotos').click ->
+    photosSold = 0
+    earningsEst = 0
+    earningsAct = 0
+    newInventory = []
+    newStats = mark.stats
+    for photo in mark.inventory
+      if photo.washed
+        earningsAct += parseInt(photo.value + (photo.value*Math.random()))
+        earningsEst += photo.value
+        photosSold += 1
+      else
+        newInventory.push(photo)
+    mark.inventory = newInventory
+    newStats.CAB += earningsAct
+    newStats.assets -= earningsEst
+    mark.updateStats(newStats)
+    $('#soldInfoOverlay p').text 'Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s'
+
+  $('.confirm').click ->
+    $(this).parent().hide();
 
   return

@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var deg2rad, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var deg2rad, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, monthPassed, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -111,8 +111,6 @@
 
       player.prototype.moveTo = function(location) {
         var newStats;
-        console.log(location);
-        console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km');
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         this.position = location.position;
         this.playerAt = location;
@@ -120,16 +118,23 @@
         updateMarkers();
         $('#takePic').show();
         newStats = this.stats;
-        newStats.workingCapital -= mark.playerAt.travelExpense;
+        newStats.CAB -= mark.playerAt.travelExpense;
         return this.updateStats(newStats);
       };
 
       player.prototype.updateStats = function(stats) {
+        var assets, workingCapital;
         this.stats = stats;
-        $('#infoOverlay #stats #workingCapital').text('Working Capital $' + parseInt(this.stats.workingCapital));
-        $('#infoOverlay #stats #capital').text('Capital $' + parseInt(this.stats.assets - this.stats.liabilities));
-        $('#infoOverlay #stats #assets').text('Current Assets $' + parseInt(this.stats.assets));
-        return $('#infoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
+        assets = parseInt(this.stats.assets + this.stats.CAB);
+        workingCapital = parseInt(assets - this.stats.liabilities);
+        $('#infoOverlay #stats #CAB').text('Cash at Bank $' + parseInt(this.stats.CAB));
+        $('#infoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
+        $('#infoOverlay #stats #assets').text('Current Assets $' + assets);
+        $('#infoOverlay #stats #workingCapital').text('Working Capital $' + workingCapital);
+        if (workingCapital <= -1000) {
+          $('#gameEnd p').text('You survived for ' + monthPassed + ' Months.');
+          return $('#gameEnd').show();
+        }
       };
 
       return player;
@@ -149,8 +154,8 @@
       });
     };
     photo = (function() {
-      function photo(value1, washed, img, title) {
-        this.value = value1;
+      function photo(value, washed, img, title) {
+        this.value = value;
         this.washed = washed;
         this.img = img;
         this.title = title;
@@ -214,7 +219,8 @@
     }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
     mark.initTo(googleMap);
     mark.updateStats({
-      'workingCapital': 1000,
+      'CAB': 1000,
+      'workingCapital': 0,
       'assets': 0,
       'liabilities': 300
     });
@@ -237,17 +243,18 @@
       return results;
     };
     interest = 1.5;
+    monthPassed = 0;
     endTurn = function() {
       var j, len, newStats;
+      monthPassed += 1;
       newStats = mark.stats;
-      newStats.workingCapital -= mark.stats.liabilities;
+      newStats.CAB -= mark.stats.liabilities;
       mark.updateStats(newStats);
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
         location.marker.setVisible(true);
       }
-      interest = (Math.random() * 5).toFixed(2);
-      return console.log(interest);
+      return interest = (Math.random() * 5).toFixed(2);
     };
     $('#takePic').click(function() {
       var newStats, shotTaken;
@@ -261,38 +268,44 @@
       return $('#takePic').hide();
     });
     $('#checkInv').click(function() {
-      var item, j, len, ref, value;
+      var item, j, len, potentialValue, ref, sellableValue;
       $('#inventory').show();
       $('#inventory .photo').remove();
-      value = 0;
+      potentialValue = 0;
+      sellableValue = 0;
       ref = mark.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         item = ref[j];
-        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory'));
-        value += item.value;
+        if (!item.washed) {
+          $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .cameraRoll'));
+          potentialValue += item.value;
+        } else {
+          $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .washedPics'));
+          sellableValue += item.value;
+        }
       }
-      return $('#invValue').text('Photo value $' + value);
+      $('#rollValue').text('Potential value $' + parseInt(potentialValue + sellableValue));
+      return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     });
     $('#endTurn').click(function() {
+      $('#endTurnInfo p').text('End this month?');
+      return $('#endTurnInfo').show();
+    });
+    $('#confirmEndTurn').click(function() {
       return endTurn();
     });
     $('#washPic').click(function() {
-      var item, j, len, newStats, ref, totalValue;
+      var item, j, len, ref;
       if (mark.inventory.length === 0) {
         return alert('There are no pictures to wash');
       } else {
-        newStats = mark.stats;
-        totalValue = 0;
         ref = mark.inventory;
         for (j = 0, len = ref.length; j < len; j++) {
           item = ref[j];
-          totalValue += item.value;
+          item.washed = true;
         }
-        newStats.workingCapital += totalValue;
-        newStats.assets -= totalValue;
-        mark.updateStats(newStats);
-        mark.inventory = [];
-        return endTurn();
+        $('#endTurnInfo p').text('Washing photos ends this month. End this month?');
+        return $('#endTurnInfo').show();
       }
     });
     $('#takeLoan').click(function() {
@@ -301,12 +314,57 @@
     });
     $('#confirmLoan').click(function() {
       var newStats;
-      console.log($('#loanInput').val(), parseInt($('#loanInput').val()) * (interest / 10));
       newStats = mark.stats;
       newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (interest / 10);
-      newStats.workingCapital += parseInt($('#loanInput').val());
-      console.log(typeof newStats.workingCapital);
+      newStats.CAB += parseInt($('#loanInput').val());
       return mark.updateStats(newStats);
+    });
+    $('#sellPic').click(function() {
+      var j, len, photosValue, ref, sellablePhotos;
+      sellablePhotos = 0;
+      photosValue = 0;
+      ref = mark.inventory;
+      for (j = 0, len = ref.length; j < len; j++) {
+        photo = ref[j];
+        if (photo.washed) {
+          sellablePhotos += 1;
+          photosValue += photo.value;
+        }
+      }
+      $('#soldInfoOverlay p').text('Potential Earnings $' + photosValue + ' from ' + sellablePhotos + ' Photo/s');
+      if (sellablePhotos === 0) {
+        $('#soldInfoOverlay button').hide();
+      } else {
+        $('#soldInfoOverlay button').show();
+      }
+      return $('#soldInfoOverlay').show();
+    });
+    $('#sellPhotos').click(function() {
+      var earningsAct, earningsEst, j, len, newInventory, newStats, photosSold, ref;
+      photosSold = 0;
+      earningsEst = 0;
+      earningsAct = 0;
+      newInventory = [];
+      newStats = mark.stats;
+      ref = mark.inventory;
+      for (j = 0, len = ref.length; j < len; j++) {
+        photo = ref[j];
+        if (photo.washed) {
+          earningsAct += parseInt(photo.value + (photo.value * Math.random()));
+          earningsEst += photo.value;
+          photosSold += 1;
+        } else {
+          newInventory.push(photo);
+        }
+      }
+      mark.inventory = newInventory;
+      newStats.CAB += earningsAct;
+      newStats.assets -= earningsEst;
+      mark.updateStats(newStats);
+      return $('#soldInfoOverlay p').text('Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s');
+    });
+    $('.confirm').click(function() {
+      return $(this).parent().hide();
     });
   });
 
