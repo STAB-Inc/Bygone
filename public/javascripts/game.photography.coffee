@@ -204,9 +204,33 @@ jQuery(document).ready ->
     $('#takingPic .slider').stop()
     calculatePicValue()
       
+  calculatePicValue = ->
+    $('#takingPic .viewInv').show()
+    $('#takingPic .shotStats').show();
+    multiplier = 1
+    sliderPosition = parseInt($('#takingPic .slider').css('left'), 10)
+    inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left
+    inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left
+    if inBlue && inGreen
+      multiplier = 1.2
+      $('.shotStats').text 'You take a high quailty photo, this will surely sell for more!'
+    else if inBlue
+      $('.shotStats').text 'You take a average photo.'    
+    else
+      multiplier = 0.8
+      $('.shotStats').text 'The shot comes out all smudged...'
+    addShotToInv(multiplier)
+
+  $('.viewInv').click ->
+    $(this).parent().hide()
+    displayInv()
+
   $('#checkInv').click ->
-    $('#inventory').show()
+    displayInv()
+    
+  displayInv = ->
     $('#inventory .photo').remove()
+    $('#inventory').show()
     potentialValue = 0;
     sellableValue = 0;
     for item in mark.inventory

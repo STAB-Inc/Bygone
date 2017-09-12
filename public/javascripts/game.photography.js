@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var deg2rad, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, monthPassed, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var addShotToInv, calculatePicValue, deg2rad, displayInv, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, monthPassed, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -257,20 +257,70 @@
       return interest = (Math.random() * 5).toFixed(2);
     };
     $('#takePic').click(function() {
-      var newStats, shotTaken;
-      shotTaken = new photo(mark.playerAt.value, false, mark.playerAt.data.img, mark.playerAt.data.title);
+      $('#takingPic .section3').css('width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%');
+      $('#takingPic .section2').css('width', (Math.floor(Math.random() * (19 + 2))) + '%');
+      $('#takingPic .section4').css('width', (Math.floor(Math.random() * (19 + 2))) + '%');
+      $('#takingPic .slider').css('left', 0);
+      $('#takingPic .start, #takingPic .stop').prop('disabled', false);
+      $('#takingPic .shotStats').hide();
+      $('#takingPic').show();
+      $('#takingPic .viewInv').hide();
+      return $(this).hide();
+    });
+    addShotToInv = function(multiplier) {
+      var newStats, photoValue, shotTaken;
+      photoValue = mark.playerAt.value * multiplier;
+      shotTaken = new photo(photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title);
       mark.inventory.push(shotTaken);
       mark.playerAt.marker.setVisible(false);
       newStats = mark.stats;
-      newStats.assets += mark.playerAt.value;
+      newStats.assets += photoValue;
       newStats.workingCapital -= mark.playerAt.travelExpense / 2;
-      mark.updateStats(newStats);
-      return $('#takePic').hide();
+      return mark.updateStats(newStats);
+    };
+    $('#takingPic .start').click(function() {
+      $(this).prop('disabled', true);
+      return $('#takingPic .slider').animate({
+        'left': $('#takingPic .section1').width() + $('#takingPic .section2').width() + $('#takingPic .section3').width() + $('#takingPic .section4').width() + $('#takingPic .section5').width() + 'px'
+      }, 1000, function() {
+        return calculatePicValue();
+      });
+    });
+    $('#takingPic .stop').click(function() {
+      $(this).prop('disabled', true);
+      $('#takingPic .slider').stop();
+      return calculatePicValue();
+    });
+    calculatePicValue = function() {
+      var inBlue, inGreen, multiplier, sliderPosition;
+      $('#takingPic .viewInv').show();
+      $('#takingPic .shotStats').show();
+      multiplier = 1;
+      sliderPosition = parseInt($('#takingPic .slider').css('left'), 10);
+      inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left;
+      inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left;
+      if (inBlue && inGreen) {
+        multiplier = 1.2;
+        $('.shotStats').text('You take a high quailty photo, this will surely sell for more!');
+      } else if (inBlue) {
+        $('.shotStats').text('You take a average photo.');
+      } else {
+        multiplier = 0.8;
+        $('.shotStats').text('The shot comes out all smudged...');
+      }
+      return addShotToInv(multiplier);
+    };
+    $('.viewInv').click(function() {
+      $(this).parent().hide();
+      return displayInv();
     });
     $('#checkInv').click(function() {
+      return displayInv();
+    });
+    displayInv = function() {
       var item, j, len, potentialValue, ref, sellableValue;
-      $('#inventory').show();
       $('#inventory .photo').remove();
+      $('#inventory').show();
       potentialValue = 0;
       sellableValue = 0;
       ref = mark.inventory;
@@ -284,9 +334,9 @@
           sellableValue += item.value;
         }
       }
-      $('#rollValue').text('Potential value $' + parseInt(potentialValue + sellableValue));
+      $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
-    });
+    };
     $('#endTurn').click(function() {
       $('#endTurnInfo p').text('End this month?');
       return $('#endTurnInfo').show();
