@@ -7036,7 +7036,7 @@ a:hover, a:focus {
 
 h1, h2, h3, h4, h5, h6, p {
   color: #e8e8e6;
-  font-family: 'Lato', sans-serif;
+  font-family: 'Raleway', sans-serif;
 }
 
 p {
@@ -7058,6 +7058,64 @@ nav#global {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
+}
+
+nav#global .navContainer {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
+}
+
+@media (max-height: 650px) {
+  nav#global .navContainer {
+    height: 100vh;
+    overflow-y: scroll;
+  }
+}
+
+nav#global .navContainer .navButton {
+  width: 50%;
+  height: 50%;
+  background-color: red;
+  padding-top: 15%;
+}
+
+nav#global .navContainer .navButton h3 {
+  font-weight: bold;
+  text-align: center;
+}
+
+nav#global .navContainer .navButton p {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  nav#global .navContainer .navButton {
+    width: 100%;
+    height: 160px;
+    padding-top: 10%;
+  }
+}
+
+nav#global .navContainer .row a:nth-child(1) .navButton {
+  background-color: #52768a;
+}
+
+nav#global .navContainer .row a:nth-child(2) .navButton {
+  background-color: #46637e;
+}
+
+nav#global .navContainer .row a:nth-child(3) .navButton {
+  background-color: #394658;
+}
+
+nav#global .navContainer .row a:nth-child(4) .navButton {
+  background-color: #2f3844;
 }
 
 #loader {
