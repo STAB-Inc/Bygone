@@ -17,3 +17,13 @@ a {
   }
 }
 
+.close {
+  float: left;
+  color: white;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 1;
+  font-weight: 300;
+  text-shadow: none;
+}
