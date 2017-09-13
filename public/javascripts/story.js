@@ -5,6 +5,8 @@ $(document).ready(function(){
 
   $("#story").css("background-color", "#101010");
 
+  $("#back").hide();
+
   $("#chap1sub p").hide();
   $("#chap1img p").hide();
   $("#house").hide();
@@ -18,7 +20,11 @@ $(document).ready(function(){
   $("#scraps").hide();
   $("#hand").hide();
 
-  $("#house").delay(500).fadeIn(2000,"linear");
+  $("#chapTitle").click(function(){
+    $("#chapTitle").delay(500).fadeOut(1500,"linear");
+    $("#house").delay(2000).fadeIn(2000,"linear");
+  });
+
   $("#house").click(function(){
     $("#chap1img").fadeIn();
     $("#house").fadeOut(1000,"linear");
@@ -69,6 +75,8 @@ $(document).ready(function(){
       $("#chap1sub p:nth-of-type("+ step +")").delay(1000).fadeIn(1000,"linear");
       $("#hand").fadeIn({queue: false, duration: 2500});
       $("#hand").animate({top: "45%"}, 3000);
+    }else if(step == 8){
+      $("#back").fadeIn(500,"linear")
     }
   });
 });

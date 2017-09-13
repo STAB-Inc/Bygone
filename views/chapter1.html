@@ -8,56 +8,59 @@
     <link rel="stylesheet" href="../public/stylesheets/main_style.css">
     <link href="../bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet">
   </head>
-  <div id="loader">
-    <div class="loaderContent">
-      <h1>BYGONE</h1>
-      <div class="spinnerContainer">
-        <div class="spinner"></div>
-        <div class="spinner2"></div>
-        <div class="spinner3"></div>
-      </div>
-      <div class="loaderBar">
-      </div>
-    </div>
-  </div>
-  <div id="navToggle">
-    <i class="ion-navicon ionOpen buttonActive"></i>
-    <i class="ion-close-round ionClose"></i>
-  </div>
-  <nav id="global">
-    <div class="navContainer">
-      <div class="container-fluid">
-        <div class="row">
-          <a href="#campaign">
-            <div class="col-lg-6 col-sm-6 navButton">
-              <h3>CAMPAIGN</h3>
-              <p>Experience the tradegy of war through the eyes of Matt.</p>
-            </div>
-          </a>
-          <a href="#freeMode">
-            <div class="col-lg-6 col-sm-6 navButton">
-              <h3>FREE MODE</h3>
-              <p>Kill some time in these minigames.</p>
-            </div>
-          </a>
-          <a href="">
-            <div class="col-lg-6 col-sm-6 navButton">
-              <h3>HIGH SCORES</h3>
-              <p>Checkout the best players.</p>
-            </div>
-          </a>
-          <a href="">
-            <div class="col-lg-6 col-sm-6 navButton">
-              <h3>ABOUT</h3>
-              <p>See the D4NK people behind BYGONE.</p>
-            </div>
-          </a>
+  <body>
+    <div id="loader">
+      <div class="loaderContent">
+        <h1>BYGONE</h1>
+        <div class="spinnerContainer">
+          <div class="spinner"></div>
+          <div class="spinner2"></div>
+          <div class="spinner3"></div>
+        </div>
+        <div class="loaderBar">
         </div>
       </div>
     </div>
-  </nav>
-  <body>
+    <div id="navToggle">
+      <i class="ion-navicon ionOpen buttonActive"></i>
+      <i class="ion-close-round ionClose"></i>
+    </div>
+    <nav id="global">
+      <div class="navContainer">
+        <div class="container-fluid">
+          <div class="row">
+            <a href="#campaign">
+              <div class="col-lg-6 col-sm-6 navButton">
+                <h3>CAMPAIGN</h3>
+                <p>Experience the tradegy of war through the eyes of Matt.</p>
+              </div>
+            </a>
+            <a href="#freeMode">
+              <div class="col-lg-6 col-sm-6 navButton">
+                <h3>FREE MODE</h3>
+                <p>Kill some time in these minigames.</p>
+              </div>
+            </a>
+            <a href="">
+              <div class="col-lg-6 col-sm-6 navButton">
+                <h3>HIGH SCORES</h3>
+                <p>Checkout the best players.</p>
+              </div>
+            </a>
+            <a href="">
+              <div class="col-lg-6 col-sm-6 navButton">
+                <h3>ABOUT</h3>
+                <p>See the D4NK people behind BYGONE.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
     <div id="story">
+      <div id="chapTitle">
+        <p>Chapter 1</p>
+      </div>
       <img id="house" class="background" src="images/oldhouse.jpg">
       <section id="chap1img" class="interact">
         <img id="room" class="background" src="images/room2.jpg">
@@ -70,12 +73,13 @@
         <img id="scraps" class="char" src="images/scraps.png">
         <img id="hand" class="char" src="images/hand.png">
       </section>
-      <section id="chap2img">
-      </section>
-      <section id="chap3img">
-      </section>
-      <section id="chap4img">
-      </section>
+    </div>
+    <div id="back">
+      <a class="game1Link" href="game.Puzzle.html">
+        <div class="gameButton">
+          <p>Start Game</p>
+        </div>
+      </a>
     </div>
     <div id="subspace">
       <section id="chap1sub">
@@ -86,12 +90,6 @@
         <p class="mom">He never made it through the war...</p>
         <p class="son">Dad...</p>
         <p class="son">How did you look like...?</p>
-      </section>
-      <section id="chap2sub">
-      </section>
-      <section id="chap3sub">
-      </section>
-      <section id="chap4sub">
       </section>
     </div>
   </body>
