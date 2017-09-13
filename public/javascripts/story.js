@@ -1,6 +1,8 @@
 var step = 0;
 
 $(document).ready(function(){
+  $(".loaderContent h1").css("font-weight", "900");
+
   $("#chap1sub p").hide();
   $("#chap1img p").hide();
   $("#house").hide();
