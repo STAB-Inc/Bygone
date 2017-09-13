@@ -1,0 +1,33 @@
+ul {
+  list-style: none;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+a {
+  cursor: pointer;
+  color: black;
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    outline: none;
+    color: inherit;
+  }
+}
+
+.close {
+  float: left;
+  color: #9B9B9B;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 1;
+  font-weight: 300;
+  text-shadow: none;
+  &:hover {
+    color: #dadad2;
+    opacity: 1;
+  }
+}

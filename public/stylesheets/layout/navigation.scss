@@ -1,0 +1,80 @@
+nav#global {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  @include transition(0.2s, ease-in-out)
+  .navContainer {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    @include centerXY;
+    @media (max-height: 650px) {
+      height: 100vh;
+      overflow-y: scroll;
+    }
+    .navButton {
+      width: 50%;
+      height: 50%;
+      background-color: red;
+      padding-top: 15%;
+      h3 {
+        font-weight: bold;
+        text-align: center;
+      }
+      p {
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        width: 100%;
+        height: 160px;
+        padding-top: 10%;
+      }
+    }
+    .row {
+      a:nth-child(1) .navButton {
+        background-color: $theme1;
+      }
+      a:nth-child(2) .navButton {
+        background-color: $theme2;
+      }
+      a:nth-child(3) .navButton {
+        background-color: $theme3;
+      }
+      a:nth-child(4) .navButton {
+        background-color: $theme4;
+      }
+    }
+  }
+}
+
+#navToggle {
+  position: fixed;
+  z-index: 11;
+  top: 50px;
+  left: 50px;
+  cursor: pointer;
+
+  i {
+    font-size: 3em;
+    color: white;
+    opacity: 0;
+    pointer-events: none;
+    @include transition(0.2s, ease);
+  }
+  i.ionClose {
+    font-size: 2.5em;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.navOn,
+.buttonActive {
+  opacity: 1 !important;
+  pointer-events: all !important;
+}

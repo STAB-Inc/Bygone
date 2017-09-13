@@ -1,0 +1,132 @@
+#photographyGame {
+  .photo {
+    max-width: 100%;
+  }
+  #map {
+    width:100%;
+    height: 100vh;
+  }
+  .overlay {
+    
+  }
+  #inventory,
+  #loanOverlay,
+  #soldInfoOverlay,
+  #endTurnInfo,
+  #gameEnd,
+  #takingPic  {
+    position: fixed;
+    width: 1000px;
+    height: 800px;
+    @include centerXY;
+    background-color: rgba(0,0,0, 0.8);;
+    padding: 50px;
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    #rollValue,
+    #sellableValue {
+      position: absolute;
+      right: 20px;
+      bottom: 40px;
+    }
+    #sellableValue {
+      bottom: 20px;
+    }
+  }
+  #loanOverlay,
+  #soldInfoOverlay,
+  #endTurnInfo,
+  #gameEnd,
+  #takingPic  {
+    width: 600px;
+    height: 300px;
+  }
+  #takingPic {
+    height: 400px;
+    .shotStats {
+      margin-top: 20px;
+    }
+    .subContainer{
+      padding: 20px 0 35px 0;
+      .bar {
+        width: 100%;
+        height: 5px;
+        background-color: transparent;
+        position: relative;
+        .section {
+          height: 100%;
+          float: left;
+        }
+        .section1 {
+          width: 25%;
+          background-color: red;
+        }
+        .section2 {
+          width: 20%;
+          background-color: #2E4CA9;
+        }
+        .section3 {
+          width: 10%;
+          background-color: #18EB18;
+        }
+        .section4 {
+          width: 20%;
+          background-color: #2E4CA9;
+        }
+        .section5 {
+          width: 25%;
+          background-color: red;
+        }
+        .slider {
+          position: absolute;
+          top: -8px;
+          width: 20px;
+          height: 20px;
+          background-color: rgb(22, 243, 189);;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  #infoOverlay {
+    position: fixed;
+    height: 100vh;
+    width: 400px;
+    background-color: rgba(0,0,0, 0.8);
+    left: 0;
+    top: 0;
+    padding: 50px;
+    h4 {
+      text-align: center;
+    }
+    img {
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+    #description {
+      margin-top: 20px;
+      height: 250px;
+      overflow: auto;
+    }
+    #position {
+      font-weight: 800;
+    }
+    #stats {
+      position:absolute;
+      bottom: 150px;
+      h4 {
+        text-align: left;
+      }
+    }
+    #actions {
+      position: absolute;
+      width: 300px;
+      bottom: 50px;
+      #takePic {
+        display: none;
+      }
+    }
+  }
+}
+

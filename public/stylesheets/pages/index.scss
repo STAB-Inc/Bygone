@@ -1,0 +1,152 @@
+#index {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  main {
+    position: relative;
+    width: 50vw;
+    height: 100vh;
+    z-index: 1;
+    background-color: $trans-const;
+    padding: 100px;
+    .header {
+      display: inline-block;
+      margin-bottom: 50px;
+      h1, h3 {
+        display: inherit;
+      }
+      h1 {
+        padding-right: 15px;
+        border-right: 1px solid $blue-const;
+        @media (max-width: 500px) {
+          font-size: 2em;
+        }
+      }
+      h3 {
+        padding-left: 15px;
+      }
+    }
+    @media (max-width: 1200px) {
+      width: 75vw;
+    }
+    @media (max-width: 800px) {
+      width: 100vw;
+      padding: 50px;
+    }
+    @media (max-width: 500px) {
+      padding: 20px;
+    }
+    .buttons {
+      margin-top: 150px;
+      @media (max-width: 1650px) {
+        margin-top: 100px
+      }
+      @media (max-width: 1300px) {
+        margin-top: 50px
+      }
+    }
+    .buttonContainer {
+      width: 100%;
+      height: 200px;
+      background-color: rgba(0, 0, 0, 0.4);
+      h3 {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        @include centerXY();
+      }
+      @media (max-width: 1200px) {
+        height: 100px;
+      }
+      &:hover {
+        background-color: rgba(122,158,246, 0.5);
+      }
+      @include transition(0.2s, ease);
+    }
+  }
+  
+  section#campaign {
+    width: 100%;
+    height: 100vh;
+    img {
+      top: 100vh;
+    }
+    h3 {
+      text-align: center;
+      margin-bottom: 50px;
+      @media (max-width: 992px) {
+        margin-bottom:  0;
+      }
+    }
+    .chapter {
+      height: 100%;
+      padding: 100px;
+      @media (max-width: 1400px) {
+        padding: 20px;
+      }
+      @media (max-width: 1200px) {
+        padding: 100px;
+      }
+      @media (max-width: 992px) {
+        height: 25%;
+        padding: 20px;
+      }
+      &:hover {
+        background-color: $trans-const;
+      }
+      @include transition(0.2s, ease-out);
+    }
+    .ch1 {
+      background-color: rgba(82, 118, 138, 1);
+    }
+    .ch2 {
+      background-color: rgba(70, 99, 126, 1);
+    }
+    .ch3 {
+      background-color: rgba(57, 70, 88, 1);
+    }
+    .ch4 {
+      background-color: rgba(47, 56, 68, 1);
+    }
+    .stateContainer {
+      height: 25%;
+      position: relative;
+      i {
+        color: white;
+        font-size: 2em;
+        position: absolute;
+        @include centerXY;
+      }
+    }
+    .textContainer {
+      height: 50%;
+    }
+    .unlockContainer {
+      height: 25%;
+      p {
+        font-size: 12px;
+        color: #dadad2;
+        text-align: center;
+        @media (max-width: 992px) {
+          width: 50%;
+          display: inline-block;
+          float: left;
+        }
+      }
+    }
+  }
+  section#freeMode {
+    width: 100%;
+    height: 100vh;
+    background-color: grey;
+  }
+}

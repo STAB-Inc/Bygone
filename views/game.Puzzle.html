@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bygone</title>
+  <meta name="description" content="Bygone - Puzzle Game">
+  <meta name="author" content="STAB Inc.">
+  <meta http-equiv="X-UA-Compatible", content="IE=edge">
+  <meta name="viewport", content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,700" rel="stylesheet">
+  <link href="../public/stylesheets/main_style.css" rel="stylesheet">
+</head>
+<body>
+  <main id="puzzleGame">
+    Abstract Puzzle Game
+    <button id="debug">debug</button>
+    <button class="play debug">play</button>
+    <button id="reset">reset</button>
+    <br>
+    <div id="selectionArea">
+    </div>
+    <div id="gameArea">
+    </div>
+    <div id="tileTemplate"></div>
+    <div id="timer"></div>
+    <div class="winScreen">
+      <div class="close">Close</div>
+      <h3>Correct!</h3>
+      <p class="timeTaken"></p>
+      <img>
+      <p class="soldierName"></p>
+      <p class="soldierDesc"></p>
+      <button class="play">Play Again</button>
+    </div>
+  </main>
+</body>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="../public/javascripts/main_script.js"></script>
+<script src="../public/javascripts/game.base.js"></script>
+<script src="../public/javascripts/game.puzzle.js"></script>
+</html>

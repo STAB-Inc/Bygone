@@ -1,0 +1,128 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bygone</title>
+  <meta name="description" content="Bygone - Photography Game">
+  <meta name="author" content="STAB Inc.">
+  <meta http-equiv="X-UA-Compatible", content="IE=edge">
+  <meta name="viewport", content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,700" rel="stylesheet">
+  <link href="../public/stylesheets/main_style.css" rel="stylesheet">
+</head>
+<body>
+  <main id="photographyGame">
+    <div id="map">
+    </div>
+    <div id="inventory" class="overlay">
+      <div class="close">Close</div>
+      <h4>Camera Roll</h4>
+      <div class="cameraRoll"></div>
+      <h4>Washed Pictures</h4>
+      <div class="washedPics"></div>
+      <p id="rollValue"></p>
+      <p id="sellableValue"></p>
+    </div>
+    <div id="loanOverlay" class="overlay">
+      <h4>Take Loan</h4>
+      <p>Amount</p>
+      <input id="loanInput" type="text">
+      <button id="confirmLoan" class="confirm">Confirm Loan</button>
+      <p id="IR">Current interest rate 1.5%</p>
+      <div class="close">Close</div>
+    </div>
+    <div id="soldInfoOverlay" class="overlay">
+      <h4>Potential Earnings</h4>
+      <p></p>
+      <button id="sellPhotos" class="confirm">Sell Photos</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="endTurnInfo" class="overlay">
+      <h4>End Turn</h4>
+      <p>Washing Photos ends the turn.</p>
+      <button id="confirmEndTurn" class="confirm">End Turn</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="gameEnd" class="overlay">
+      <h4>Game Over</h4>
+      <p></p>
+      <button id="playAgain" class="confirm">Play Again</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="takingPic" class="overlay">
+      <h4>Taking Picture...</h4>
+      <p>Time your shot to take a better quality picture</p>
+      <div class="subContainer">
+        <div class="bar">
+          <div class="section section1"></div>
+          <div class="section section2"></div>
+          <div class="section section3"></div>
+          <div class="section section4"></div>
+          <div class="section section5"></div>
+          <div class="slider">
+          </div>
+        </div>
+      </div>
+      <button class="start">Prep Shot</button>
+      <button class="stop">Take Shot</button>
+      <p class="shotStats"></p>
+      <button class="viewInv">View in Inventory</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="infoOverlay" class="overlay">
+      <div class="container-fluid">
+        <div class="row">
+          <h4 id="title">Location Info</h4>
+        </div>
+        <div class="row">
+          <img src="">
+        </div>
+        <div class="row">
+          <p id="description"></p>
+          <p id="position"></p>
+          <p id="value"></p>
+          <p id="travelExpense"></p>
+        </div>
+        <div class="row" id="stats">
+          <h4><b>Player Stats</b></h4>
+          <p id="CAB">Working Capital:</p>
+          <p id="workingCapital">Working Capital:</p>
+          <p id="assets">Current Assets:</p>
+          <p id="liabilities">Current Liabilities:</p>
+        </div>
+        <div class="row" id="actions">
+          <button id="checkInv">Inventory</button>
+          <button id="endTurn">End Turn</button>
+          <button id="washPic">Wash</button>
+          <button id="sellPic">Sell</button>
+          <button id="takeLoan">Take Loan</button>
+          <button id="takePic">Take Picture</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="../public/javascripts/main_script.js"></script>
+<script src="../public/javascripts/game.base.js"></script>
+<script>
+  googleMap = null
+  function initMap(){
+    return googleMap = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: {
+        lat: -27.4698,
+        lng: 153.0251
+      },
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false
+    });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>
+<script src="../public/javascripts/game.photography.js"></script>
+</html>

@@ -1,0 +1,12 @@
+{
+  "liveSassCompile.settings.savePath": "/public/stylesheets",
+  "liveSassCompile.settings.format": "expanded",
+  "liveSassCompile.settings.extensionName" : ".css",
+  "liveSassCompile.settings.excludeList": [
+     "**/node_modules/**",
+     ".vscode/**"
+  ],
+  "liveSassCompile.settings.includeItems": [
+    "public/stylesheets/main_style.scss"
+  ]
+}
