@@ -3,112 +3,18 @@ body{
   background-color:rgba(20,20,20,1);
 }
 
-#navBar{
-  text-align: center;
-  height: 15%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  position: fixed;
-  z-index: 10;
-}
-
-#title{
-  position: fixed;
-  width: 100%;
-  top: 4%;
-  margin: 0;
-  color: white;
-  font-family: "Raleway", sans-serif;
-  font-weight: 900;
-  font-size: 3em;
-}
-
-#navTab{
-  position: fixed;
-  top: 3%;
-  right: -510px;
-  font-family: "Quicksand";
-  font-size: 1.1em;
-  background-color: rgba(70, 60, 60, 0.3);
-  border-radius: 5px;
-  color: white;
-}
-
-#navTab td{
-  height: 60px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-div.open{
-  height: 58px;
-  line-height: 58px;
-  padding-bottom: 2px;
-  border-radius: 5px;
-  text-align: center;
-  color: black;
-  width: 30px;
-  font-weight: bold;
-  background-color: rgba(255, 255, 255, 0.6);
-}
-
-div.open:hover{
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.8)
-}
-
-td.button{
-  border: 0px;
-  border-left: 2px solid rgba(122,158,246, 1);
-  display: inline-block;
-  transition: all 0.3s;
-  transition-property: background-color, border, font-size;
-}
-
-#navTab td:hover{
-  font-size:1.5em;
-  border-left: 2px solid rgba(122,158,246, 0);
-}
-
-#navTab td.button:hover{
-  background-color: rgba(122,158,246, 0.6);
-  color: white;
-
-}
-
-#navTab a:link{
-  color: inherit;
-  text-decoration: none;
-  padding-left: 20px;
-  padding-right: 20px;
-  display: block;
-  line-height: 60px;
-}
-
-#navTab a:visited{
-  color: inherit;
-}
-
-#navTab a:hover{
-  color: inherit;
-  cursor: pointer;
-}
-
-#navTab a:active{
-  color: inherit;
-}
-
 #story {
   display: block;
   position: fixed;
-  height: 75%;
+  height: 100%;
   width: 100%;
-  top: 15%;
+  top: 0;
   left: 0;
   background-color: rgba(70, 60, 60, 0.3);
+}
+
+#story img:hover{
+  cursor: pointer;
 }
 
 .interact{
@@ -116,10 +22,8 @@ td.button{
 }
 
 img.background{
-  display: block;
   position: fixed;
-  height: 75%;
-  top: 15%;
+  height: 100%;
   left: 50%;
   transform: translate(-50%);
 }
@@ -130,15 +34,15 @@ img.char{
 }
 
 #mother{
-  height: 40%;
-  bottom: 10%;
+  height: 50%;
+  bottom: 0;
   left: 50%;
   transform: translate(-30%);
 }
 
 #son{
-  height: 20%;
-  bottom: 10%;
+  height: 25%;
+  bottom: 0;
   left: 40%;
   transform: translate(-60%);
 }
@@ -151,39 +55,42 @@ img.char{
 }
 
 #hand{
-  height: 50%;
-  top: 70%;
+  height: 60%;
+  top: 75%;
   left: 60%;
   transform: translate(-50%);
-}
-
-#subspace p{
-  display: block;
-  position: fixed;
-  text-align: center;
-  font-family: "Indie Flower";
-  font-size: 2.4em;
-  top: 87%;
-  width: 100%;
-}
-
-p.son{
-  color: #99ffff;
-  /*left: 40%;
-  transform: translate(-60%);*/
-}
-
-p.mom{
-  color: #ff9999;
 }
 
 #subspace{
   display: block;
   position: fixed;
-  top: 90%;
-  height: 10%;
   width: 100%;
+  height: 15%;
+  top: 85%;
   left: 0;
+  text-align: center;
+}
+
+#subspace p{
+  position: absolute;
+  text-align: center;
+  font-family: "Open Sans";
+  font-size: 2.4em;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  vertical-align: middle;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%)
+}
+
+p.son{
+  color: #99ffff;
+}
+
+p.mom{
+  color: #ff9999;
 }
 
 #subbackground{

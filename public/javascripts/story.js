@@ -1,20 +1,6 @@
 var step = 0;
 
 $(document).ready(function(){
-  $(".open").click(function(){
-    $("#navTab").animate({right: 0});
-    $(".open").text(">");
-  });
-
-  /*$("#navTab").mouseenter(function(){
-    $("#navTab").animate({right: 0});
-  });*/
-
-  $("#navTab").mouseleave(function(){
-    $("#navTab").animate({right: "-510px"});
-    $(".open").text("<");
-  });
-
   $("#chap1sub p").hide();
   $("#chap1img p").hide();
   $("#house").hide();
@@ -36,7 +22,7 @@ $(document).ready(function(){
     $("#mother").delay(1500).fadeIn(1000,"linear");
   });
 
-  $("#chap1img").click(function(){
+  $("#chap1img img").click(function(){
     step = step + 1;
     if(step == 1){
       $("#son").fadeIn(500,"linear");
@@ -80,6 +66,5 @@ $(document).ready(function(){
       $("#hand").fadeIn({queue: false, duration: 2500});
       $("#hand").animate({top: "45%"}, 3000);
     }
-
   });
 });
