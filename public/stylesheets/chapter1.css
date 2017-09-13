@@ -98,3 +98,7 @@ p.mom{
   width: 100%;
   position: relative;
 }
+
+.navButton {
+  height: 300px !important;
+}
