@@ -5,6 +5,7 @@
 
   jQuery(document).ready(function() {
     var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameTime, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
+    $('#takePic').hide();
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -167,6 +168,7 @@
         while (this.dateCounter >= 30) {
           this.incrementMonths(1);
           this.dateCounter -= 30;
+          endTurn(this.getFormatted());
           if (this.dateCounter < 30) {
             this.dateCounter = this.dateCounter % 30;
             break;
@@ -376,16 +378,14 @@
       }
       return results;
     };
-    endTurn = function() {
-      var endTurnEvent, j, len, newStats, results;
+    endTurn = function(date) {
+      var j, len, newStats, results;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
       mark.updateStats(newStats);
-      gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime);
-      endTurnEvent = new event('The month comes to an end.', gameTime.getFormatted(), 'Paid $' + mark.stats.liabilities + ' in expenses');
-      gameEvents.addEvent(endTurnEvent);
+      gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses'));
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
@@ -402,6 +402,7 @@
       $('#takingPic .shotStats').hide();
       $('#takingPic').show();
       $('#takingPic .viewInv').hide();
+      $('#takingPic .close').hide();
       return $(this).hide();
     });
     addShotToInv = function(multiplier) {
@@ -426,6 +427,7 @@
     $('#takingPic .stop').click(function() {
       $(this).prop('disabled', true);
       $('#takingPic .slider').stop();
+      $('#takingPic .close').show();
       return calculatePicValue();
     });
     calculatePicValue = function() {
@@ -475,26 +477,39 @@
       $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
-    $('#endTurn').click(function() {
-      $('#endTurnInfo p').text('End this month?');
-      return $('#endTurnInfo').show();
+    $('#wait').click(function() {
+      return $('#waitInfo').show();
     });
-    $('#confirmEndTurn').click(function() {
-      return endTurn();
+    $('#confirmWait').click(function() {
+      gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
+      return gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days'));
     });
     $('#washPic').click(function() {
-      var item, j, len, ref;
-      if (mark.inventory.length === 0) {
+      var item, j, k, len, len1, notWashed, ref, ref1;
+      notWashed = [];
+      ref = mark.inventory;
+      for (j = 0, len = ref.length; j < len; j++) {
+        item = ref[j];
+        if (!item.washed) {
+          notWashed.push(item);
+        }
+      }
+      if (notWashed.length === 0) {
         return alert('There are no pictures to wash');
       } else {
-        ref = mark.inventory;
-        for (j = 0, len = ref.length; j < len; j++) {
-          item = ref[j];
+        ref1 = mark.inventory;
+        for (k = 0, len1 = ref1.length; k < len1; k++) {
+          item = ref1[k];
           item.washed = true;
         }
-        $('#endTurnInfo p').text('Washing photos ends this month. End this month?');
-        return $('#endTurnInfo').show();
+        $('#washPicOverlay p').text('Washing photos takes ' + gameGlobal.turnConsts.pictureWashingTime + ' days. Proceed?');
+        return $('#washPicOverlay').show();
       }
+    });
+    $('#confirmWashPic').click(function() {
+      gameTime.incrementTime(10 * Math.random());
+      gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime);
+      return gameEvents.addEvent(new event('Washed pictures.', gameTime.getFormatted(), 'You wash all pictures in your camera.'));
     });
     $('#takeLoan').click(function() {
       $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');

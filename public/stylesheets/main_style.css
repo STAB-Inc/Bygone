@@ -7623,8 +7623,8 @@ main#puzzleGame .winScreen p {
 #photographyGame #loanOverlay #sellableValue,
 #photographyGame #soldInfoOverlay #rollValue,
 #photographyGame #soldInfoOverlay #sellableValue,
-#photographyGame #endTurnInfo #rollValue,
-#photographyGame #endTurnInfo #sellableValue,
+#photographyGame #waitInfo #rollValue,
+#photographyGame #waitInfo #sellableValue,
 #photographyGame #gameEnd #rollValue,
 #photographyGame #gameEnd #sellableValue,
 #photographyGame #takingPic #rollValue,
@@ -7637,7 +7637,7 @@ main#puzzleGame .winScreen p {
 #photographyGame #inventory #sellableValue,
 #photographyGame #loanOverlay #sellableValue,
 #photographyGame #soldInfoOverlay #sellableValue,
-#photographyGame #endTurnInfo #sellableValue,
+#photographyGame #waitInfo #sellableValue,
 #photographyGame #gameEnd #sellableValue,
 #photographyGame #takingPic #sellableValue {
   bottom: 20px;
@@ -7645,9 +7645,10 @@ main#puzzleGame .winScreen p {
 
 #photographyGame #loanOverlay,
 #photographyGame #soldInfoOverlay,
-#photographyGame #endTurnInfo,
+#photographyGame #waitInfo,
 #photographyGame #gameEnd,
-#photographyGame #takingPic {
+#photographyGame #takingPic,
+#photographyGame #washPicOverlay {
   width: 600px;
   height: 300px;
 }

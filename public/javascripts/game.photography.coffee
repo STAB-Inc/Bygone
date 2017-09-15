@@ -1,5 +1,7 @@
 jQuery(document).ready ->
 
+  $('#takePic').hide()
+
   deg2rad = (deg) ->
     return deg * (Math.PI/180)
 
@@ -119,6 +121,7 @@ jQuery(document).ready ->
       while @dateCounter >= 30
         @incrementMonths(1)
         @dateCounter -= 30
+        endTurn(@getFormatted())
         if @dateCounter < 30
           @dateCounter = @dateCounter % 30
           break
@@ -249,15 +252,13 @@ jQuery(document).ready ->
       if hide
         location.marker.setVisible(false)
 
-  endTurn = ->
+  endTurn = (date) ->
     gameGlobal.trackers.monthPassed += 1
     gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
-    gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime) # Two weeks
-    endTurnEvent = new event 'The month comes to an end.', gameTime.getFormatted(), 'Paid $' + mark.stats.liabilities + ' in expenses'
-    gameEvents.addEvent(endTurnEvent)
+    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses')
     for location in locations
       location.marker.setVisible(true)
   
@@ -270,6 +271,7 @@ jQuery(document).ready ->
     $('#takingPic .shotStats').hide()
     $('#takingPic').show()
     $('#takingPic .viewInv').hide()
+    $('#takingPic .close').hide()
     $(this).hide()
     
   addShotToInv = (multiplier) ->
@@ -293,6 +295,7 @@ jQuery(document).ready ->
   $('#takingPic .stop').click ->
     $(this).prop 'disabled', true
     $('#takingPic .slider').stop()
+    $('#takingPic .close').show()
     calculatePicValue()
       
   calculatePicValue = ->
@@ -335,21 +338,29 @@ jQuery(document).ready ->
     $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
 
-  $('#endTurn').click ->
-    $('#endTurnInfo p').text 'End this month?'
-    $('#endTurnInfo').show()
+  $('#wait').click ->
+    $('#waitInfo').show()
 
-  $('#confirmEndTurn').click ->
-    endTurn()
+  $('#confirmWait').click ->
+    gameTime.incrementDays(parseInt($('#waitTimeInput').val()))
+    gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days')
 
   $('#washPic').click ->
-    if mark.inventory.length == 0
+    notWashed = []
+    for item in mark.inventory
+      if !item.washed then notWashed.push(item)
+    if notWashed.length == 0
       alert('There are no pictures to wash')
     else
       for item in mark.inventory
         item.washed = true
-      $('#endTurnInfo p').text 'Washing photos ends this month. End this month?'
-      $('#endTurnInfo').show()
+      $('#washPicOverlay p').text 'Washing photos takes ' + gameGlobal.turnConsts.pictureWashingTime + ' days. Proceed?'
+      $('#washPicOverlay').show()
+
+  $('#confirmWashPic').click ->
+    gameTime.incrementTime(10*Math.random())
+    gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime)
+    gameEvents.addEvent(new event 'Washed pictures.', gameTime.getFormatted(), 'You wash all pictures in your camera.' )
 
   $('#takeLoan').click ->
     $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%')

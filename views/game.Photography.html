@@ -40,12 +40,20 @@
         <button id="sellPhotos" class="confirm">Sell Photos</button>
         <div class="close">Close</div>
       </div>
-      <div id="endTurnInfo" class="overlay">
-        <h4>End Turn</h4>
-        <p>Washing Photos ends the turn.</p>
-        <button id="confirmEndTurn" class="confirm">End Turn</button>
+      <div id="waitInfo" class="overlay">
+        <h4>Wait some time...</h4>
+        <p>Wait how many days?</p>
+        <input id="waitTimeInput" type="text">
+        <button id="confirmWait" class="confirm">Wait</button>
         <div class="close">Close</div>
       </div>
+      <div id="washPicOverlay" class="overlay">
+        <h4>Wash Pictures</h4>
+        <p></p>
+        <button id="confirmWashPic" class="confirm">Proceed</button>
+        <div class="close">Close</div>
+      </div>
+      
       <div id="gameEnd" class="overlay">
         <h4>Game Over</h4>
         <p></p>
@@ -76,7 +84,7 @@
     <div class="row" id="actions">
       <p>Actions (Hold to reposition)</p>
       <button id="checkInv">Inventory</button>
-      <button id="endTurn">End Turn</button>
+      <button id="wait">Wait</button>
       <button id="washPic">Wash</button>
       <button id="sellPic">Sell</button>
       <button id="takeLoan">Take Loan</button>

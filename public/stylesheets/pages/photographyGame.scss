@@ -37,7 +37,7 @@
   #inventory,
   #loanOverlay,
   #soldInfoOverlay,
-  #endTurnInfo,
+  #waitInfo,
   #gameEnd,
   #takingPic  {
     #rollValue,
@@ -52,9 +52,10 @@
   }
   #loanOverlay,
   #soldInfoOverlay,
-  #endTurnInfo,
+  #waitInfo,
   #gameEnd,
-  #takingPic  {
+  #takingPic,
+  #washPicOverlay  {
     width: 600px;
     height: 300px;
   }
