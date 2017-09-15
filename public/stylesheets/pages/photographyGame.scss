@@ -164,6 +164,10 @@
     top: 350px;
     height: 375px;
     overflow-y: auto;
+    .row {
+      border-bottom: 1px solid white;
+      padding-top: 5px;
+    }
     p {
       display: inline-block;
     }

@@ -7793,6 +7793,11 @@ main#puzzleGame .winScreen p {
   overflow-y: auto;
 }
 
+#photographyGame #eventLog .row {
+  border-bottom: 1px solid white;
+  padding-top: 5px;
+}
+
 #photographyGame #eventLog p {
   display: inline-block;
 }
