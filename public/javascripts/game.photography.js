@@ -69,7 +69,7 @@
           $('#locationInfoOverlay #position').text('Distance away ' + travelDistance + 'km');
           $('#locationInfoOverlay #value').text('Potential Revenue $' + self.value);
           $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((travelDistance * 0.6) / 10));
-          $('#locationInfoOverlay #travelTime').text('Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours');
+          $('#locationInfoOverlay #travelTime').text('Travel Time: at least ' + travelTime.toFixed(2) + ' Hours');
           return this.value = self.value;
         });
       };
@@ -103,7 +103,7 @@
       };
 
       player.prototype.moveTo = function(location) {
-        var newStats;
+        var newStats, timeTaken;
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -111,8 +111,9 @@
         this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
         newStats = this.stats;
         newStats.CAB -= mark.playerAt.travelExpense;
-        gameTime.incrementTime(location.travelTime);
-        gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name));
+        timeTaken = location.travelTime + Math.random() * 5;
+        gameTime.incrementTime(timeTaken);
+        gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
         $('#takePic').show();
         updateMarkers();
         return this.updateStats(newStats);

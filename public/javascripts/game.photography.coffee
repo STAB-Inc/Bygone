@@ -56,7 +56,7 @@ jQuery(document).ready ->
         $('#locationInfoOverlay #position').text 'Distance away ' + travelDistance + 'km'
         $('#locationInfoOverlay #value').text 'Potential Revenue $' + self.value
         $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((travelDistance*0.6)/10)
-        $('#locationInfoOverlay #travelTime').text 'Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours'
+        $('#locationInfoOverlay #travelTime').text 'Travel Time: at least ' + travelTime.toFixed(2) + ' Hours'
         @value = self.value
 
   class player extends location
@@ -83,8 +83,9 @@ jQuery(document).ready ->
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
       newStats = @stats
       newStats.CAB -= mark.playerAt.travelExpense
-      gameTime.incrementTime(location.travelTime)
-      gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name)
+      timeTaken = location.travelTime + Math.random()*5
+      gameTime.incrementTime(timeTaken)
+      gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours')
       $('#takePic').show()
       updateMarkers()
       @updateStats(newStats)
