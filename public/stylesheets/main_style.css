@@ -7599,7 +7599,7 @@ main#puzzleGame .winScreen p {
   display: none;
   overflow-x: hidden;
   overflow-y: auto;
-  z-index: 6;
+  z-index: 7;
 }
 
 #photographyGame #blockOverlay {
@@ -7609,7 +7609,7 @@ main#puzzleGame .winScreen p {
   background: radial-gradient(black 15%, transparent 16%) 0 0, radial-gradient(black 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
   background-color: #282828;
   background-size: 16px 16px;
-  z-index: 5;
+  z-index: 6;
   top: 0;
   opacity: 0.4;
   display: none;
@@ -7700,52 +7700,94 @@ main#puzzleGame .winScreen p {
   border-radius: 10px;
 }
 
-#photographyGame #infoOverlay {
+#photographyGame #playerInfoOverlay,
+#photographyGame #locationInfoOverlay,
+#photographyGame #actions,
+#photographyGame #eventLog {
   position: fixed;
-  height: 100vh;
+  height: 215px;
   width: 400px;
   background-color: rgba(0, 0, 0, 0.8);
-  left: 0;
-  top: 0;
-  padding: 50px;
+  left: 20px;
+  bottom: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  z-index: 5;
 }
 
-#photographyGame #infoOverlay h4 {
-  text-align: center;
-}
-
-#photographyGame #infoOverlay img {
+#photographyGame #playerInfoOverlay img,
+#photographyGame #locationInfoOverlay img,
+#photographyGame #actions img,
+#photographyGame #eventLog img {
   margin-left: 50%;
   transform: translateX(-50%);
 }
 
-#photographyGame #infoOverlay #description {
+#photographyGame #playerInfoOverlay #description,
+#photographyGame #locationInfoOverlay #description,
+#photographyGame #actions #description,
+#photographyGame #eventLog #description {
   margin-top: 20px;
-  height: 250px;
   overflow: auto;
 }
 
-#photographyGame #infoOverlay #position {
+#photographyGame #playerInfoOverlay #position,
+#photographyGame #locationInfoOverlay #position,
+#photographyGame #actions #position,
+#photographyGame #eventLog #position {
   font-weight: 800;
 }
 
-#photographyGame #infoOverlay #stats {
-  position: absolute;
-  bottom: 150px;
-}
-
-#photographyGame #infoOverlay #stats h4 {
+#photographyGame #playerInfoOverlay #stats h4,
+#photographyGame #locationInfoOverlay #stats h4,
+#photographyGame #actions #stats h4,
+#photographyGame #eventLog #stats h4 {
   text-align: left;
 }
 
-#photographyGame #infoOverlay #actions {
+#photographyGame #playerInfoOverlay #actions,
+#photographyGame #locationInfoOverlay #actions,
+#photographyGame #actions #actions,
+#photographyGame #eventLog #actions {
   position: absolute;
-  width: 300px;
+  width: 270px;
   bottom: 50px;
 }
 
-#photographyGame #infoOverlay #actions #takePic {
+#photographyGame #playerInfoOverlay #actions #takePic,
+#photographyGame #locationInfoOverlay #actions #takePic,
+#photographyGame #actions #actions #takePic,
+#photographyGame #eventLog #actions #takePic {
   display: none;
+}
+
+#photographyGame #locationInfoOverlay {
+  height: 300px;
+  top: 20px;
+}
+
+#photographyGame #locationInfoOverlay .locationInfo {
+  height: 100px;
+}
+
+#photographyGame #actions {
+  width: auto;
+  height: 100px;
+  position: fixed;
+  top: 20px;
+  left: 500px;
+  padding: 10px;
+  z-index: 5;
+}
+
+#photographyGame #actions p {
+  text-align: center;
+}
+
+#photographyGame #eventLog {
+  top: 350px;
+  height: 375px;
+  overflow-y: auto;
 }
  
 

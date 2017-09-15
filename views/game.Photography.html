@@ -73,39 +73,47 @@
         <div class="close">Close</div>
       </div>
     </div>
-    <div id="infoOverlay">
+    <div class="row" id="actions">
+      <p>Actions (Hold to reposition)</p>
+      <button id="checkInv">Inventory</button>
+      <button id="endTurn">End Turn</button>
+      <button id="washPic">Wash</button>
+      <button id="sellPic">Sell</button>
+      <button id="takeLoan">Take Loan</button>
+      <button id="takePic">Take Picture</button>
+    </div>
+    <div id="locationInfoOverlay">
       <div class="container-fluid">
-        <div class="row">
-          <h4 id="title">Location Info</h4>
+        <div class="row locationInfo">
+          <h4>Location Info</h4>
+          <p id="title"></p>
         </div>
-        <div class="row">
-          <img src="">
-        </div>
-        <div class="row">
+        <div class="row locationStats">
           <p id="description"></p>
           <p id="position"></p>
           <p id="value"></p>
           <p id="travelExpense"></p>
         </div>
+      </div>
+    </div>
+    <div id="eventLog">
+      <h4>Event Log</h4>
+    </div>
+    <div id="playerInfoOverlay">
+      <div class="container-fluid">
         <div class="row" id="stats">
-          <h4><b>Player Stats</b></h4>
-          <p id="CAB">Working Capital:</p>
+          <h4>Player Stats</h4>
+          <p id="CAB">Cash at Bank:</p>
           <p id="workingCapital">Working Capital:</p>
           <p id="assets">Current Assets:</p>
           <p id="liabilities">Current Liabilities:</p>
         </div>
-        <div class="row" id="actions">
-          <button id="checkInv">Inventory</button>
-          <button id="endTurn">End Turn</button>
-          <button id="washPic">Wash</button>
-          <button id="sellPic">Sell</button>
-          <button id="takeLoan">Take Loan</button>
-          <button id="takePic">Take Picture</button>
-        </div>
       </div>
     </div>
+
   </main>
 </body>
+
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>

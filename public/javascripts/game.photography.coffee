@@ -45,12 +45,12 @@ jQuery(document).ready ->
         mark.moveTo(self)
 
       marker.addListener 'mouseover', ->
-        $('#infoOverlay img').attr 'src', self.data.img
-        $('#infoOverlay #title').text self.data.title
-        $('#infoOverlay #description').text self.data.description
-        $('#infoOverlay #position').text 'Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km'
-        $('#infoOverlay #value').text 'Potential Revenue $' + self.value
-        $('#infoOverlay #travelExpense').text 'Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position)*0.6)/10)
+        #$('#locationInfoOverlay img').attr 'src', self.data.img
+        $('#locationInfoOverlay #title').text self.data.title
+        #$('#locationInfoOverlay #description').text self.data.description
+        $('#locationInfoOverlay #position').text 'Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km'
+        $('#locationInfoOverlay #value').text 'Potential Revenue $' + self.value
+        $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position)*0.6)/10)
         @value = self.value
 
   class player extends location
@@ -86,10 +86,10 @@ jQuery(document).ready ->
       @stats = stats
       assets = parseInt(@stats.assets + @stats.CAB)
       workingCapital = parseInt(assets - @stats.liabilities)
-      $('#infoOverlay #stats #CAB').text 'Cash at Bank $' + parseInt(@stats.CAB)
-      $('#infoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
-      $('#infoOverlay #stats #assets').text 'Current Assets $' + assets
-      $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + workingCapital
+      $('#playerInfoOverlay #stats #CAB').text 'Cash at Bank $' + parseInt(@stats.CAB)
+      $('#playerInfoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
+      $('#playerInfoOverlay #stats #assets').text 'Current Assets $' + assets
+      $('#playerInfoOverlay #stats #workingCapital').text 'Working Capital $' + workingCapital
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
@@ -323,4 +323,10 @@ jQuery(document).ready ->
   closeParent = (self) ->
     $(self).parent().hide()
     $('#blockOverlay').hide()
+
+  $('#actions').draggable()
+
+  $('#actions').mousedown ->
+    $('#actions p').text 'Actions'
+    
   return

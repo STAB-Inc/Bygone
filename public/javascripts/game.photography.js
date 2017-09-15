@@ -60,12 +60,10 @@
           return mark.moveTo(self);
         });
         return marker.addListener('mouseover', function() {
-          $('#infoOverlay img').attr('src', self.data.img);
-          $('#infoOverlay #title').text(self.data.title);
-          $('#infoOverlay #description').text(self.data.description);
-          $('#infoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
-          $('#infoOverlay #value').text('Potential Revenue $' + self.value);
-          $('#infoOverlay #travelExpense').text('Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position) * 0.6) / 10));
+          $('#locationInfoOverlay #title').text(self.data.title);
+          $('#locationInfoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
+          $('#locationInfoOverlay #value').text('Potential Revenue $' + self.value);
+          $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position) * 0.6) / 10));
           return this.value = self.value;
         });
       };
@@ -116,10 +114,10 @@
         this.stats = stats;
         assets = parseInt(this.stats.assets + this.stats.CAB);
         workingCapital = parseInt(assets - this.stats.liabilities);
-        $('#infoOverlay #stats #CAB').text('Cash at Bank $' + parseInt(this.stats.CAB));
-        $('#infoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
-        $('#infoOverlay #stats #assets').text('Current Assets $' + assets);
-        $('#infoOverlay #stats #workingCapital').text('Working Capital $' + workingCapital);
+        $('#playerInfoOverlay #stats #CAB').text('Cash at Bank $' + parseInt(this.stats.CAB));
+        $('#playerInfoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
+        $('#playerInfoOverlay #stats #assets').text('Current Assets $' + assets);
+        $('#playerInfoOverlay #stats #workingCapital').text('Working Capital $' + workingCapital);
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
           return endGame();
         }
@@ -438,6 +436,10 @@
       $(self).parent().hide();
       return $('#blockOverlay').hide();
     };
+    $('#actions').draggable();
+    $('#actions').mousedown(function() {
+      return $('#actions p').text('Actions');
+    });
   });
 
 }).call(this);
