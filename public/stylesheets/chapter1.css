@@ -82,6 +82,13 @@ img.char{
   transform: translate(-50%);
 }
 
+#mattBack{
+  height: 40%;
+  bottom: 0;
+  left: 60%;
+  transform: translate(-30%);
+}
+
 div#back{
   display: block;
   position: fixed;
@@ -141,6 +148,14 @@ p.son{
 
 p.mom{
   color: #ff9999;
+}
+
+p.matt{
+  color: #83c4f7;
+}
+
+p.officer{
+  color: #c18a6c;
 }
 
 .navButton {
