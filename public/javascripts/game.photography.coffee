@@ -19,7 +19,7 @@ jQuery(document).ready ->
     return dist;
 
   class location
-    constructor: (@position, @name, @data, @icon) ->
+    constructor: (@position, @name, @data, @rare, @icon ) ->
       @marker
       @value
       @travelExpense
@@ -69,7 +69,7 @@ jQuery(document).ready ->
       @playerMarker = new google.maps.Marker({
         position: @position,
         map: map,
-        icon: @icon,
+        icon: 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png',
         title: @name,
         optimized: false,
         zIndex: 100
@@ -156,14 +156,20 @@ jQuery(document).ready ->
 
     addEvent: (event) ->
       @events.push(event)
-      $('<div class="row">
-        <p class="time">' + event.time + '</p>
-        <p class="title">' + event.title + '</p>
-        <p class="content">' + event.content + '</p>
-      </div>').prependTo(@domSelector)
-
+      if event.special
+        $('<div class="row">
+          <p class="time special">' + event.time + '</p>
+          <p class="title special">' + event.title + '</p>
+          <p class="content special">' + event.content + '</p>
+        </div>').prependTo(@domSelector)
+      else 
+        $('<div class="row">
+          <p class="time">' + event.time + '</p>
+          <p class="title">' + event.title + '</p>
+          <p class="content">' + event.content + '</p>
+        </div>').prependTo(@domSelector)
   class event
-    constructor: (@title, @time, @content) ->
+    constructor: (@title, @time, @content, @special=false) ->
 
   class photo
     constructor: (@value, @washed, @img, @title) ->
@@ -230,7 +236,7 @@ jQuery(document).ready ->
     for place in data
       lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
       lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
-      marker[i] = new location {lat, lng}, place['dcterms:spatial'].split(';')[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}
+      marker[i] = new location {lat, lng}, place['dcterms:spatial'].split(';')[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}, false
       marker[i].addTo(googleMap)
       locations.push(marker[i])
       setValue(marker[i])
@@ -242,6 +248,7 @@ jQuery(document).ready ->
     rare = Math.random() <= 0.1;
     if rare
       location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100))
+      location.rare = true
     else
       location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
 
@@ -258,7 +265,7 @@ jQuery(document).ready ->
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
-    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses')
+    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
     for location in locations
       show = Math.random() > 0.2
       if show
@@ -319,6 +326,7 @@ jQuery(document).ready ->
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes '+ timeTaken + ' hours.')
+    if mark.playerAt.rare then gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
 
   $('.viewInv').click ->
     closeParent(this)

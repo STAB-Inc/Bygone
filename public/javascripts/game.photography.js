@@ -24,10 +24,11 @@
       return dist;
     };
     location = (function() {
-      function location(position, name, data1, icon) {
+      function location(position, name, data1, rare1, icon) {
         this.position = position;
         this.name = name;
         this.data = data1;
+        this.rare = rare1;
         this.icon = icon;
         this.marker;
         this.value;
@@ -95,7 +96,7 @@
         return this.playerMarker = new google.maps.Marker({
           position: this.position,
           map: map,
-          icon: this.icon,
+          icon: 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png',
           title: this.name,
           optimized: false,
           zIndex: 100
@@ -230,17 +231,22 @@
 
       eventManager.prototype.addEvent = function(event) {
         this.events.push(event);
-        return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').prependTo(this.domSelector);
+        if (event.special) {
+          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').prependTo(this.domSelector);
+        } else {
+          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').prependTo(this.domSelector);
+        }
       };
 
       return eventManager;
 
     })();
     event = (function() {
-      function event(title, time, content) {
+      function event(title, time, content, special) {
         this.title = title;
         this.time = time;
         this.content = content;
+        this.special = special != null ? special : false;
       }
 
       return event;
@@ -346,7 +352,7 @@
           'title': place['dc:title'],
           'description': place['dc:description'],
           'img': place['150_pixel_jpg']
-        });
+        }, false);
         marker[i].addTo(googleMap);
         locations.push(marker[i]);
         setValue(marker[i]);
@@ -358,7 +364,8 @@
       var rare;
       rare = Math.random() <= 0.1;
       if (rare) {
-        return location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+        location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+        return location.rare = true;
       } else {
         return location.value = parseInt((Math.random() * distanceTravelled(mark.position, location.position) + 100) / 10);
       }
@@ -385,7 +392,7 @@
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
       mark.updateStats(newStats);
-      gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses'));
+      gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
@@ -455,7 +462,10 @@
       addShotToInv(multiplier);
       timeTaken = Math.floor(Math.random() * 10) + 24;
       gameTime.incrementTime(timeTaken);
-      return gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes ' + timeTaken + ' hours.'));
+      gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes ' + timeTaken + ' hours.'));
+      if (mark.playerAt.rare) {
+        return gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
+      }
     };
     $('.viewInv').click(function() {
       closeParent(this);

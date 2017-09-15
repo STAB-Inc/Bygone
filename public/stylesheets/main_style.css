@@ -7805,6 +7805,10 @@ main#puzzleGame .winScreen p {
 #photographyGame #eventLog p.time {
   display: block;
 }
+
+#photographyGame #eventLog .title.special {
+  color: #7A9EF6;
+}
  
 
  /*# sourceMappingURL= main_style.css.map */
