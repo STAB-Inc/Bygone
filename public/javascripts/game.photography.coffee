@@ -93,6 +93,21 @@ jQuery(document).ready ->
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
+  class eventManager
+    constructor : (@domSelector) ->
+      @events = []
+
+    addEvent: (event) ->
+      @events.push(event)
+      $('<div class="row">
+        <p class="time">' + event.time + '</p>
+        <p class="time">' + event.title + '</p>
+        <p class="time">' + event.content + '</p>
+      </div>').appendTo(@domSelector)
+
+  class event
+    constructor: (@title, @time, @content) ->
+
   class photo
     constructor: (@value, @washed, @img, @title) ->
 
@@ -118,6 +133,10 @@ jQuery(document).ready ->
   #Game Globals
   currentGame = new photographyGame false
   currentGame.init()
+
+  gameEvents = new eventManager $('#eventLog .eventContainer')
+  test = new event 'test', 'today', 'memes'
+  gameEvents.addEvent(test)
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)

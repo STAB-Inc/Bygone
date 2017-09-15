@@ -7276,6 +7276,8 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
 }
 
 #index img {
+  width: 100%;
+  height: 100%;
   position: absolute;
   left: 0;
   top: 0;
@@ -7788,6 +7790,14 @@ main#puzzleGame .winScreen p {
   top: 350px;
   height: 375px;
   overflow-y: auto;
+}
+
+#photographyGame #eventLog p {
+  display: inline-block;
+}
+
+#photographyGame #eventLog p.content {
+  display: block;
 }
  
 

@@ -163,6 +163,12 @@
     top: 350px;
     height: 375px;
     overflow-y: auto;
+    p {
+      display: inline-block;
+    }
+    p.content {
+      display: block;
+    }
   }
 }
 

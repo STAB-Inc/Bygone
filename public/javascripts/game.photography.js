@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, test, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -60,10 +60,14 @@
           return mark.moveTo(self);
         });
         return marker.addListener('mouseover', function() {
+          var travelDistance, travelTime;
           $('#locationInfoOverlay #title').text(self.data.title);
-          $('#locationInfoOverlay #position').text('Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km');
+          travelDistance = parseInt(distanceTravelled(mark.position, self.position));
+          $('#locationInfoOverlay #position').text('Distance away ' + travelDistance + 'km');
           $('#locationInfoOverlay #value').text('Potential Revenue $' + self.value);
-          $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position) * 0.6) / 10));
+          $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((travelDistance * 0.6) / 10));
+          travelTime = travelDistance / 232;
+          $('#locationInfoOverlay #travelTime').text('Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours');
           return this.value = self.value;
         });
       };
@@ -126,6 +130,30 @@
       return player;
 
     })(location);
+    eventManager = (function() {
+      function eventManager(domSelector) {
+        this.domSelector = domSelector;
+        this.events = [];
+      }
+
+      eventManager.prototype.addEvent = function(event) {
+        this.events.push(event);
+        return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="time">' + event.title + '</p> <p class="time">' + event.content + '</p> </div>').appendTo(this.domSelector);
+      };
+
+      return eventManager;
+
+    })();
+    event = (function() {
+      function event(title, time, content) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+      }
+
+      return event;
+
+    })();
     photo = (function() {
       function photo(value, washed, img, title) {
         this.value = value;
@@ -166,6 +194,9 @@
     };
     currentGame = new photographyGame(false);
     currentGame.init();
+    gameEvents = new eventManager($('#eventLog .eventContainer'));
+    test = new event('test', 'today', 'memes');
+    gameEvents.addEvent(test);
     mark = new player({
       lat: -25.363,
       lng: 151.044
