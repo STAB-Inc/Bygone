@@ -15,62 +15,65 @@
   <main id="photographyGame">
     <div id="map">
     </div>
-    <div id="inventory" class="overlay">
-      <div class="close">Close</div>
-      <h4>Camera Roll</h4>
-      <div class="cameraRoll"></div>
-      <h4>Washed Pictures</h4>
-      <div class="washedPics"></div>
-      <p id="rollValue"></p>
-      <p id="sellableValue"></p>
-    </div>
-    <div id="loanOverlay" class="overlay">
-      <h4>Take Loan</h4>
-      <p>Amount</p>
-      <input id="loanInput" type="text">
-      <button id="confirmLoan" class="confirm">Confirm Loan</button>
-      <p id="IR">Current interest rate 1.5%</p>
-      <div class="close">Close</div>
-    </div>
-    <div id="soldInfoOverlay" class="overlay">
-      <h4>Potential Earnings</h4>
-      <p></p>
-      <button id="sellPhotos" class="confirm">Sell Photos</button>
-      <div class="close">Close</div>
-    </div>
-    <div id="endTurnInfo" class="overlay">
-      <h4>End Turn</h4>
-      <p>Washing Photos ends the turn.</p>
-      <button id="confirmEndTurn" class="confirm">End Turn</button>
-      <div class="close">Close</div>
-    </div>
-    <div id="gameEnd" class="overlay">
-      <h4>Game Over</h4>
-      <p></p>
-      <button id="playAgain" class="confirm">Play Again</button>
-      <div class="close">Close</div>
-    </div>
-    <div id="takingPic" class="overlay">
-      <h4>Taking Picture...</h4>
-      <p>Time your shot to take a better quality picture</p>
-      <div class="subContainer">
-        <div class="bar">
-          <div class="section section1"></div>
-          <div class="section section2"></div>
-          <div class="section section3"></div>
-          <div class="section section4"></div>
-          <div class="section section5"></div>
-          <div class="slider">
+    <div id="#pGameOverlays">
+      <div id="#blockOverlay"></div>
+      <div id="inventory" class="overlay">
+        <div class="close">Close</div>
+        <h4>Camera Roll</h4>
+        <div class="cameraRoll"></div>
+        <h4>Washed Pictures</h4>
+        <div class="washedPics"></div>
+        <p id="rollValue"></p>
+        <p id="sellableValue"></p>
+      </div>
+      <div id="loanOverlay" class="overlay">
+        <h4>Take Loan</h4>
+        <p>Amount</p>
+        <input id="loanInput" type="text">
+        <button id="confirmLoan" class="confirm">Confirm Loan</button>
+        <p id="IR">Current interest rate 1.5%</p>
+        <div class="close">Close</div>
+      </div>
+      <div id="soldInfoOverlay" class="overlay">
+        <h4>Potential Earnings</h4>
+        <p></p>
+        <button id="sellPhotos" class="confirm">Sell Photos</button>
+        <div class="close">Close</div>
+      </div>
+      <div id="endTurnInfo" class="overlay">
+        <h4>End Turn</h4>
+        <p>Washing Photos ends the turn.</p>
+        <button id="confirmEndTurn" class="confirm">End Turn</button>
+        <div class="close">Close</div>
+      </div>
+      <div id="gameEnd" class="overlay">
+        <h4>Game Over</h4>
+        <p></p>
+        <button id="playAgain" class="confirm">Play Again</button>
+        <div class="close">Close</div>
+      </div>
+      <div id="takingPic" class="overlay">
+        <h4>Taking Picture...</h4>
+        <p>Time your shot to take a better quality picture</p>
+        <div class="subContainer">
+          <div class="bar">
+            <div class="section section1"></div>
+            <div class="section section2"></div>
+            <div class="section section3"></div>
+            <div class="section section4"></div>
+            <div class="section section5"></div>
+            <div class="slider">
+            </div>
           </div>
         </div>
+        <button class="start">Prep Shot</button>
+        <button class="stop">Take Shot</button>
+        <p class="shotStats"></p>
+        <button class="viewInv">View in Inventory</button>
+        <div class="close">Close</div>
       </div>
-      <button class="start">Prep Shot</button>
-      <button class="stop">Take Shot</button>
-      <p class="shotStats"></p>
-      <button class="viewInv">View in Inventory</button>
-      <div class="close">Close</div>
     </div>
-    <div id="infoOverlay" class="overlay">
+    <div id="infoOverlay">
       <div class="container-fluid">
         <div class="row">
           <h4 id="title">Location Info</h4>

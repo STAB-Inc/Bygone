@@ -7,14 +7,6 @@
     height: 100vh;
   }
   .overlay {
-    
-  }
-  #inventory,
-  #loanOverlay,
-  #soldInfoOverlay,
-  #endTurnInfo,
-  #gameEnd,
-  #takingPic  {
     position: fixed;
     width: 1000px;
     height: 800px;
@@ -24,6 +16,13 @@
     display: none;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  #inventory,
+  #loanOverlay,
+  #soldInfoOverlay,
+  #endTurnInfo,
+  #gameEnd,
+  #takingPic  {
     #rollValue,
     #sellableValue {
       position: absolute;
@@ -58,25 +57,19 @@
           height: 100%;
           float: left;
         }
-        .section1 {
+        .section1,
+        .section5 {
           width: 25%;
           background-color: red;
         }
-        .section2 {
+        .section2,
+        .section4 {
           width: 20%;
           background-color: #2E4CA9;
         }
         .section3 {
           width: 10%;
           background-color: #18EB18;
-        }
-        .section4 {
-          width: 20%;
-          background-color: #2E4CA9;
-        }
-        .section5 {
-          width: 25%;
-          background-color: red;
         }
         .slider {
           position: absolute;
