@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endTurn, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -74,8 +74,6 @@
 
     })();
     player = (function(superClass) {
-      var endGame;
-
       extend(player, superClass);
 
       function player(position, name, data1, icon, stats1) {
@@ -125,11 +123,6 @@
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
           return endGame();
         }
-      };
-
-      endGame = function() {
-        $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months.');
-        return $('#gameEnd').show();
       };
 
       return player;
@@ -198,6 +191,10 @@
       turnConsts: {
         interest: 1.5
       }
+    };
+    endGame = function() {
+      $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
+      return $('#gameEnd').show();
     };
     processData = function(data) {
       var item, j, len, processedData, ref;
@@ -422,6 +419,8 @@
           earningsAct += parseInt(photo.value + (photo.value * Math.random()));
           earningsEst += photo.value;
           photosSold += 1;
+          gameGlobal.trackers.photosSold += 1;
+          gameGlobal.trackers.moneyEarned += earningsAct;
         } else {
           newInventory.push(photo);
         }

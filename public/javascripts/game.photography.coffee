@@ -93,10 +93,6 @@ jQuery(document).ready ->
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
-    endGame = ->
-        $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months.';
-        $('#gameEnd').show();
-
   class photo
     constructor: (@value, @washed, @img, @title) ->
 
@@ -118,7 +114,7 @@ jQuery(document).ready ->
       dataType: 'jsonp',
       cache: true
     }
-    
+
   #Game Globals
   currentGame = new photographyGame false
   currentGame.init()
@@ -139,6 +135,10 @@ jQuery(document).ready ->
       interest: 1.5
     }
   }
+
+  endGame = ->
+    $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
+    $('#gameEnd').show();
   
   processData = (data) ->
     processedData = []
@@ -307,6 +307,8 @@ jQuery(document).ready ->
         earningsAct += parseInt(photo.value + (photo.value*Math.random()))
         earningsEst += photo.value
         photosSold += 1
+        gameGlobal.trackers.photosSold += 1
+        gameGlobal.trackers.moneyEarned += earningsAct
       else
         newInventory.push(photo)
     mark.inventory = newInventory
