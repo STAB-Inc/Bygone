@@ -46,11 +46,14 @@ jQuery(document).ready ->
 
       marker.addListener 'mouseover', ->
         #$('#locationInfoOverlay img').attr 'src', self.data.img
-        $('#locationInfoOverlay #title').text self.data.title
         #$('#locationInfoOverlay #description').text self.data.description
-        $('#locationInfoOverlay #position').text 'Distance away ' + parseInt(distanceTravelled(mark.position, self.position)) + 'km'
+        $('#locationInfoOverlay #title').text self.data.title
+        travelDistance = parseInt(distanceTravelled(mark.position, self.position))
+        $('#locationInfoOverlay #position').text 'Distance away ' + travelDistance + 'km'
         $('#locationInfoOverlay #value').text 'Potential Revenue $' + self.value
-        $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((distanceTravelled(mark.position, self.position)*0.6)/10)
+        $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((travelDistance*0.6)/10)
+        travelTime = travelDistance/232
+        $('#locationInfoOverlay #travelTime').text 'Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours'
         @value = self.value
 
   class player extends location
