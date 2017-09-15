@@ -7796,7 +7796,7 @@ main#puzzleGame .winScreen p {
   display: inline-block;
 }
 
-#photographyGame #eventLog p.content {
+#photographyGame #eventLog p.time {
   display: block;
 }
  

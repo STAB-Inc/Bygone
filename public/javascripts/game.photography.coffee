@@ -74,8 +74,6 @@ jQuery(document).ready ->
       })
     
     moveTo: (location) ->
-      #console.log(location)
-      #console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
       location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
       location.travelTime = parseFloat((distanceTravelled(this.position, location.position)/232).toFixed(2))
       @position = location.position
@@ -84,7 +82,7 @@ jQuery(document).ready ->
       newStats = @stats
       newStats.CAB -= mark.playerAt.travelExpense
       gameTime.incrementTime(location.travelTime)
-      console.log gameTime.getAll()
+      gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name)
       $('#takePic').show()
       updateMarkers()
       @updateStats(newStats)
@@ -101,7 +99,7 @@ jQuery(document).ready ->
         endGame()
 
   class timeManager
-    constructor: (@initTime) ->
+    constructor: (@baseTime) ->
       @timeCounter = 0
       @dateCounter = 0
       @monthCounter = 0
@@ -109,17 +107,45 @@ jQuery(document).ready ->
 
     incrementTime: (hours) ->
       @timeCounter += hours
-      if @timeCounter >= 24
-        @timeCounter = 0
-        @dateCounter += 1
-        if @dateCounter >= 30
-          @dateCounter = 0
-          @monthCounter += 1
-          if @monthCounter >= 12
-            @yearCounter += 1
+      while @timeCounter >= 24
+        @incrementDays(1)
+        @timeCounter -= 24
+        if @timeCounter < 24
+          @timeCounter = @timeCounter % 24
+          break
+    
+    incrementDays: (days) ->
+      @dateCounter += days
+      while @dateCounter >= 30
+        @incrementMonths(1)
+        @dateCounter -= 30
+        if @dateCounter < 30
+          @dateCounter = @dateCounter % 30
+          break
+
+    incrementMonths: (months) ->
+      @monthCounter += months
+      while @monthCounter >= 12
+        @incrementYears(1)
+        @monthCounter -= 12
+        if @monthCounter < 12
+          @monthCounter = @monthCounter % 12
+          break
+
+    incrementYears: (years) ->
+      @yearCounter += years
 
     getAll: ->
-      return [@timeCounter, @dateCounter, @monthCounter, @yearCounter]
+      return [@baseTime[0] + @yearCounter, @baseTime[1] + @monthCounter, @baseTime[2] + @dateCounter, parseInt(@baseTime[3]) + @timeCounter]
+
+    getFormatted: ->
+      year = @baseTime[0] + @yearCounter
+      month = @baseTime[1] + @monthCounter
+      date = @baseTime[2] + @dateCounter
+      hours = parseInt(@baseTime[3]) + @timeCounter
+      minutes = parseInt((hours - Math.floor(hours))*60)
+      console.log String(parseInt(minutes)).length
+      if String(parseInt(minutes)).length == 2 then return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) else return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0'
 
   class eventManager
     constructor: (@domSelector) ->
@@ -129,9 +155,9 @@ jQuery(document).ready ->
       @events.push(event)
       $('<div class="row">
         <p class="time">' + event.time + '</p>
-        <p class="time">' + event.title + '</p>
-        <p class="time">' + event.content + '</p>
-      </div>').appendTo(@domSelector)
+        <p class="title">' + event.title + '</p>
+        <p class="content">' + event.content + '</p>
+      </div>').prependTo(@domSelector)
 
   class event
     constructor: (@title, @time, @content) ->
@@ -163,10 +189,7 @@ jQuery(document).ready ->
   currentGame.init()
 
   gameEvents = new eventManager $('#eventLog .eventContainer')
-  test = new event 'test', 'today', 'memes'
-  gameEvents.addEvent(test)
-
-  gameTime = new timeManager 0
+  gameTime = new timeManager [1939, 1, 1, 0]
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)
@@ -181,7 +204,8 @@ jQuery(document).ready ->
       moneyEarned: 0
     },
     turnConsts: {
-      interest: 1.5
+      interest: 1.5,
+      pictureWashingTime: 14
     }
   }
 
@@ -203,7 +227,7 @@ jQuery(document).ready ->
     for place in data
       lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
       lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
-      marker[i] = new location {lat, lng}, place[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}
+      marker[i] = new location {lat, lng}, place['dcterms:spatial'].split(';')[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}
       marker[i].addTo(googleMap)
       locations.push(marker[i])
       setValue(marker[i])
@@ -231,6 +255,9 @@ jQuery(document).ready ->
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
+    gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime) # Two weeks
+    endTurnEvent = new event 'The month comes to an end.', gameTime.getFormatted(), 'Paid $' + mark.stats.liabilities + ' in expenses'
+    gameEvents.addEvent(endTurnEvent)
     for location in locations
       location.marker.setVisible(true)
   

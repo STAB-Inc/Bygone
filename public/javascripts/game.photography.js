@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameTime, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, test, timeManager, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameTime, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -111,7 +111,7 @@
         newStats = this.stats;
         newStats.CAB -= mark.playerAt.travelExpense;
         gameTime.incrementTime(location.travelTime);
-        console.log(gameTime.getAll());
+        gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name));
         $('#takePic').show();
         updateMarkers();
         return this.updateStats(newStats);
@@ -135,8 +135,8 @@
 
     })(location);
     timeManager = (function() {
-      function timeManager(initTime) {
-        this.initTime = initTime;
+      function timeManager(baseTime) {
+        this.baseTime = baseTime;
         this.timeCounter = 0;
         this.dateCounter = 0;
         this.monthCounter = 0;
@@ -144,22 +144,77 @@
       }
 
       timeManager.prototype.incrementTime = function(hours) {
+        var results;
         this.timeCounter += hours;
-        if (this.timeCounter >= 24) {
-          this.timeCounter = 0;
-          this.dateCounter += 1;
-          if (this.dateCounter >= 30) {
-            this.dateCounter = 0;
-            this.monthCounter += 1;
-            if (this.monthCounter >= 12) {
-              return this.yearCounter += 1;
-            }
+        results = [];
+        while (this.timeCounter >= 24) {
+          this.incrementDays(1);
+          this.timeCounter -= 24;
+          if (this.timeCounter < 24) {
+            this.timeCounter = this.timeCounter % 24;
+            break;
+          } else {
+            results.push(void 0);
           }
         }
+        return results;
+      };
+
+      timeManager.prototype.incrementDays = function(days) {
+        var results;
+        this.dateCounter += days;
+        results = [];
+        while (this.dateCounter >= 30) {
+          this.incrementMonths(1);
+          this.dateCounter -= 30;
+          if (this.dateCounter < 30) {
+            this.dateCounter = this.dateCounter % 30;
+            break;
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      };
+
+      timeManager.prototype.incrementMonths = function(months) {
+        var results;
+        this.monthCounter += months;
+        results = [];
+        while (this.monthCounter >= 12) {
+          this.incrementYears(1);
+          this.monthCounter -= 12;
+          if (this.monthCounter < 12) {
+            this.monthCounter = this.monthCounter % 12;
+            break;
+          } else {
+            results.push(void 0);
+          }
+        }
+        return results;
+      };
+
+      timeManager.prototype.incrementYears = function(years) {
+        return this.yearCounter += years;
       };
 
       timeManager.prototype.getAll = function() {
-        return [this.timeCounter, this.dateCounter, this.monthCounter, this.yearCounter];
+        return [this.baseTime[0] + this.yearCounter, this.baseTime[1] + this.monthCounter, this.baseTime[2] + this.dateCounter, parseInt(this.baseTime[3]) + this.timeCounter];
+      };
+
+      timeManager.prototype.getFormatted = function() {
+        var date, hours, minutes, month, year;
+        year = this.baseTime[0] + this.yearCounter;
+        month = this.baseTime[1] + this.monthCounter;
+        date = this.baseTime[2] + this.dateCounter;
+        hours = parseInt(this.baseTime[3]) + this.timeCounter;
+        minutes = parseInt((hours - Math.floor(hours)) * 60);
+        console.log(String(parseInt(minutes)).length);
+        if (String(parseInt(minutes)).length === 2) {
+          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes));
+        } else {
+          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0';
+        }
       };
 
       return timeManager;
@@ -173,7 +228,7 @@
 
       eventManager.prototype.addEvent = function(event) {
         this.events.push(event);
-        return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="time">' + event.title + '</p> <p class="time">' + event.content + '</p> </div>').appendTo(this.domSelector);
+        return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').prependTo(this.domSelector);
       };
 
       return eventManager;
@@ -230,9 +285,7 @@
     currentGame = new photographyGame(false);
     currentGame.init();
     gameEvents = new eventManager($('#eventLog .eventContainer'));
-    test = new event('test', 'today', 'memes');
-    gameEvents.addEvent(test);
-    gameTime = new timeManager(0);
+    gameTime = new timeManager([1939, 1, 1, 0]);
     mark = new player({
       lat: -25.363,
       lng: 151.044
@@ -254,7 +307,8 @@
         moneyEarned: 0
       },
       turnConsts: {
-        interest: 1.5
+        interest: 1.5,
+        pictureWashingTime: 14
       }
     };
     endGame = function() {
@@ -286,7 +340,7 @@
         marker[i] = new location({
           lat: lat,
           lng: lng
-        }, place[0], {
+        }, place['dcterms:spatial'].split(';')[0], {
           'title': place['dc:title'],
           'description': place['dc:description'],
           'img': place['150_pixel_jpg']
@@ -323,12 +377,15 @@
       return results;
     };
     endTurn = function() {
-      var j, len, newStats, results;
+      var endTurnEvent, j, len, newStats, results;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
       mark.updateStats(newStats);
+      gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime);
+      endTurnEvent = new event('The month comes to an end.', gameTime.getFormatted(), 'Paid $' + mark.stats.liabilities + ' in expenses');
+      gameEvents.addEvent(endTurnEvent);
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
