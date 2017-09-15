@@ -436,7 +436,7 @@
       return calculatePicValue();
     });
     calculatePicValue = function() {
-      var inBlue, inGreen, multiplier, sliderPosition;
+      var inBlue, inGreen, multiplier, sliderPosition, timeTaken;
       $('#takingPic .viewInv').show();
       $('#takingPic .shotStats').show();
       multiplier = 1;
@@ -452,7 +452,10 @@
         multiplier = 0.8;
         $('.shotStats').text('The shot comes out all smudged...');
       }
-      return addShotToInv(multiplier);
+      addShotToInv(multiplier);
+      timeTaken = Math.floor(Math.random() * 10) + 24;
+      gameTime.incrementTime(timeTaken);
+      return gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes ' + timeTaken + ' hours.'));
     };
     $('.viewInv').click(function() {
       closeParent(this);

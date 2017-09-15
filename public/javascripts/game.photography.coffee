@@ -316,6 +316,9 @@ jQuery(document).ready ->
       multiplier = 0.8
       $('.shotStats').text 'The shot comes out all smudged...'
     addShotToInv(multiplier)
+    timeTaken = Math.floor(Math.random()*10) + 24
+    gameTime.incrementTime(timeTaken)
+    gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes '+ timeTaken + ' hours.')
 
   $('.viewInv').click ->
     closeParent(this)
