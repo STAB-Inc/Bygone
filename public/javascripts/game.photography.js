@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, deg2rad, displayInv, distanceTravelled, endTurn, generateMarkers, interest, location, locations, mark, monthPassed, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endTurn, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -22,17 +22,6 @@
       dist = R * c;
       return dist;
     };
-    photographyGame = (function() {
-      function photographyGame(debug, map1) {
-        this.debug = debug;
-        this.map = map1;
-      }
-
-      photographyGame.prototype.init = function() {};
-
-      return photographyGame;
-
-    })();
     location = (function() {
       function location(position, name, data1, icon) {
         this.position = position;
@@ -85,6 +74,8 @@
 
     })();
     player = (function(superClass) {
+      var endGame;
+
       extend(player, superClass);
 
       function player(position, name, data1, icon, stats1) {
@@ -131,15 +122,44 @@
         $('#infoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
         $('#infoOverlay #stats #assets').text('Current Assets $' + assets);
         $('#infoOverlay #stats #workingCapital').text('Working Capital $' + workingCapital);
-        if (workingCapital <= -1000) {
-          $('#gameEnd p').text('You survived for ' + monthPassed + ' Months.');
-          return $('#gameEnd').show();
+        if (workingCapital <= -1000 && this.stats.CAB <= 0) {
+          return endGame();
         }
+      };
+
+      endGame = function() {
+        $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months.');
+        return $('#gameEnd').show();
       };
 
       return player;
 
     })(location);
+    photo = (function() {
+      function photo(value, washed, img, title) {
+        this.value = value;
+        this.washed = washed;
+        this.img = img;
+        this.title = title;
+      }
+
+      return photo;
+
+    })();
+    photographyGame = (function() {
+      function photographyGame(debug) {
+        this.debug = debug;
+      }
+
+      photographyGame.prototype.init = function() {
+        return retrieveResources(100).then(function(res) {
+          return generateMarkers(processData(res));
+        });
+      };
+
+      return photographyGame;
+
+    })();
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
@@ -153,17 +173,32 @@
         cache: true
       });
     };
-    photo = (function() {
-      function photo(value, washed, img, title) {
-        this.value = value;
-        this.washed = washed;
-        this.img = img;
-        this.title = title;
+    currentGame = new photographyGame(false);
+    currentGame.init();
+    mark = new player({
+      lat: -25.363,
+      lng: 151.044
+    }, 'Mark', {
+      'type': 'self'
+    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
+    mark.initTo(googleMap);
+    mark.updateStats({
+      'CAB': 1000,
+      'workingCapital': 0,
+      'assets': 0,
+      'liabilities': 300
+    });
+    locations = [];
+    gameGlobal = {
+      trackers: {
+        monthPassed: 0,
+        photosSold: 0,
+        moneyEarned: 0
+      },
+      turnConsts: {
+        interest: 1.5
       }
-
-      return photo;
-
-    })();
+    };
     processData = function(data) {
       var item, j, len, processedData, ref;
       processedData = [];
@@ -178,7 +213,6 @@
       }
       return processedData;
     };
-    locations = [];
     generateMarkers = function(data) {
       var i, j, lat, len, lng, marker, place;
       marker = [];
@@ -211,22 +245,6 @@
         return location.value = parseInt((Math.random() * distanceTravelled(mark.position, location.position) + 100) / 10);
       }
     };
-    mark = new player({
-      lat: -25.363,
-      lng: 151.044
-    }, 'Mark', {
-      'type': 'self'
-    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
-    mark.initTo(googleMap);
-    mark.updateStats({
-      'CAB': 1000,
-      'workingCapital': 0,
-      'assets': 0,
-      'liabilities': 300
-    });
-    retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then(function(res) {
-      return generateMarkers(processData(res));
-    });
     updateMarkers = function() {
       var hide, j, len, results, show;
       results = [];
@@ -242,19 +260,19 @@
       }
       return results;
     };
-    interest = 1.5;
-    monthPassed = 0;
     endTurn = function() {
-      var j, len, newStats;
-      monthPassed += 1;
+      var j, len, newStats, results;
+      gameGlobal.trackers.monthPassed += 1;
+      gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
       mark.updateStats(newStats);
+      results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
-        location.marker.setVisible(true);
+        results.push(location.marker.setVisible(true));
       }
-      return interest = (Math.random() * 5).toFixed(2);
+      return results;
     };
     $('#takePic').click(function() {
       $('#takingPic .section3').css('width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%');
@@ -311,7 +329,7 @@
       return addShotToInv(multiplier);
     };
     $('.viewInv').click(function() {
-      $(this).parent().hide();
+      closeParent(this);
       return displayInv();
     });
     $('#checkInv').click(function() {
@@ -319,6 +337,7 @@
     });
     displayInv = function() {
       var item, j, len, potentialValue, ref, sellableValue;
+      $('#blockOverlay').show();
       $('#inventory .photo').remove();
       $('#inventory').show();
       potentialValue = 0;
@@ -359,13 +378,13 @@
       }
     });
     $('#takeLoan').click(function() {
-      $('#IR').text('Current interest rate ' + interest + '%');
+      $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');
       return $('#loanOverlay').show();
     });
     $('#confirmLoan').click(function() {
       var newStats;
       newStats = mark.stats;
-      newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (interest / 10);
+      newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (gameGlobal.turnConsts.interest / 10);
       newStats.CAB += parseInt($('#loanInput').val());
       return mark.updateStats(newStats);
     });
@@ -413,9 +432,13 @@
       mark.updateStats(newStats);
       return $('#soldInfoOverlay p').text('Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s');
     });
-    $('.confirm').click(function() {
-      return $(this).parent().hide();
+    $('.confirm, .close').click(function() {
+      return closeParent(this);
     });
+    closeParent = function(self) {
+      $(self).parent().hide();
+      return $('#blockOverlay').hide();
+    };
   });
 
 }).call(this);

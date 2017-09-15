@@ -16,11 +16,6 @@ jQuery(document).ready ->
     dist = R * c
     return dist;
 
-  class photographyGame
-    constructor: (@debug, @map) ->
-
-    init: () ->
-
   class location
     constructor: (@position, @name, @data, @icon) ->
       @marker
@@ -95,9 +90,22 @@ jQuery(document).ready ->
       $('#infoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
       $('#infoOverlay #stats #assets').text 'Current Assets $' + assets
       $('#infoOverlay #stats #workingCapital').text 'Working Capital $' + workingCapital
-      if workingCapital <= -1000
-        $('#gameEnd p').text 'You survived for ' + monthPassed + ' Months.';
+      if workingCapital <= -1000 && @stats.CAB <= 0
+        endGame()
+
+    endGame = ->
+        $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months.';
         $('#gameEnd').show();
+
+  class photo
+    constructor: (@value, @washed, @img, @title) ->
+
+  class photographyGame
+    constructor: (@debug) ->
+
+    init: ->
+      retrieveResources(100).then (res) ->
+        generateMarkers(processData(res))
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -109,11 +117,29 @@ jQuery(document).ready ->
       data: reqParam,
       dataType: 'jsonp',
       cache: true
+    }
+    
+  #Game Globals
+  currentGame = new photographyGame false
+  currentGame.init()
+
+  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
+  mark.initTo(googleMap)
+  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
+  
+  locations = []
+  
+  gameGlobal = {
+    trackers: {
+      monthPassed: 0,
+      photosSold: 0,
+      moneyEarned: 0
+    },
+    turnConsts: {
+      interest: 1.5
+    }
   }
-
-  class photo
-    constructor: (@value, @washed, @img, @title) ->
-
+  
   processData = (data) ->
     processedData = []
     for item in data.result.records
@@ -121,8 +147,7 @@ jQuery(document).ready ->
         if item['dcterms:spatial'].split(';')[1]
           processedData.push(item)
     return processedData
-
-  locations = []
+  
   generateMarkers = (data) ->
     marker = []
     i = 0
@@ -144,13 +169,6 @@ jQuery(document).ready ->
     else
       location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
 
-  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
-  mark.initTo(googleMap)
-  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
-
-  retrieveResources(parseInt(Math.random() * (100 - 20) + 20)).then (res) ->
-    generateMarkers(processData(res))
-
   updateMarkers = ->
     for location in locations
       hide = Math.random() >= 0.8;
@@ -158,16 +176,14 @@ jQuery(document).ready ->
       if hide
         location.marker.setVisible(false)
 
-  interest = 1.5
-  monthPassed = 0
   endTurn = ->
-    monthPassed += 1
+    gameGlobal.trackers.monthPassed += 1
+    gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
     mark.updateStats(newStats)
     for location in locations
       location.marker.setVisible(true)
-    interest = (Math.random()*5).toFixed(2)
   
   $('#takePic').click ->
     $('#takingPic .section3').css 'width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%'
@@ -183,7 +199,6 @@ jQuery(document).ready ->
   addShotToInv = (multiplier) ->
     photoValue = mark.playerAt.value*multiplier
     shotTaken = new photo photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title
-    #console.log multiplier, photoValue, shotTaken
     mark.inventory.push(shotTaken)
     mark.playerAt.marker.setVisible(false)
     newStats = mark.stats
@@ -222,13 +237,14 @@ jQuery(document).ready ->
     addShotToInv(multiplier)
 
   $('.viewInv').click ->
-    $(this).parent().hide()
+    closeParent(this)
     displayInv()
 
   $('#checkInv').click ->
     displayInv()
     
   displayInv = ->
+    $('#blockOverlay').show()
     $('#inventory .photo').remove()
     $('#inventory').show()
     potentialValue = 0;
@@ -242,7 +258,6 @@ jQuery(document).ready ->
         sellableValue += item.value
     $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
-
 
   $('#endTurn').click ->
     $('#endTurnInfo p').text 'End this month?'
@@ -261,12 +276,12 @@ jQuery(document).ready ->
       $('#endTurnInfo').show()
 
   $('#takeLoan').click ->
-    $('#IR').text('Current interest rate '+interest+'%')
+    $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%')
     $('#loanOverlay').show()
 
   $('#confirmLoan').click ->
     newStats = mark.stats
-    newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(interest/10)
+    newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(gameGlobal.turnConsts.interest/10)
     newStats.CAB += parseInt($('#loanInput').val())
     mark.updateStats(newStats)
 
@@ -300,7 +315,10 @@ jQuery(document).ready ->
     mark.updateStats(newStats)
     $('#soldInfoOverlay p').text 'Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s'
 
-  $('.confirm').click ->
-    $(this).parent().hide()
+  $('.confirm, .close').click ->
+    closeParent(this)
 
+  closeParent = (self) ->
+    $(self).parent().hide()
+    $('#blockOverlay').hide()
   return

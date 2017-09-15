@@ -7599,6 +7599,20 @@ main#puzzleGame .winScreen p {
   display: none;
   overflow-x: hidden;
   overflow-y: auto;
+  z-index: 6;
+}
+
+#photographyGame #blockOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(black 15%, transparent 16%) 0 0, radial-gradient(black 15%, transparent 16%) 8px 8px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 0 1px, radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%) 8px 9px;
+  background-color: #282828;
+  background-size: 16px 16px;
+  z-index: 5;
+  top: 0;
+  opacity: 0.4;
+  display: none;
 }
 
 #photographyGame #inventory #rollValue,
@@ -7660,12 +7674,14 @@ main#puzzleGame .winScreen p {
   float: left;
 }
 
-#photographyGame #takingPic .subContainer .bar .section1 {
+#photographyGame #takingPic .subContainer .bar .section1,
+#photographyGame #takingPic .subContainer .bar .section5 {
   width: 25%;
   background-color: red;
 }
 
-#photographyGame #takingPic .subContainer .bar .section2 {
+#photographyGame #takingPic .subContainer .bar .section2,
+#photographyGame #takingPic .subContainer .bar .section4 {
   width: 20%;
   background-color: #2E4CA9;
 }
@@ -7673,16 +7689,6 @@ main#puzzleGame .winScreen p {
 #photographyGame #takingPic .subContainer .bar .section3 {
   width: 10%;
   background-color: #18EB18;
-}
-
-#photographyGame #takingPic .subContainer .bar .section4 {
-  width: 20%;
-  background-color: #2E4CA9;
-}
-
-#photographyGame #takingPic .subContainer .bar .section5 {
-  width: 25%;
-  background-color: red;
 }
 
 #photographyGame #takingPic .subContainer .bar .slider {
