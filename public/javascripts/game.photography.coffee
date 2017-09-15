@@ -21,6 +21,7 @@ jQuery(document).ready ->
       @marker
       @value
       @travelExpense
+      @travelTime
 
     addTo: (map) ->
       if @icon
@@ -76,13 +77,16 @@ jQuery(document).ready ->
       #console.log(location)
       #console.log("current position", this.position, "new position", location.position, "distance travelled", distanceTravelled(this.position, location.position) + 'km')
       location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
+      location.travelTime = parseFloat((distanceTravelled(this.position, location.position)/232).toFixed(2))
       @position = location.position
       @playerAt = location
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
-      updateMarkers()
-      $('#takePic').show()
       newStats = @stats
       newStats.CAB -= mark.playerAt.travelExpense
+      gameTime.incrementTime(location.travelTime)
+      console.log gameTime.getAll()
+      $('#takePic').show()
+      updateMarkers()
       @updateStats(newStats)
 
     updateStats: (stats) ->
@@ -96,8 +100,29 @@ jQuery(document).ready ->
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
+  class timeManager
+    constructor: (@initTime) ->
+      @timeCounter = 0
+      @dateCounter = 0
+      @monthCounter = 0
+      @yearCounter = 0
+
+    incrementTime: (hours) ->
+      @timeCounter += hours
+      if @timeCounter >= 24
+        @timeCounter = 0
+        @dateCounter += 1
+        if @dateCounter >= 30
+          @dateCounter = 0
+          @monthCounter += 1
+          if @monthCounter >= 12
+            @yearCounter += 1
+
+    getAll: ->
+      return [@timeCounter, @dateCounter, @monthCounter, @yearCounter]
+
   class eventManager
-    constructor : (@domSelector) ->
+    constructor: (@domSelector) ->
       @events = []
 
     addEvent: (event) ->
@@ -140,6 +165,8 @@ jQuery(document).ready ->
   gameEvents = new eventManager $('#eventLog .eventContainer')
   test = new event 'test', 'today', 'memes'
   gameEvents.addEvent(test)
+
+  gameTime = new timeManager 0
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo(googleMap)

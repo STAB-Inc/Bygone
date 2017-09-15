@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, test, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameTime, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, test, timeManager, updateMarkers;
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -31,6 +31,7 @@
         this.marker;
         this.value;
         this.travelExpense;
+        this.travelTime;
       }
 
       location.prototype.addTo = function(map) {
@@ -103,13 +104,16 @@
       player.prototype.moveTo = function(location) {
         var newStats;
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
+        location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
         this.playerAt = location;
         this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
-        updateMarkers();
-        $('#takePic').show();
         newStats = this.stats;
         newStats.CAB -= mark.playerAt.travelExpense;
+        gameTime.incrementTime(location.travelTime);
+        console.log(gameTime.getAll());
+        $('#takePic').show();
+        updateMarkers();
         return this.updateStats(newStats);
       };
 
@@ -130,6 +134,37 @@
       return player;
 
     })(location);
+    timeManager = (function() {
+      function timeManager(initTime) {
+        this.initTime = initTime;
+        this.timeCounter = 0;
+        this.dateCounter = 0;
+        this.monthCounter = 0;
+        this.yearCounter = 0;
+      }
+
+      timeManager.prototype.incrementTime = function(hours) {
+        this.timeCounter += hours;
+        if (this.timeCounter >= 24) {
+          this.timeCounter = 0;
+          this.dateCounter += 1;
+          if (this.dateCounter >= 30) {
+            this.dateCounter = 0;
+            this.monthCounter += 1;
+            if (this.monthCounter >= 12) {
+              return this.yearCounter += 1;
+            }
+          }
+        }
+      };
+
+      timeManager.prototype.getAll = function() {
+        return [this.timeCounter, this.dateCounter, this.monthCounter, this.yearCounter];
+      };
+
+      return timeManager;
+
+    })();
     eventManager = (function() {
       function eventManager(domSelector) {
         this.domSelector = domSelector;
@@ -197,6 +232,7 @@
     gameEvents = new eventManager($('#eventLog .eventContainer'));
     test = new event('test', 'today', 'memes');
     gameEvents.addEvent(test);
+    gameTime = new timeManager(0);
     mark = new player({
       lat: -25.363,
       lng: 151.044
