@@ -63,12 +63,12 @@
         });
         return marker.addListener('mouseover', function() {
           var travelDistance, travelTime;
-          $('#locationInfoOverlay #title').text(self.data.title);
           travelDistance = parseInt(distanceTravelled(mark.position, self.position));
+          travelTime = travelDistance / 232;
+          $('#locationInfoOverlay #title').text(self.data.title);
           $('#locationInfoOverlay #position').text('Distance away ' + travelDistance + 'km');
           $('#locationInfoOverlay #value').text('Potential Revenue $' + self.value);
           $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((travelDistance * 0.6) / 10));
-          travelTime = travelDistance / 232;
           $('#locationInfoOverlay #travelTime').text('Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours');
           return this.value = self.value;
         });
@@ -211,7 +211,6 @@
         date = this.baseTime[2] + this.dateCounter;
         hours = parseInt(this.baseTime[3]) + this.timeCounter;
         minutes = parseInt((hours - Math.floor(hours)) * 60);
-        console.log(String(parseInt(minutes)).length);
         if (String(parseInt(minutes)).length === 2) {
           return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes));
         } else {
@@ -379,7 +378,7 @@
       return results;
     };
     endTurn = function(date) {
-      var j, len, newStats, results;
+      var j, len, newStats, results, show;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       newStats = mark.stats;
@@ -389,7 +388,12 @@
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
-        results.push(location.marker.setVisible(true));
+        show = Math.random() > 0.2;
+        if (show) {
+          results.push(location.marker.setVisible(true));
+        } else {
+          results.push(void 0);
+        }
       }
       return results;
     };
@@ -481,8 +485,24 @@
       return $('#waitInfo').show();
     });
     $('#confirmWait').click(function() {
+      var j, len, results, show;
       gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
-      return gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days'));
+      if (parseInt($('#waitTimeInput').val()) !== 1) {
+        gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days'));
+      } else {
+        gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' day'));
+      }
+      results = [];
+      for (j = 0, len = locations.length; j < len; j++) {
+        location = locations[j];
+        show = Math.floor(Math.random() * 30) <= parseInt($('#waitTimeInput').val()) / 2;
+        if (show) {
+          results.push(location.marker.setVisible(true));
+        } else {
+          results.push(void 0);
+        }
+      }
+      return results;
     });
     $('#washPic').click(function() {
       var item, j, k, len, len1, notWashed, ref, ref1;

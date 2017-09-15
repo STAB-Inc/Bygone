@@ -50,12 +50,12 @@ jQuery(document).ready ->
       marker.addListener 'mouseover', ->
         #$('#locationInfoOverlay img').attr 'src', self.data.img
         #$('#locationInfoOverlay #description').text self.data.description
-        $('#locationInfoOverlay #title').text self.data.title
         travelDistance = parseInt(distanceTravelled(mark.position, self.position))
+        travelTime = travelDistance/232
+        $('#locationInfoOverlay #title').text self.data.title
         $('#locationInfoOverlay #position').text 'Distance away ' + travelDistance + 'km'
         $('#locationInfoOverlay #value').text 'Potential Revenue $' + self.value
         $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((travelDistance*0.6)/10)
-        travelTime = travelDistance/232
         $('#locationInfoOverlay #travelTime').text 'Travel Time: Approx ' + travelTime.toFixed(2) + ' Hours'
         @value = self.value
 
@@ -147,7 +147,6 @@ jQuery(document).ready ->
       date = @baseTime[2] + @dateCounter
       hours = parseInt(@baseTime[3]) + @timeCounter
       minutes = parseInt((hours - Math.floor(hours))*60)
-      console.log String(parseInt(minutes)).length
       if String(parseInt(minutes)).length == 2 then return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) else return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0'
 
   class eventManager
@@ -260,7 +259,9 @@ jQuery(document).ready ->
     mark.updateStats(newStats)
     gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses')
     for location in locations
-      location.marker.setVisible(true)
+      show = Math.random() > 0.2
+      if show
+        location.marker.setVisible(true)
   
   $('#takePic').click ->
     $('#takingPic .section3').css 'width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%'
@@ -343,7 +344,11 @@ jQuery(document).ready ->
 
   $('#confirmWait').click ->
     gameTime.incrementDays(parseInt($('#waitTimeInput').val()))
-    gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days')
+    if parseInt($('#waitTimeInput').val()) != 1 then gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days') else gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' day')
+    for location in locations
+      show = Math.floor(Math.random() * (30)) <= parseInt($('#waitTimeInput').val())/2
+      if show
+        location.marker.setVisible(true)
 
   $('#washPic').click ->
     notWashed = []
