@@ -30,6 +30,7 @@ $(document).ready(function(){
     $("#chapTitle").delay(500).fadeOut(1500,"linear");
     $("#house").delay(2000).fadeIn(2000,"linear");
     $("#recruitOffice").delay(2000).fadeIn(2000,"linear");
+    $("#watchtowerOut").delay(2000).fadeIn(2000,"linear");
   });
 
   $("#house").click(function(){
@@ -124,5 +125,31 @@ $(document).ready(function(){
 
   $("#mattPh").click(function(){
     $("#back").fadeIn(500,"linear");
+  });
+
+  $("#watchtowerOut").click(function(){
+    $("#watchtowerOut").fadeOut(1000,"linear");
+    $("#watchtowerIn").delay(1000).fadeIn(1000,"linear");
+    $("#dadPhoto").delay(1500).fadeIn(1000,"linear");
+    $("#mattSniper").delay(1500).fadeIn(1000,"linear");
+  });
+
+  $("#chap3img").click(function(){
+    step = step + 1;
+    if(step == 1){
+      $("#chap3sub p:nth-of-type("+ 1 +")").fadeIn(1000,"linear");
+    }else if(step == 2){
+      $("#chap3sub p:nth-of-type("+ 1 +")").fadeOut(500,"linear");
+      $("#chap3sub p:nth-of-type("+ 2 +")").delay(500).fadeIn(1000,"linear");
+    }else if(step == 3){
+      $("#chap3sub p:nth-of-type("+ 2 +")").fadeOut(500,"linear");
+      $("#watchtowerIn").delay(500).fadeOut(1000,"linear");
+      $("#dadPhoto").fadeOut(1000,"linear");
+      $("#mattSniper").fadeOut(1000,"linear");
+      $("#mattAiming").delay(1500).fadeIn(1000,"linear");
+      $("#chap3sub p:nth-of-type("+ 3 +")").delay(1500).fadeIn(1000,"linear");
+    }else if(step == 4){
+      $("#back").fadeIn(500,"linear");
+    }
   });
 });

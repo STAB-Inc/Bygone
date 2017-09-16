@@ -89,6 +89,20 @@ img.char{
   transform: translate(-30%);
 }
 
+#dadPhoto{
+  height: 20%;
+  bottom: 65%;
+  left: 47%;
+  transform: translate(-55%);
+}
+
+#mattSniper{
+  height: 55%;
+  bottom: 0;
+  left: 60%;
+  transform: translate(-30%);
+}
+
 div#back{
   display: block;
   position: fixed;
