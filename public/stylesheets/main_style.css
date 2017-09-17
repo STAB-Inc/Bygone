@@ -7101,7 +7101,7 @@ nav#global .navContainer {
 
 nav#global .navContainer .navButton {
   width: 50%;
-  height: 50%;
+  height: 300px !important;
   background-color: red;
   padding-top: 15%;
 }
@@ -7199,6 +7199,7 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
 
 #loader .loaderContent h1 {
   font-size: 4.2em;
+  font-weight: 900;
 }
 
 #loader .loaderContent .loaderBar {
@@ -7758,7 +7759,7 @@ main#puzzleGame .winScreen p {
   height: 215px;
   width: 400px;
   background-color: rgba(0, 0, 0, 0.8);
-  left: 20px;
+  right: 20px;
   bottom: 20px;
   padding: 25px;
   border-radius: 10px;
@@ -7795,22 +7796,6 @@ main#puzzleGame .winScreen p {
   text-align: left;
 }
 
-#photographyGame #playerInfoOverlay #actions,
-#photographyGame #locationInfoOverlay #actions,
-#photographyGame #actions #actions,
-#photographyGame #eventLog #actions {
-  position: absolute;
-  width: 270px;
-  bottom: 50px;
-}
-
-#photographyGame #playerInfoOverlay #actions #takePic,
-#photographyGame #locationInfoOverlay #actions #takePic,
-#photographyGame #actions #actions #takePic,
-#photographyGame #eventLog #actions #takePic {
-  display: none;
-}
-
 #photographyGame #locationInfoOverlay {
   height: 300px;
   top: 20px;
@@ -7830,7 +7815,7 @@ main#puzzleGame .winScreen p {
   height: 100px;
   position: fixed;
   top: 20px;
-  left: 500px;
+  right: 500px;
   padding: 10px;
   z-index: 5;
 }
