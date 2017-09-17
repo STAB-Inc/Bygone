@@ -1,5 +1,17 @@
 jQuery(document).ready ->
 
+  retrieveResources = (amount) ->
+    reqParam = {
+      resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
+      limit: amount
+    }
+    $.ajax {
+      url: 'https://data.gov.au/api/action/datastore_search',
+      data: reqParam,
+      dataType: 'jsonp',
+      cache: true
+    }
+
   #Game globals
   locations = []
   
@@ -227,8 +239,6 @@ jQuery(document).ready ->
       if hide
         location.marker.setVisible(false)
 
-  
-
   gameEvents = new eventManager $('#eventLog .eventContainer')
   gameTime = new timeManager [1939, 1, 1, 0]
 
@@ -240,36 +250,30 @@ jQuery(document).ready ->
     constructor: (@debug) ->
 
     init: (amount) ->
+
+      localInit = ->
+        validData.sort ->
+          return 0.5 - Math.random()
+        generateMarkers(validData.slice(0, amount))
+        gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
+
       if localStorage.getItem 'photographyGameData'
         validData = processData(JSON.parse(localStorage.getItem 'photographyGameData'))
         if amount > validData.length
           retrieveResources(1000).then (res) ->
             localStorage.setItem 'photographyGameData', JSON.stringify(res)
             validData = processData res
+            localInit()
+        else
+          localInit()
       else
         retrieveResources(1000).then (res) ->
           localStorage.setItem 'photographyGameData', JSON.stringify(res)
           validData = processData res
-
-      validData.sort ->
-        return 0.5 - Math.random()
-      generateMarkers(validData.slice(0, amount))
-      gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
+          localInit()
 
   currentGame = new photographyGame false
   currentGame.init(100)
-
-  retrieveResources = (amount) ->
-    reqParam = {
-      resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
-      limit: amount
-    }
-    $.ajax {
-      url: 'https://data.gov.au/api/action/datastore_search',
-      data: reqParam,
-      dataType: 'jsonp',
-      cache: true
-    }
 
   endGame = ->
     $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned

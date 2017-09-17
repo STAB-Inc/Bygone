@@ -5,6 +5,19 @@
 
   jQuery(document).ready(function() {
     var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gamePhoto, gameTime, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
+    retrieveResources = function(amount) {
+      var reqParam;
+      reqParam = {
+        resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
+        limit: amount
+      };
+      return $.ajax({
+        url: 'https://data.gov.au/api/action/datastore_search',
+        data: reqParam,
+        dataType: 'jsonp',
+        cache: true
+      });
+    };
     locations = [];
     gameGlobal = {
       trackers: {
@@ -361,26 +374,32 @@
       }
 
       photographyGame.prototype.init = function(amount) {
-        var validData;
+        var localInit, validData;
+        localInit = function() {
+          validData.sort(function() {
+            return 0.5 - Math.random();
+          });
+          generateMarkers(validData.slice(0, amount));
+          return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
+        };
         if (localStorage.getItem('photographyGameData')) {
           validData = processData(JSON.parse(localStorage.getItem('photographyGameData')));
           if (amount > validData.length) {
-            retrieveResources(1000).then(function(res) {
+            return retrieveResources(1000).then(function(res) {
               localStorage.setItem('photographyGameData', JSON.stringify(res));
-              return validData = processData(res);
+              validData = processData(res);
+              return localInit();
             });
+          } else {
+            return localInit();
           }
         } else {
-          retrieveResources(1000).then(function(res) {
+          return retrieveResources(1000).then(function(res) {
             localStorage.setItem('photographyGameData', JSON.stringify(res));
-            return validData = processData(res);
+            validData = processData(res);
+            return localInit();
           });
         }
-        validData.sort(function() {
-          return 0.5 - Math.random();
-        });
-        generateMarkers(validData.slice(0, amount));
-        return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
       };
 
       return photographyGame;
@@ -388,19 +407,6 @@
     })();
     currentGame = new photographyGame(false);
     currentGame.init(100);
-    retrieveResources = function(amount) {
-      var reqParam;
-      reqParam = {
-        resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
-        limit: amount
-      };
-      return $.ajax({
-        url: 'https://data.gov.au/api/action/datastore_search',
-        data: reqParam,
-        dataType: 'jsonp',
-        cache: true
-      });
-    };
     endGame = function() {
       $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
       return $('#gameEnd').show();
