@@ -14,7 +14,7 @@ jQuery(document).ready ->
 
   #Game globals
   locations = []
-  
+  validData = []
   gameGlobal = {
     trackers: {
       monthPassed: 0,
@@ -44,7 +44,7 @@ jQuery(document).ready ->
     dist = R * c
     return dist;
 
-  class location
+  class gameLocation
     constructor: (@position, @name, @data, @rare, @icon ) ->
       @marker
       @value
@@ -85,7 +85,7 @@ jQuery(document).ready ->
         $('#locationInfoOverlay #travelTime').text 'Travel Time: at least ' + travelTime.toFixed(2) + ' Hours'
         @value = self.value
 
-  class player extends location
+  class player extends gameLocation
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
@@ -217,7 +217,7 @@ jQuery(document).ready ->
     for place in data
       lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
       lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
-      marker[i] = new location {lat, lng}, place['dcterms:spatial'].split(';')[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}, false
+      marker[i] = new gameLocation {lat, lng}, place['dcterms:spatial'].split(';')[0], {'title': place['dc:title'], 'description': place['dc:description'], 'img': place['150_pixel_jpg']}, false
       marker[i].addTo(googleMap)
       locations.push(marker[i])
       setValue(marker[i])
@@ -395,10 +395,13 @@ jQuery(document).ready ->
   $('#confirmWait').click ->
     gameTime.incrementDays(parseInt($('#waitTimeInput').val()))
     if parseInt($('#waitTimeInput').val()) != 1 then gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days') else gameEvents.addEvent(new event '', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' day')
+    validData.sort ->
+      return 0.5 - Math.random()
+    generateMarkers(validData.slice(0, parseInt($('#waitTimeInput').val())/2))
     for location in locations
       show = Math.floor(Math.random() * (30)) <= parseInt($('#waitTimeInput').val())/2
       if show
-        location.marker.setVisible(true)
+        location.marker.setVisible true
 
   $('#washPic').click ->
     notWashed = []

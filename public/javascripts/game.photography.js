@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gamePhoto, gameTime, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers, validData;
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
@@ -19,6 +19,7 @@
       });
     };
     locations = [];
+    validData = [];
     gameGlobal = {
       trackers: {
         monthPassed: 0,
@@ -48,8 +49,8 @@
       dist = R * c;
       return dist;
     };
-    location = (function() {
-      function location(position, name, data1, rare1, icon) {
+    gameLocation = (function() {
+      function gameLocation(position, name, data1, rare1, icon) {
         this.position = position;
         this.name = name;
         this.data = data1;
@@ -61,7 +62,7 @@
         this.travelTime;
       }
 
-      location.prototype.addTo = function(map) {
+      gameLocation.prototype.addTo = function(map) {
         var marker;
         if (this.icon) {
           marker = new google.maps.Marker({
@@ -81,7 +82,7 @@
         return this.setListener(this.marker);
       };
 
-      location.prototype.setListener = function(marker) {
+      gameLocation.prototype.setListener = function(marker) {
         var self;
         self = this;
         marker.addListener('click', function() {
@@ -100,7 +101,7 @@
         });
       };
 
-      return location;
+      return gameLocation;
 
     })();
     player = (function(superClass) {
@@ -161,7 +162,7 @@
 
       return player;
 
-    })(location);
+    })(gameLocation);
     timeManager = (function() {
       function timeManager(baseTime) {
         this.baseTime = baseTime;
@@ -314,7 +315,7 @@
         place = data[j];
         lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0]);
         lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1]);
-        marker[i] = new location({
+        marker[i] = new gameLocation({
           lat: lat,
           lng: lng
         }, place['dcterms:spatial'].split(';')[0], {
@@ -340,7 +341,7 @@
       }
     };
     updateMarkers = function() {
-      var hide, j, len, results, show;
+      var hide, j, len, location, results, show;
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
@@ -375,7 +376,7 @@
       }
 
       photographyGame.prototype.init = function(amount) {
-        var localInit, validData;
+        var localInit;
         localInit = function() {
           validData.sort(function() {
             return 0.5 - Math.random();
@@ -413,7 +414,7 @@
       return $('#gameEnd').show();
     };
     endTurn = function(date) {
-      var j, len, newStats, results, show;
+      var j, len, location, newStats, results, show;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
@@ -535,13 +536,17 @@
       return $('#waitInfo').show();
     });
     $('#confirmWait').click(function() {
-      var j, len, results, show;
+      var j, len, location, results, show;
       gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
       if (parseInt($('#waitTimeInput').val()) !== 1) {
         gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days'));
       } else {
         gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' day'));
       }
+      validData.sort(function() {
+        return 0.5 - Math.random();
+      });
+      generateMarkers(validData.slice(0, parseInt($('#waitTimeInput').val()) / 2));
       results = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
