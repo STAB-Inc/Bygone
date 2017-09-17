@@ -16,7 +16,8 @@ body{
 
 #chapTitle p{
   font-family: "Raleway", sans-serif;
-  font-size: 5em;
+  font-size: 3em;
+  font-weight: 900;
   color: #e8e8e6;
   position: fixed;
   top: 50%;
@@ -165,8 +166,8 @@ div.gameButton p{
   text-align: center;
   font-family: "Open Sans";
   font-size: 2.4em;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.7);
   vertical-align: middle;
   left: 50%;
