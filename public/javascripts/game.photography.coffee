@@ -325,7 +325,7 @@ jQuery(document).ready ->
     addShotToInv(multiplier)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
-    gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes '+ timeTaken + ' hours.')
+    gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
     if mark.playerAt.rare then gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
 
   $('.viewInv').click ->
@@ -367,12 +367,15 @@ jQuery(document).ready ->
     for item in mark.inventory
       if !item.washed then notWashed.push(item)
     if notWashed.length == 0
-      alert('There are no pictures to wash')
+      $('#washPicOverlay p').text 'There are no pictures to wash.'
+      $('#washPicOverlay').show()
+      $('#washPicOverlay #confirmWashPic').hide()
     else
       for item in mark.inventory
         item.washed = true
       $('#washPicOverlay p').text 'Washing photos takes ' + gameGlobal.turnConsts.pictureWashingTime + ' days. Proceed?'
       $('#washPicOverlay').show()
+      $('#washPicOverlay #confirmWashPic').show()
 
   $('#confirmWashPic').click ->
     gameTime.incrementTime(10*Math.random())
@@ -420,6 +423,9 @@ jQuery(document).ready ->
     newStats.assets -= earningsEst
     mark.updateStats(newStats)
     $('#soldInfoOverlay p').text 'Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s'
+
+  $('#actions button').click ->
+    $('#blockOverlay').show()
 
   $('.confirm, .close').click ->
     closeParent(this)

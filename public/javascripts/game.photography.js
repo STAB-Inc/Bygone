@@ -462,7 +462,7 @@
       addShotToInv(multiplier);
       timeTaken = Math.floor(Math.random() * 10) + 24;
       gameTime.incrementTime(timeTaken);
-      gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. It takes ' + timeTaken + ' hours.'));
+      gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. ' + timeTaken + ' hours later, you finally take a picture of value.'));
       if (mark.playerAt.rare) {
         return gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
       }
@@ -529,7 +529,9 @@
         }
       }
       if (notWashed.length === 0) {
-        return alert('There are no pictures to wash');
+        $('#washPicOverlay p').text('There are no pictures to wash.');
+        $('#washPicOverlay').show();
+        return $('#washPicOverlay #confirmWashPic').hide();
       } else {
         ref1 = mark.inventory;
         for (k = 0, len1 = ref1.length; k < len1; k++) {
@@ -537,7 +539,8 @@
           item.washed = true;
         }
         $('#washPicOverlay p').text('Washing photos takes ' + gameGlobal.turnConsts.pictureWashingTime + ' days. Proceed?');
-        return $('#washPicOverlay').show();
+        $('#washPicOverlay').show();
+        return $('#washPicOverlay #confirmWashPic').show();
       }
     });
     $('#confirmWashPic').click(function() {
@@ -601,6 +604,9 @@
       newStats.assets -= earningsEst;
       mark.updateStats(newStats);
       return $('#soldInfoOverlay p').text('Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s');
+    });
+    $('#actions button').click(function() {
+      return $('#blockOverlay').show();
     });
     $('.confirm, .close').click(function() {
       return closeParent(this);
