@@ -174,7 +174,7 @@ jQuery(document).ready ->
     constructor: (@title, @time, @content, @special=false) ->
 
   class photo
-    constructor: (@value, @washed, @img, @title) ->
+    constructor: (@value, @washed, @img, @title, @quailty) ->
 
   class photographyGame
     constructor: (@debug) ->
@@ -286,9 +286,9 @@ jQuery(document).ready ->
     $('#takingPic .close').hide()
     $(this).hide()
     
-  addShotToInv = (multiplier) ->
+  addShotToInv = (multiplier, quailty) ->
     photoValue = mark.playerAt.value*multiplier
-    shotTaken = new photo photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title
+    shotTaken = new photo photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty
     mark.inventory.push(shotTaken)
     mark.playerAt.marker.setVisible(false)
     newStats = mark.stats
@@ -314,18 +314,21 @@ jQuery(document).ready ->
     $('#takingPic .viewInv').show()
     $('#takingPic .shotStats').show();
     multiplier = 1
+    quailty = 1
     sliderPosition = parseInt($('#takingPic .slider').css('left'), 10)
     inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left
     inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left
     if inBlue && inGreen
       multiplier = 1.2
+      quailty = 0
       $('.shotStats').text 'You take a high quailty photo, this will surely sell for more!'
     else if inBlue
       $('.shotStats').text 'You take a average photo.'    
     else
       multiplier = 0.8
+      quailty = 2
       $('.shotStats').text 'The shot comes out all smudged...'
-    addShotToInv(multiplier)
+    addShotToInv(multiplier, quailty)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
@@ -345,11 +348,12 @@ jQuery(document).ready ->
     potentialValue = 0;
     sellableValue = 0;
     for item in mark.inventory
+      picture = $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').css('filter', 'blur('+ item.quailty + 'px)')
       if !item.washed
-        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .cameraRoll'))
+        picture.appendTo($('#inventory .cameraRoll'))
         potentialValue += item.value
       else
-        $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').appendTo($('#inventory .washedPics'))
+        picture.appendTo($('#inventory .washedPics'))
         sellableValue += item.value
     $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
