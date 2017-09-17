@@ -148,6 +148,8 @@ jQuery(document).ready ->
       date = @baseTime[2] + @dateCounter
       hours = parseInt(@baseTime[3]) + @timeCounter
       minutes = parseInt((hours - Math.floor(hours))*60)
+      if date > 30
+        date -= date - 30
       if String(parseInt(minutes)).length == 2 then return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) else return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0'
 
   class eventManager
@@ -180,6 +182,7 @@ jQuery(document).ready ->
     init: ->
       retrieveResources(100).then (res) ->
         generateMarkers(processData(res))
+        gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
 
   retrieveResources = (amount) ->
     reqParam = {

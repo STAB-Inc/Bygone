@@ -213,6 +213,9 @@
         date = this.baseTime[2] + this.dateCounter;
         hours = parseInt(this.baseTime[3]) + this.timeCounter;
         minutes = parseInt((hours - Math.floor(hours)) * 60);
+        if (date > 30) {
+          date -= date - 30;
+        }
         if (String(parseInt(minutes)).length === 2) {
           return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes));
         } else {
@@ -270,7 +273,8 @@
 
       photographyGame.prototype.init = function() {
         return retrieveResources(100).then(function(res) {
-          return generateMarkers(processData(res));
+          generateMarkers(processData(res));
+          return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
         });
       };
 
