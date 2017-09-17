@@ -427,6 +427,7 @@ jQuery(document).ready ->
     newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(gameGlobal.turnConsts.interest/10)
     newStats.CAB += parseInt($('#loanInput').val())
     mark.updateStats(newStats)
+    gameEvents.addEvent(new event 'Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val()))
   
   $('#loanInput, #waitTimeInput').keyup ->
     if !$.isNumeric($(this).val())

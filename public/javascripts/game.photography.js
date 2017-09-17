@@ -591,7 +591,8 @@
       newStats = mark.stats;
       newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (gameGlobal.turnConsts.interest / 10);
       newStats.CAB += parseInt($('#loanInput').val());
-      return mark.updateStats(newStats);
+      mark.updateStats(newStats);
+      return gameEvents.addEvent(new event('Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val())));
     });
     $('#loanInput, #waitTimeInput').keyup(function() {
       if (!$.isNumeric($(this).val())) {
