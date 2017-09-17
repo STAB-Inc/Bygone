@@ -173,7 +173,7 @@ jQuery(document).ready ->
   class event
     constructor: (@title, @time, @content, @special=false) ->
 
-  class photo
+  class gamePhoto
     constructor: (@value, @washed, @img, @title, @quailty) ->
 
   class photographyGame
@@ -236,7 +236,6 @@ jQuery(document).ready ->
   generateMarkers = (data) ->
     marker = []
     i = 0
-    console.log data
     for place in data
       lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
       lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
@@ -289,7 +288,7 @@ jQuery(document).ready ->
     
   addShotToInv = (multiplier, quailty) ->
     photoValue = mark.playerAt.value*multiplier
-    shotTaken = new photo photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty
+    shotTaken = new gamePhoto photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty
     mark.inventory.push(shotTaken)
     mark.playerAt.marker.setVisible(false)
     newStats = mark.stats
@@ -368,12 +367,6 @@ jQuery(document).ready ->
     
     $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
-    $('#inventory .photo').bind {
-      mouseenter: ->
-        console.log 'entered'
-      , mouseleave: ->
-        console.log 'out'
-    }
 
   $('#wait').click ->
     $('#waitInfo').show()
@@ -423,7 +416,7 @@ jQuery(document).ready ->
       if photo.washed
         sellablePhotos += 1
         photosValue += photo.value
-    $('#soldInfoOverlay p').text 'Potential Earnings $' + photosValue + ' from ' + sellablePhotos + ' Photo/s'
+    $('#soldInfoOverlay p').text 'Potential Earnings $' + parseInt(photosValue) + ' from ' + sellablePhotos + ' Photo/s'
     if sellablePhotos == 0 then $('#soldInfoOverlay button').hide() else $('#soldInfoOverlay button').show()
     $('#soldInfoOverlay').show()
 
@@ -442,11 +435,13 @@ jQuery(document).ready ->
         gameGlobal.trackers.moneyEarned += earningsAct
       else
         newInventory.push(photo)
+    timeTaken = ((Math.random()*2)+1)*photosSold
     mark.inventory = newInventory
     newStats.CAB += earningsAct
     newStats.assets -= earningsEst
     mark.updateStats(newStats)
-    $('#soldInfoOverlay p').text 'Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s'
+    gameTime.incrementDays(parseInt(timeTaken))
+    if parseInt(timeTaken) == 1 then gameEvents.addEvent(new event 'Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' day to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.') else gameEvents.addEvent(new event 'Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' days to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.')
 
   $('#actions button').click ->
     $('#blockOverlay').show()

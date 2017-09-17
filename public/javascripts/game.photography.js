@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameTime, generateMarkers, location, locations, mark, photo, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gamePhoto, gameTime, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
     $('#takePic').hide();
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
@@ -255,8 +255,8 @@
       return event;
 
     })();
-    photo = (function() {
-      function photo(value, washed, img, title, quailty1) {
+    gamePhoto = (function() {
+      function gamePhoto(value, washed, img, title, quailty1) {
         this.value = value;
         this.washed = washed;
         this.img = img;
@@ -264,7 +264,7 @@
         this.quailty = quailty1;
       }
 
-      return photo;
+      return gamePhoto;
 
     })();
     photographyGame = (function() {
@@ -346,7 +346,6 @@
       var i, j, lat, len, lng, marker, place;
       marker = [];
       i = 0;
-      console.log(data);
       for (j = 0, len = data.length; j < len; j++) {
         place = data[j];
         lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0]);
@@ -426,7 +425,7 @@
     addShotToInv = function(multiplier, quailty) {
       var newStats, photoValue, shotTaken;
       photoValue = mark.playerAt.value * multiplier;
-      shotTaken = new photo(photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty);
+      shotTaken = new gamePhoto(photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty);
       mark.inventory.push(shotTaken);
       mark.playerAt.marker.setVisible(false);
       newStats = mark.stats;
@@ -506,15 +505,7 @@
         $('<aside> <p>Value $' + parseInt(item.value) + '</p> <p>' + item.title + '</p> </aside>').appendTo(pictureContainer);
       }
       $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
-      $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
-      return $('#inventory .photo').bind({
-        mouseenter: function() {
-          return console.log('entered');
-        },
-        mouseleave: function() {
-          return console.log('out');
-        }
-      });
+      return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
     $('#wait').click(function() {
       return $('#waitInfo').show();
@@ -581,7 +572,7 @@
       return mark.updateStats(newStats);
     });
     $('#sellPic').click(function() {
-      var j, len, photosValue, ref, sellablePhotos;
+      var j, len, photo, photosValue, ref, sellablePhotos;
       sellablePhotos = 0;
       photosValue = 0;
       ref = mark.inventory;
@@ -592,7 +583,7 @@
           photosValue += photo.value;
         }
       }
-      $('#soldInfoOverlay p').text('Potential Earnings $' + photosValue + ' from ' + sellablePhotos + ' Photo/s');
+      $('#soldInfoOverlay p').text('Potential Earnings $' + parseInt(photosValue) + ' from ' + sellablePhotos + ' Photo/s');
       if (sellablePhotos === 0) {
         $('#soldInfoOverlay button').hide();
       } else {
@@ -601,7 +592,7 @@
       return $('#soldInfoOverlay').show();
     });
     $('#sellPhotos').click(function() {
-      var earningsAct, earningsEst, j, len, newInventory, newStats, photosSold, ref;
+      var earningsAct, earningsEst, j, len, newInventory, newStats, photo, photosSold, ref, timeTaken;
       photosSold = 0;
       earningsEst = 0;
       earningsAct = 0;
@@ -620,11 +611,17 @@
           newInventory.push(photo);
         }
       }
+      timeTaken = ((Math.random() * 2) + 1) * photosSold;
       mark.inventory = newInventory;
       newStats.CAB += earningsAct;
       newStats.assets -= earningsEst;
       mark.updateStats(newStats);
-      return $('#soldInfoOverlay p').text('Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s');
+      gameTime.incrementDays(parseInt(timeTaken));
+      if (parseInt(timeTaken) === 1) {
+        return gameEvents.addEvent(new event('Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' day to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.'));
+      } else {
+        return gameEvents.addEvent(new event('Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' days to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.'));
+      }
     });
     $('#actions button').click(function() {
       return $('#blockOverlay').show();
