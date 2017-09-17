@@ -7578,8 +7578,33 @@ main#puzzleGame .winScreen p {
   text-align: center;
 }
 
-#photographyGame .photo {
+#photographyGame .photoContainer {
+  width: 150px;
+  display: inline-block;
+  overflow: hidden;
+  margin-left: 20px;
+}
+
+#photographyGame .photoContainer .crop {
+  overflow: hidden;
+}
+
+#photographyGame .photoContainer aside {
+  width: 100%;
+  height: 100px;
+  overflow: auto;
+}
+
+#photographyGame .photoContainer aside p {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+}
+
+#photographyGame .photoContainer .photo {
   max-width: 100%;
+  transform: scale(1.1) translateX(-50%);
+  margin-left: 50%;
 }
 
 #photographyGame #map {
@@ -7771,6 +7796,11 @@ main#puzzleGame .winScreen p {
 
 #photographyGame #locationInfoOverlay .locationInfo {
   height: 100px;
+}
+
+#photographyGame #locationInfoOverlay .desContainer {
+  height: 80px;
+  overflow: auto;
 }
 
 #photographyGame #actions {

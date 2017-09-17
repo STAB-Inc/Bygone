@@ -1,6 +1,27 @@
 #photographyGame {
-  .photo {
-    max-width: 100%;
+  .photoContainer {
+    width: 150px;
+    display: inline-block;
+    overflow: hidden;
+    margin-left: 20px;
+    .crop {
+      overflow: hidden;
+    }
+    aside {
+      width: 100%;
+      height: 100px;
+      overflow: auto;
+      p {
+        margin: 0;
+        text-align: center;
+        font-size: 12px;
+      }
+    }
+    .photo {
+      max-width: 100%;
+      transform: scale(1.1) translateX(-50%);
+      margin-left: 50%;
+    }
   }
   #map {
     width:100%;
@@ -146,6 +167,10 @@
     }
     .locationInfo {
       height: 100px;
+    }
+    .desContainer {
+      height: 80px;
+      overflow: auto;
     }
   }
   #actions {

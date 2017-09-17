@@ -52,7 +52,7 @@ jQuery(document).ready ->
         #$('#locationInfoOverlay #description').text self.data.description
         travelDistance = parseInt(distanceTravelled(mark.position, self.position))
         travelTime = travelDistance/232
-        $('#locationInfoOverlay #title').text self.data.title
+        $('#locationInfoOverlay #title').text self.data.description
         $('#locationInfoOverlay #position').text 'Distance away ' + travelDistance + 'km'
         $('#locationInfoOverlay #value').text 'Potential Revenue $' + self.value
         $('#locationInfoOverlay #travelExpense').text 'Travel Expense $' + parseInt((travelDistance*0.6)/10)
@@ -236,6 +236,7 @@ jQuery(document).ready ->
   generateMarkers = (data) ->
     marker = []
     i = 0
+    console.log data
     for place in data
       lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0])
       lng = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[1])
@@ -343,20 +344,36 @@ jQuery(document).ready ->
     
   displayInv = ->
     $('#blockOverlay').show()
-    $('#inventory .photo').remove()
+    $('#inventory .photoContainer').remove()
     $('#inventory').show()
     potentialValue = 0;
     sellableValue = 0;
     for item in mark.inventory
-      picture = $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').css('filter', 'blur('+ item.quailty + 'px)')
+      pictureContainer = $('<div class="photoContainer"></div>')
+      picture = $('
+      <div class="crop">
+        <img class="photo" src="' + item.img + '"/>
+      </div>').css('filter', 'blur('+ item.quailty + 'px')
+      picture.appendTo(pictureContainer)
       if !item.washed
-        picture.appendTo($('#inventory .cameraRoll'))
+        pictureContainer.appendTo($('#inventory .cameraRoll'))
         potentialValue += item.value
       else
-        picture.appendTo($('#inventory .washedPics'))
+        pictureContainer.appendTo($('#inventory .washedPics'))
         sellableValue += item.value
+      $('<aside>
+        <p>Value $' + parseInt(item.value) + '</p>
+        <p>' + item.title + '</p>
+      </aside>').appendTo(pictureContainer)
+    
     $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue))
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
+    $('#inventory .photo').bind {
+      mouseenter: ->
+        console.log 'entered'
+      , mouseleave: ->
+        console.log 'out'
+    }
 
   $('#wait').click ->
     $('#waitInfo').show()

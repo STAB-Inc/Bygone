@@ -66,7 +66,7 @@
           var travelDistance, travelTime;
           travelDistance = parseInt(distanceTravelled(mark.position, self.position));
           travelTime = travelDistance / 232;
-          $('#locationInfoOverlay #title').text(self.data.title);
+          $('#locationInfoOverlay #title').text(self.data.description);
           $('#locationInfoOverlay #position').text('Distance away ' + travelDistance + 'km');
           $('#locationInfoOverlay #value').text('Potential Revenue $' + self.value);
           $('#locationInfoOverlay #travelExpense').text('Travel Expense $' + parseInt((travelDistance * 0.6) / 10));
@@ -346,6 +346,7 @@
       var i, j, lat, len, lng, marker, place;
       marker = [];
       i = 0;
+      console.log(data);
       for (j = 0, len = data.length; j < len; j++) {
         place = data[j];
         lat = parseFloat(place['dcterms:spatial'].split(';')[1].split(',')[0]);
@@ -483,26 +484,37 @@
       return displayInv();
     });
     displayInv = function() {
-      var item, j, len, picture, potentialValue, ref, sellableValue;
+      var item, j, len, picture, pictureContainer, potentialValue, ref, sellableValue;
       $('#blockOverlay').show();
-      $('#inventory .photo').remove();
+      $('#inventory .photoContainer').remove();
       $('#inventory').show();
       potentialValue = 0;
       sellableValue = 0;
       ref = mark.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         item = ref[j];
-        picture = $('<img class="photo" src=' + item.img + '" value="' + item.value + '"/>').css('filter', 'blur(' + item.quailty + 'px)');
+        pictureContainer = $('<div class="photoContainer"></div>');
+        picture = $('<div class="crop"> <img class="photo" src="' + item.img + '"/> </div>').css('filter', 'blur(' + item.quailty + 'px');
+        picture.appendTo(pictureContainer);
         if (!item.washed) {
-          picture.appendTo($('#inventory .cameraRoll'));
+          pictureContainer.appendTo($('#inventory .cameraRoll'));
           potentialValue += item.value;
         } else {
-          picture.appendTo($('#inventory .washedPics'));
+          pictureContainer.appendTo($('#inventory .washedPics'));
           sellableValue += item.value;
         }
+        $('<aside> <p>Value $' + parseInt(item.value) + '</p> <p>' + item.title + '</p> </aside>').appendTo(pictureContainer);
       }
       $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
-      return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
+      $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
+      return $('#inventory .photo').bind({
+        mouseenter: function() {
+          return console.log('entered');
+        },
+        mouseleave: function() {
+          return console.log('out');
+        }
+      });
     };
     $('#wait').click(function() {
       return $('#waitInfo').show();
