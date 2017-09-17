@@ -427,6 +427,14 @@ jQuery(document).ready ->
     newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(gameGlobal.turnConsts.interest/10)
     newStats.CAB += parseInt($('#loanInput').val())
     mark.updateStats(newStats)
+  
+  $('#loanInput, #waitTimeInput').keyup ->
+    if !$.isNumeric($(this).val())
+      $(this).parent().find('.err').text '*Input must be a number'
+      $(this).parent().find('button.confirm').prop 'disabled', true
+    else
+      $(this).parent().find('.err').text ''
+      $(this).parent().find('button.confirm').prop 'disabled', false
 
   $('#sellPic').click ->
     sellablePhotos = 0

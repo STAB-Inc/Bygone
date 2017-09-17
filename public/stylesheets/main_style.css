@@ -7578,6 +7578,10 @@ main#puzzleGame .winScreen p {
   text-align: center;
 }
 
+#photographyGame .err {
+  color: red;
+}
+
 #photographyGame button {
   background: none;
   color: white;

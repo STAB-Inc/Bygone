@@ -593,6 +593,15 @@
       newStats.CAB += parseInt($('#loanInput').val());
       return mark.updateStats(newStats);
     });
+    $('#loanInput, #waitTimeInput').keyup(function() {
+      if (!$.isNumeric($(this).val())) {
+        $(this).parent().find('.err').text('*Input must be a number');
+        return $(this).parent().find('button.confirm').prop('disabled', true);
+      } else {
+        $(this).parent().find('.err').text('');
+        return $(this).parent().find('button.confirm').prop('disabled', false);
+      }
+    });
     $('#sellPic').click(function() {
       var j, len, photo, photosValue, ref, sellablePhotos;
       sellablePhotos = 0;
