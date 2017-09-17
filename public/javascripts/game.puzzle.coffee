@@ -1,5 +1,13 @@
 jQuery(document).ready ->
 
+  $.urlParam = (name) ->
+    results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
+    return results[1] || 0
+  
+  isStoryMode = $.urlParam('story') == 'true'
+  if isStoryMode
+    console.log 'InitStoryModeGame'
+
   class puzzleGame
     constructor: (@debug, @xsplit, @ysplit) ->
       @timePassed
