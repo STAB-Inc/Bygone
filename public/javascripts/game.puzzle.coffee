@@ -4,11 +4,13 @@ jQuery(document).ready ->
     constructor: (@debug, @xsplit, @ysplit) ->
       @timePassed
 
-    init: (@resources) ->
-      @solution = @resources[Math.floor(Math.random() * @resources.length)]
-      console.log @solution
+    init: (@resources, amount) ->
+      @resources.sort ->
+        return 0.5 - Math.random()
+      resourceLimit = @resources.slice(0, amount)
+      @solution = resourceLimit[Math.floor(Math.random() * resourceLimit.length)]
       @reset()
-      @generateChoiceField(@resources)
+      @generateChoiceField(resourceLimit)
       @generateTiles()
       @initTimer()
 
@@ -33,7 +35,11 @@ jQuery(document).ready ->
         row = 0
         while row < @xsplit
           tile = $(tileTemplate.clone())
-          tile.draggable({containment:$('#gameArea')})
+          tile.draggable({
+            containment:$('#gameArea'),
+            snap: true,
+            snapMode: "both"
+            })
           tile.show()
           tile.addClass 'tile'
           tile.removeAttr 'id', ''
@@ -108,16 +114,27 @@ jQuery(document).ready ->
       if item['High resolution image']
         processedData.push(item)
     return processedData
+    
+  load = ->
+    $('#loader').css {
+      'opacity': 0,
+      'pointer-events': 'none',
+    }
+    $('body').css 'overflow-y', 'auto'
+    setTimeout ->
+      $('#loader').css {
+        'display': 'none',
+        'left': -1*$('#loader').width()
+        }
+    , 1000
 
-  currentGame = null
-  $('.play').click ->
-    currentGame = new puzzleGame false, 8, 8
-    retrieveResources(50).then (res) ->
-      currentGame.init(processData(res))
-      return
-    $(this).hide()
-    $('.winScreen').hide();
-    return
+  currentGame = new puzzleGame false, 8, 8
+  retrieveResources(1000).then (res) ->
+    load()
+    currentGame.init processData(res), 20
+
+  $(this).hide()
+  $('.winScreen').hide();
 
   $('#selectionArea').on 'click', '.choice', ->
     if parseInt($(this).attr('id').match(/[0-9]+/)) == currentGame.getAnswer()[1]
@@ -125,6 +142,9 @@ jQuery(document).ready ->
     else
       currentGame.gameLose()
     return
+
+  $('#playAgain').click ->
+    location.reload()
 
   $('#reset').click ->
     currentGame.reset()
