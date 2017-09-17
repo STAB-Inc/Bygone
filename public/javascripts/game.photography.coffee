@@ -23,7 +23,8 @@ jQuery(document).ready ->
     },
     turnConsts: {
       interest: 1.5,
-      pictureWashingTime: 14
+      pictureWashingTime: 14,
+      liability: 300
     }
   }
 
@@ -282,10 +283,11 @@ jQuery(document).ready ->
   endTurn = (date) ->
     gameGlobal.trackers.monthPassed += 1
     gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
+    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
+    newStats.liabilities = gameGlobal.turnConsts.liability
     mark.updateStats(newStats)
-    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
     for location in locations
       show = Math.random() > 0.2
       if show
