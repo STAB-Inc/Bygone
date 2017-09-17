@@ -25,7 +25,16 @@
       if (href.charAt(0) === '#') {
         return toHash(href);
       } else {
-        return console.log('standard link');
+        $('#loader').show();
+        $('#loader').css('opacity', 1);
+        $('#loader').empty();
+        return $('#loader').animate({
+          'left': '0px'
+        }, 50, function() {
+          return setTimeout(function() {
+            return window.location = href;
+          }, 1000);
+        });
       }
     });
     load = function() {
@@ -35,7 +44,10 @@
       });
       $('body').css('overflow-y', 'auto');
       return setTimeout(function() {
-        return $('#loader').css('display', 'none');
+        return $('#loader').css({
+          'display': 'none',
+          'left': -1 * $('#loader').width()
+        });
       }, 1000);
     };
     imagesTotal = $('img').length;

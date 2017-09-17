@@ -9,12 +9,12 @@ body {
 a {
   cursor: pointer;
   color: black;
-  &:hover,
-  &:focus {
-    text-decoration: none;
-    outline: none;
-    color: inherit;
-  }
+}
+
+a:hover, a:focus {
+  text-decoration: none;
+  outline: none;
+  color: inherit;
 }
 
 .close {
@@ -26,9 +26,12 @@ a {
   opacity: 1;
   font-weight: 300;
   text-shadow: none;
-  &:hover {
-    color: #dadad2;
-    opacity: 1;
-  }
 }
 
+.close:hover {
+  color: #dadad2;
+  opacity: 1;
+}
+ 
+
+ /*# sourceMappingURL= base.css.map */

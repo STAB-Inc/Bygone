@@ -24,16 +24,28 @@ $(document).ready ->
     if href.charAt(0) == '#'
       toHash href
     else
-      console.log 'standard link'
+      $('#loader').show()
+      $('#loader').css 'opacity', 1
+      $('#loader').empty()
+      $('#loader').animate({
+        'left': '0px'
+      }, 50, ->
+        setTimeout ->
+          window.location = href
+        , 1000
+      )
 
   load = ->
     $('#loader').css {
       'opacity': 0,
-      'pointer-events': 'none'
+      'pointer-events': 'none',
     }
     $('body').css 'overflow-y', 'auto'
     setTimeout ->
-      $('#loader').css 'display', 'none'
+      $('#loader').css {
+        'display': 'none',
+        'left': -1*$('#loader').width()
+        }
     , 1000
 
   #loader delayed for testing
