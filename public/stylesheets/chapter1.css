@@ -38,10 +38,6 @@ body{
   cursor: pointer;
 }
 
-.interact{
-  height: 100%;
-}
-
 img.background{
   position: fixed;
   height: 100%;
@@ -102,6 +98,28 @@ img.char{
   left: 60%;
   transform: translate(-30%);
 }
+
+#boss{
+  height: 70%;
+  bottom: 0;
+  left: 43%;
+  transform: translate(-60%);
+}
+
+#mattSuit{
+  height: 80%;
+  bottom: 0;
+  left: 62%;
+  transform: translate(-30%);
+}
+
+#office, #roomBlur, #mattDrink, #flashBack, #flashBackBlur{
+  height: auto;
+  width: 100%;
+  bottom: 0;
+}
+
+
 
 div#back{
   display: block;
