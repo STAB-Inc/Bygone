@@ -1,6 +1,19 @@
 jQuery(document).ready ->
 
-  $('#takePic').hide()
+  #Game globals
+  locations = []
+  
+  gameGlobal = {
+    trackers: {
+      monthPassed: 0,
+      photosSold: 0,
+      moneyEarned: 0
+    },
+    turnConsts: {
+      interest: 1.5,
+      pictureWashingTime: 14
+    }
+  }
 
   deg2rad = (deg) ->
     return deg * (Math.PI/180)
@@ -170,61 +183,13 @@ jQuery(document).ready ->
           <p class="title">' + event.title + '</p>
           <p class="content">' + event.content + '</p>
         </div>').prependTo(@domSelector)
+
   class event
     constructor: (@title, @time, @content, @special=false) ->
 
   class gamePhoto
     constructor: (@value, @washed, @img, @title, @quailty) ->
 
-  class photographyGame
-    constructor: (@debug) ->
-
-    init: ->
-      retrieveResources(100).then (res) ->
-        generateMarkers(processData(res))
-        gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
-
-  retrieveResources = (amount) ->
-    reqParam = {
-      resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
-      limit: amount
-    }
-    $.ajax {
-      url: 'https://data.gov.au/api/action/datastore_search',
-      data: reqParam,
-      dataType: 'jsonp',
-      cache: true
-    }
-
-  #Game Globals
-  currentGame = new photographyGame false
-  currentGame.init()
-
-  gameEvents = new eventManager $('#eventLog .eventContainer')
-  gameTime = new timeManager [1939, 1, 1, 0]
-
-  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
-  mark.initTo(googleMap)
-  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
-  
-  locations = []
-  
-  gameGlobal = {
-    trackers: {
-      monthPassed: 0,
-      photosSold: 0,
-      moneyEarned: 0
-    },
-    turnConsts: {
-      interest: 1.5,
-      pictureWashingTime: 14
-    }
-  }
-
-  endGame = ->
-    $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
-    $('#gameEnd').show();
-  
   processData = (data) ->
     processedData = []
     for item in data.result.records
@@ -232,7 +197,7 @@ jQuery(document).ready ->
         if item['dcterms:spatial'].split(';')[1]
           processedData.push(item)
     return processedData
-  
+
   generateMarkers = (data) ->
     marker = []
     i = 0
@@ -262,6 +227,54 @@ jQuery(document).ready ->
       if hide
         location.marker.setVisible(false)
 
+  
+
+  gameEvents = new eventManager $('#eventLog .eventContainer')
+  gameTime = new timeManager [1939, 1, 1, 0]
+
+  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
+  mark.initTo(googleMap)
+  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
+
+  class photographyGame
+    constructor: (@debug) ->
+
+    init: (amount) ->
+      if localStorage.getItem 'photographyGameData'
+        validData = processData(JSON.parse(localStorage.getItem 'photographyGameData'))
+        if amount > validData.length
+          retrieveResources(1000).then (res) ->
+            localStorage.setItem 'photographyGameData', JSON.stringify(res)
+            validData = processData res
+      else
+        retrieveResources(1000).then (res) ->
+          localStorage.setItem 'photographyGameData', JSON.stringify(res)
+          validData = processData res
+
+      validData.sort ->
+        return 0.5 - Math.random()
+      generateMarkers(validData.slice(0, amount))
+      gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
+
+  currentGame = new photographyGame false
+  currentGame.init(100)
+
+  retrieveResources = (amount) ->
+    reqParam = {
+      resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
+      limit: amount
+    }
+    $.ajax {
+      url: 'https://data.gov.au/api/action/datastore_search',
+      data: reqParam,
+      dataType: 'jsonp',
+      cache: true
+    }
+
+  endGame = ->
+    $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
+    $('#gameEnd').show();
+
   endTurn = (date) ->
     gameGlobal.trackers.monthPassed += 1
     gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
@@ -273,6 +286,8 @@ jQuery(document).ready ->
       show = Math.random() > 0.2
       if show
         location.marker.setVisible(true)
+
+  $('#takePic').hide()
   
   $('#takePic').click ->
     $('#takingPic .section3').css 'width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%'

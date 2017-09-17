@@ -5,7 +5,18 @@
 
   jQuery(document).ready(function() {
     var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gamePhoto, gameTime, generateMarkers, location, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers;
-    $('#takePic').hide();
+    locations = [];
+    gameGlobal = {
+      trackers: {
+        monthPassed: 0,
+        photosSold: 0,
+        moneyEarned: 0
+      },
+      turnConsts: {
+        interest: 1.5,
+        pictureWashingTime: 14
+      }
+    };
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
     };
@@ -267,67 +278,6 @@
       return gamePhoto;
 
     })();
-    photographyGame = (function() {
-      function photographyGame(debug) {
-        this.debug = debug;
-      }
-
-      photographyGame.prototype.init = function() {
-        return retrieveResources(100).then(function(res) {
-          generateMarkers(processData(res));
-          return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
-        });
-      };
-
-      return photographyGame;
-
-    })();
-    retrieveResources = function(amount) {
-      var reqParam;
-      reqParam = {
-        resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
-        limit: amount
-      };
-      return $.ajax({
-        url: 'https://data.gov.au/api/action/datastore_search',
-        data: reqParam,
-        dataType: 'jsonp',
-        cache: true
-      });
-    };
-    currentGame = new photographyGame(false);
-    currentGame.init();
-    gameEvents = new eventManager($('#eventLog .eventContainer'));
-    gameTime = new timeManager([1939, 1, 1, 0]);
-    mark = new player({
-      lat: -25.363,
-      lng: 151.044
-    }, 'Mark', {
-      'type': 'self'
-    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
-    mark.initTo(googleMap);
-    mark.updateStats({
-      'CAB': 1000,
-      'workingCapital': 0,
-      'assets': 0,
-      'liabilities': 300
-    });
-    locations = [];
-    gameGlobal = {
-      trackers: {
-        monthPassed: 0,
-        photosSold: 0,
-        moneyEarned: 0
-      },
-      turnConsts: {
-        interest: 1.5,
-        pictureWashingTime: 14
-      }
-    };
-    endGame = function() {
-      $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
-      return $('#gameEnd').show();
-    };
     processData = function(data) {
       var item, j, len, processedData, ref;
       processedData = [];
@@ -390,6 +340,71 @@
       }
       return results;
     };
+    gameEvents = new eventManager($('#eventLog .eventContainer'));
+    gameTime = new timeManager([1939, 1, 1, 0]);
+    mark = new player({
+      lat: -25.363,
+      lng: 151.044
+    }, 'Mark', {
+      'type': 'self'
+    }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
+    mark.initTo(googleMap);
+    mark.updateStats({
+      'CAB': 1000,
+      'workingCapital': 0,
+      'assets': 0,
+      'liabilities': 300
+    });
+    photographyGame = (function() {
+      function photographyGame(debug) {
+        this.debug = debug;
+      }
+
+      photographyGame.prototype.init = function(amount) {
+        var validData;
+        if (localStorage.getItem('photographyGameData')) {
+          validData = processData(JSON.parse(localStorage.getItem('photographyGameData')));
+          if (amount > validData.length) {
+            retrieveResources(1000).then(function(res) {
+              localStorage.setItem('photographyGameData', JSON.stringify(res));
+              return validData = processData(res);
+            });
+          }
+        } else {
+          retrieveResources(1000).then(function(res) {
+            localStorage.setItem('photographyGameData', JSON.stringify(res));
+            return validData = processData(res);
+          });
+        }
+        validData.sort(function() {
+          return 0.5 - Math.random();
+        });
+        generateMarkers(validData.slice(0, amount));
+        return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
+      };
+
+      return photographyGame;
+
+    })();
+    currentGame = new photographyGame(false);
+    currentGame.init(100);
+    retrieveResources = function(amount) {
+      var reqParam;
+      reqParam = {
+        resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',
+        limit: amount
+      };
+      return $.ajax({
+        url: 'https://data.gov.au/api/action/datastore_search',
+        data: reqParam,
+        dataType: 'jsonp',
+        cache: true
+      });
+    };
+    endGame = function() {
+      $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
+      return $('#gameEnd').show();
+    };
     endTurn = function(date) {
       var j, len, newStats, results, show;
       gameGlobal.trackers.monthPassed += 1;
@@ -410,6 +425,7 @@
       }
       return results;
     };
+    $('#takePic').hide();
     $('#takePic').click(function() {
       $('#takingPic .section3').css('width', (Math.floor(Math.random() * (10 + 2))) + 1 + '%');
       $('#takingPic .section2').css('width', (Math.floor(Math.random() * (19 + 2))) + '%');
