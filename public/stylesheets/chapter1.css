@@ -135,7 +135,7 @@ div.gameButton{
   position: fixed;
   width: 400px;
   height: 250px;
-  background-color: #a0364b;
+  background-color: rgba(70, 99, 126, 1);
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
