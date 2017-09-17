@@ -1,0 +1,196 @@
+body{
+  font-family: Helvetica,Arial,sans-serif;
+  background-color:rgba(20,20,20,1);
+}
+
+#chapTitle{
+  width: 100%;
+  height: 100%;
+  float: left;
+  text-align: center;
+}
+
+#chapTitle:hover{
+  cursor: pointer;
+}
+
+#chapTitle p{
+  font-family: "Raleway", sans-serif;
+  font-size: 3em;
+  font-weight: 900;
+  color: #e8e8e6;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#story {
+  display: block;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(70, 60, 60, 0.3);
+}
+
+#story img:hover{
+  cursor: pointer;
+}
+
+img.background{
+  position: fixed;
+  height: 100%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+img.char{
+  display: block;
+  position: fixed;
+}
+
+#mother{
+  height: 50%;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-30%);
+}
+
+#son{
+  height: 25%;
+  bottom: 0;
+  left: 40%;
+  transform: translate(-60%);
+}
+
+#scraps{
+  height: 50%;
+  bottom: 20%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+#hand{
+  height: 60%;
+  top: 75%;
+  left: 60%;
+  transform: translate(-50%);
+}
+
+#mattBack{
+  height: 40%;
+  bottom: 0;
+  left: 60%;
+  transform: translate(-30%);
+}
+
+#dadPhoto{
+  height: 20%;
+  bottom: 65%;
+  left: 47%;
+  transform: translate(-55%);
+}
+
+#mattSniper{
+  height: 55%;
+  bottom: 0;
+  left: 60%;
+  transform: translate(-30%);
+}
+
+#boss{
+  height: 70%;
+  bottom: 0;
+  left: 43%;
+  transform: translate(-60%);
+}
+
+#mattSuit{
+  height: 80%;
+  bottom: 0;
+  left: 62%;
+  transform: translate(-30%);
+}
+
+#office, #roomBlur, #mattDrink, #flashBack, #flashBackBlur{
+  height: auto;
+  width: 100%;
+  bottom: 0;
+}
+
+
+
+div#back{
+  display: block;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+}
+
+div.gameButton{
+  display: block;
+  position: fixed;
+  width: 400px;
+  height: 250px;
+  background-color: rgba(70, 99, 126, 1);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+div.gameButton p{
+  font-family: "Raleway", sans-serif;
+  font-weight: 900;
+  font-size: 3.5em;
+  color: #e8e8e6;
+  line-height: 250px;
+  text-align: center;
+}
+
+#subspace{
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 15%;
+  top: 88%;
+  left: 0;
+  text-align: center;
+}
+
+#subspace p{
+  position: absolute;
+  text-align: center;
+  font-family: "Open Sans";
+  font-size: 2.4em;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  vertical-align: middle;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%)
+}
+
+p.son{
+  color: #99ffff;
+}
+
+p.mom{
+  color: #ff9999;
+}
+
+p.matt{
+  color: #83c4f7;
+}
+
+p.officer{
+  color: #c18a6c;
+}
+
+.navButton {
+  height: 300px !important;
+}
