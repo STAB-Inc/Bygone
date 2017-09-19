@@ -178,7 +178,8 @@
     }
     .desContainer {
       height: 80px;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
   }
   #actions {
