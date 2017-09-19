@@ -1,5 +1,17 @@
 jQuery(document).ready ->
 
+  getParam = (name) ->
+    results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
+    return results[1] || 0
+
+  try
+    storyMode = getParam('story') == 'true'
+    if storyMode
+      $('#playAgain').text 'Continue'
+      $('#playAgain').parent().attr 'href', 'chapter3.html'
+      $('.skip').show();
+
+
   retrieveResources = (amount) ->
     reqParam = {
       resource_id: '9913b881-d76d-43f5-acd6-3541a130853d',

@@ -137,6 +137,7 @@ jQuery(document).ready ->
     if storyMode
       $('#playAgain').text 'Continue'
       $('#playAgain').parent().attr 'href', 'chapter2.html'
+      $('.skip').show();
     switch getParam('diff')
       when "easy" then currentGame = new puzzleGame false, 4, 4, 20
       when "normal" then currentGame = new puzzleGame false, 8, 8, 30

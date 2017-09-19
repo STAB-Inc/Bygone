@@ -179,6 +179,7 @@
       if (storyMode) {
         $('#playAgain').text('Continue');
         $('#playAgain').parent().attr('href', 'chapter2.html');
+        $('.skip').show();
       }
       switch (getParam('diff')) {
         case "easy":

@@ -4,7 +4,20 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, locations, mark, photographyGame, player, processData, retrieveResources, setValue, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
+    getParam = function(name) {
+      var results;
+      results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+      return results[1] || 0;
+    };
+    try {
+      storyMode = getParam('story') === 'true';
+      if (storyMode) {
+        $('#playAgain').text('Continue');
+        $('#playAgain').parent().attr('href', 'chapter3.html');
+        $('.skip').show();
+      }
+    } catch (error) {}
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
@@ -50,9 +63,9 @@
       return dist;
     };
     gameLocation = (function() {
-      function gameLocation(position, name, data1, rare1, icon) {
+      function gameLocation(position, name1, data1, rare1, icon) {
         this.position = position;
-        this.name = name;
+        this.name = name1;
         this.data = data1;
         this.rare = rare1;
         this.icon = icon;
@@ -107,9 +120,9 @@
     player = (function(superClass) {
       extend(player, superClass);
 
-      function player(position, name, data1, icon, stats1) {
+      function player(position, name1, data1, icon, stats1) {
         this.position = position;
-        this.name = name;
+        this.name = name1;
         this.data = data1;
         this.icon = icon;
         this.stats = stats1;
@@ -173,9 +186,9 @@
       }
 
       timeManager.prototype.incrementTime = function(hours) {
-        var results;
+        var results1;
         this.timeCounter += hours;
-        results = [];
+        results1 = [];
         while (this.timeCounter >= 24) {
           this.incrementDays(1);
           this.timeCounter -= 24;
@@ -183,16 +196,16 @@
             this.timeCounter = this.timeCounter % 24;
             break;
           } else {
-            results.push(void 0);
+            results1.push(void 0);
           }
         }
-        return results;
+        return results1;
       };
 
       timeManager.prototype.incrementDays = function(days) {
-        var results;
+        var results1;
         this.dateCounter += days;
-        results = [];
+        results1 = [];
         while (this.dateCounter >= 30) {
           this.incrementMonths(1);
           this.dateCounter -= 30;
@@ -201,16 +214,16 @@
             this.dateCounter = this.dateCounter % 30;
             break;
           } else {
-            results.push(void 0);
+            results1.push(void 0);
           }
         }
-        return results;
+        return results1;
       };
 
       timeManager.prototype.incrementMonths = function(months) {
-        var results;
+        var results1;
         this.monthCounter += months;
-        results = [];
+        results1 = [];
         while (this.monthCounter >= 12) {
           this.incrementYears(1);
           this.monthCounter -= 12;
@@ -218,10 +231,10 @@
             this.monthCounter = this.monthCounter % 12;
             break;
           } else {
-            results.push(void 0);
+            results1.push(void 0);
           }
         }
-        return results;
+        return results1;
       };
 
       timeManager.prototype.incrementYears = function(years) {
@@ -341,19 +354,19 @@
       }
     };
     updateMarkers = function() {
-      var hide, j, len, location, results, show;
-      results = [];
+      var hide, j, len, location, results1, show;
+      results1 = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
         hide = Math.random() >= 0.8;
         show = Math.random() <= 0.2;
         if (hide) {
-          results.push(location.marker.setVisible(false));
+          results1.push(location.marker.setVisible(false));
         } else {
-          results.push(void 0);
+          results1.push(void 0);
         }
       }
-      return results;
+      return results1;
     };
     gameEvents = new eventManager($('#eventLog .eventContainer'));
     gameTime = new timeManager([1939, 1, 1, 0]);
@@ -414,7 +427,7 @@
       return $('#gameEnd').show();
     };
     endTurn = function(date) {
-      var j, len, location, newStats, results, show;
+      var j, len, location, newStats, results1, show;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
@@ -422,17 +435,17 @@
       newStats.CAB -= mark.stats.liabilities;
       newStats.liabilities = gameGlobal.turnConsts.liability;
       mark.updateStats(newStats);
-      results = [];
+      results1 = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
         show = Math.random() > 0.2;
         if (show) {
-          results.push(location.marker.setVisible(true));
+          results1.push(location.marker.setVisible(true));
         } else {
-          results.push(void 0);
+          results1.push(void 0);
         }
       }
-      return results;
+      return results1;
     };
     $('#takePic').hide();
     $('#takePic').click(function() {
@@ -536,7 +549,7 @@
       return $('#waitInfo').show();
     });
     $('#confirmWait').click(function() {
-      var j, len, location, results, show;
+      var j, len, location, results1, show;
       gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
       if (parseInt($('#waitTimeInput').val()) !== 1) {
         gameEvents.addEvent(new event('', gameTime.getFormatted(), 'You wait ' + $('#waitTimeInput').val() + ' days'));
@@ -547,17 +560,17 @@
         return 0.5 - Math.random();
       });
       generateMarkers(validData.slice(0, parseInt($('#waitTimeInput').val()) / 2));
-      results = [];
+      results1 = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
         show = Math.floor(Math.random() * 30) <= parseInt($('#waitTimeInput').val()) / 2;
         if (show) {
-          results.push(location.marker.setVisible(true));
+          results1.push(location.marker.setVisible(true));
         } else {
-          results.push(void 0);
+          results1.push(void 0);
         }
       }
-      return results;
+      return results1;
     });
     $('#washPic').click(function() {
       var item, j, k, len, len1, notWashed, ref, ref1;
