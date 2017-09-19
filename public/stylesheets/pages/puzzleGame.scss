@@ -62,4 +62,17 @@ main#puzzleGame {
       text-align: center;
     }
   }
+  button {
+    background: none;
+    color: white;
+    border: solid 1px white;
+    border-radius: 5px;
+    @include transition(50ms, ease-in-out);
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
 }

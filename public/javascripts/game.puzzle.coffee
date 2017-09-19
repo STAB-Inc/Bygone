@@ -1,21 +1,17 @@
 jQuery(document).ready ->
 
-  $.urlParam = (name) ->
+  getParam = (name) ->
     results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return results[1] || 0
-  
-  isStoryMode = $.urlParam('story') == 'true'
-  if isStoryMode
-    console.log 'InitStoryModeGame'
 
   class puzzleGame
-    constructor: (@debug, @xsplit, @ysplit) ->
+    constructor: (@debug, @xsplit, @ysplit, @amount) ->
       @timePassed
 
-    init: (@resources, amount) ->
+    init: (@resources) ->
       @resources.sort ->
         return 0.5 - Math.random()
-      resourceLimit = @resources.slice(0, amount)
+      resourceLimit = @resources.slice(0, @amount)
       @solution = resourceLimit[Math.floor(Math.random() * resourceLimit.length)]
       @reset()
       @generateChoiceField(resourceLimit)
@@ -136,12 +132,21 @@ jQuery(document).ready ->
         }
     , 1000
 
-  currentGame = new puzzleGame false, 8, 8
-  retrieveResources(1000).then (res) ->
-    load()
-    currentGame.init processData(res), 20
+  try
+    storyMode = getParam('story') == 'true'
+    if storyMode
+      $('#playAgain').text 'Continue'
+      $('#playAgain').parent().attr 'href', 'chapter2.html'
+    switch getParam('diff')
+      when "easy" then currentGame = new puzzleGame false, 4, 4, 20
+      when "normal" then currentGame = new puzzleGame false, 8, 8, 30
+      when "hard" then currentGame = new puzzleGame false, 12, 12, 50
+      else currentGame = new puzzleGame false, 4, 4, 20
+  
+    retrieveResources(1000).then (res) ->
+      load()
+      currentGame.init processData(res)
 
-  $(this).hide()
   $('.winScreen').hide();
 
   $('#selectionArea').on 'click', '.choice', ->
@@ -152,7 +157,7 @@ jQuery(document).ready ->
     return
 
   $('#playAgain').click ->
-    location.reload()
+    #location.reload()
 
   $('#reset').click ->
     currentGame.reset()
