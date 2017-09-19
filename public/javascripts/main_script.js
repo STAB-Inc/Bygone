@@ -42,7 +42,9 @@
         'opacity': 0,
         'pointer-events': 'none'
       });
-      $('body').css('overflow-y', 'auto');
+      if (window.location.pathname.split("/").pop() !== 'game.Shooting.html') {
+        $('body').css('overflow-y', 'auto');
+      }
       return setTimeout(function() {
         return $('#loader').css({
           'display': 'none',

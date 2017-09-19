@@ -40,7 +40,8 @@ $(document).ready ->
       'opacity': 0,
       'pointer-events': 'none',
     }
-    $('body').css 'overflow-y', 'auto'
+    if window.location.pathname.split("/").pop() != 'game.Shooting.html'
+      $('body').css 'overflow-y', 'auto'
     setTimeout ->
       $('#loader').css {
         'display': 'none',
