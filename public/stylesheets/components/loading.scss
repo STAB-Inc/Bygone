@@ -24,6 +24,7 @@
       height: 2px;
       background-color: $blue-const;
       @include centerX();
+      @include transition(50ms, ease);
     }
     .spinnerContainer {
       position: relative;

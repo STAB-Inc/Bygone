@@ -54,20 +54,18 @@
     segment = 100 / imagesTotal;
     loaded = 0;
     $(document).imagesLoaded().progress(function(instance, image) {
-      var animateText;
-      animateText = function(from, to) {};
       if (image.isLoaded) {
         loaded += segment;
         setTimeout(function() {
           return $('#loader .loaderBar').css('width', loaded + '%');
-        }, 1500);
+        }, 100);
       } else {
         $('.failed').append('<p>Fail to load: ' + image.img.src + '</p>');
       }
     }).done(function() {
       setTimeout(function() {
         return load();
-      }, 2000);
+      }, 500);
     });
     $('.close').click(function() {
       $(this).parent().hide();

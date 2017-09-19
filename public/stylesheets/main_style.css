@@ -7239,6 +7239,9 @@ nav#global .navContainer .row a:nth-child(4) .navButton {
   background-color: #7A9EF6;
   left: 50%;
   transform: translateX(-50%);
+  transition: all 50ms ease;
+  -webkit-transition: all 50ms ease;
+  -moz-transition: all 50ms ease;
 }
 
 #loader .loaderContent .spinnerContainer {

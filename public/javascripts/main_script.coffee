@@ -54,19 +54,18 @@ $(document).ready ->
   segment = 100 / imagesTotal
   loaded = 0
   $(document).imagesLoaded().progress((instance, image) ->
-    animateText = (from, to) ->
     if image.isLoaded
       loaded += segment
       setTimeout ->
         $('#loader .loaderBar').css 'width', loaded + '%'
-      , 1500
+      , 100
     else
       $('.failed').append '<p>Fail to load: ' + image.img.src + '</p>'
     return
   ).done ->
     setTimeout ->
       load()
-    , 2000
+    , 500
     return
 
   $('.close').click ->
