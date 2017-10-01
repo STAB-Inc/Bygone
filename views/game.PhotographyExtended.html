@@ -1,0 +1,218 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bygone</title>
+  <meta name="description" content="Bygone - Photography Game">
+  <meta name="author" content="STAB Inc. aXises">
+  <meta http-equiv="X-UA-Compatible", content="IE=edge">
+  <meta name="viewport", content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Raleway:200,400,900" rel="stylesheet">
+  <link href="../public/stylesheets/main_style.css" rel="stylesheet">
+  <link href="../bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet">
+</head>
+<div class="redirectTrans"></div>
+<div id="loader">
+  <div class="loaderContent">
+    <h1>BYGONE</h1>
+    <div class="spinnerContainer">
+      <div class="spinner"></div>
+      <div class="spinner2"></div>
+      <div class="spinner3"></div>
+    </div>
+    <div class="loaderBar">
+    </div>
+  </div>
+</div>
+<div id="navToggle" style="right:50px; left:auto;">
+  <i class="ion-navicon ionOpen buttonActive"></i>
+  <i class="ion-close-round ionClose"></i>
+</div>
+<nav id="global">
+  <div class="navContainer">
+    <div class="container-fluid">
+      <div class="row">
+        <a href="../index.html#campaign">
+          <div class="col-lg-6 col-sm-6 navButton">
+            <h3>CAMPAIGN</h3>
+            <p>Experience the tradegy of war through the eyes of Matt.</p>
+          </div>
+        </a>
+        <a href="../index.html#freeMode">
+          <div class="col-lg-6 col-sm-6 navButton">
+            <h3>FREE MODE</h3>
+            <p>Kill some time in these minigames.</p>
+          </div>
+        </a>
+        <a href="">
+          <div class="col-lg-6 col-sm-6 navButton">
+            <h3>HIGH SCORES</h3>
+            <p>Checkout the best players.</p>
+          </div>
+        </a>
+        <a href="">
+          <div class="col-lg-6 col-sm-6 navButton">
+            <h3>ABOUT</h3>
+            <p>See the D4NK people behind BYGONE.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+<body>
+  <main id="photographyGame">
+    <div id="map">
+    </div>
+    <div id="blockOverlay"></div>
+    <div id="#pGameOverlays">
+      <div id="inventory" class="overlay">
+        <div class="close">Close</div>
+        <h4>Camera Roll</h4>
+        <div class="cameraRoll"></div>
+        <h4>Washed Pictures</h4>
+        <div class="washedPics"></div>
+        <p id="rollValue"></p>
+        <p id="sellableValue"></p>
+      </div>
+      <div id="loanOverlay" class="overlay">
+        <h4>Take Loan</h4>
+        <p>Amount</p>
+        <input id="loanInput" type="text">
+        <button id="confirmLoan" class="confirm">Confirm Loan</button>
+        <p id="IR">Current interest rate 1.5%</p>
+        <p class="err"></p>
+        <div class="close">Close</div>
+      </div>
+      <div id="soldInfoOverlay" class="overlay">
+        <h4>Potential Earnings</h4>
+        <p></p>
+        <button id="sellPhotos" class="confirm">Sell Photos</button>
+        <div class="close">Close</div>
+      </div>
+      <div id="waitInfo" class="overlay">
+        <h4>Wait some time...</h4>
+        <p>Wait how many days?</p>
+        <input id="waitTimeInput" type="text">
+        <button id="confirmWait" class="confirm">Wait</button>
+        <p class="err"></p>
+        <div class="close">Close</div>
+      </div>
+      <div id="washPicOverlay" class="overlay">
+        <h4>Wash Pictures</h4>
+        <p></p>
+        <button id="confirmWashPic" class="confirm">Proceed</button>
+        <div class="close">Close</div>
+      </div>
+      
+      <div id="gameEnd" class="overlay">
+        <h4>Game Over</h4>
+        <p></p>
+        <a href="">
+          <button id="playAgain" class="confirm">Play Again</button>
+        </a>
+        <div class="close">Close</div>
+      </div>
+      <div id="takingPic" class="overlay">
+        <h4>Taking Picture...</h4>
+        <p>Time your shot to take a better quality picture</p>
+        <div class="subContainer">
+          <div class="bar">
+            <div class="section section1"></div>
+            <div class="section section2"></div>
+            <div class="section section3"></div>
+            <div class="section section4"></div>
+            <div class="section section5"></div>
+            <div class="slider">
+            </div>
+          </div>
+        </div>
+        <button class="start">Prep Shot</button>
+        <button class="stop">Take Shot</button>
+        <p class="shotStats"></p>
+        <button class="viewInv">View in Inventory</button>
+        <div class="close">Close</div>
+      </div>
+    </div>
+    <div class="row" id="actions">
+      <p>Actions (Hold to reposition)</p>
+      <button id="checkInv">Inventory</button>
+      <button id="wait">Wait</button>
+      <button id="washPic">Wash</button>
+      <button id="sellPic">Sell</button>
+      <button id="takeLoan">Take Loan</button>
+      <button id="takePic">Take Picture</button>
+    </div>
+    <div id="locationInfoOverlay">
+      <div class="container-fluid">
+        <div class="row locationInfo">
+          <h4>Location Info</h4>
+          <div class="desContainer">
+            <p id="title"></p>
+          </div>
+        </div>
+        <div class="row locationStats">
+          <p id="description"></p>
+          <p id="position"></p>
+          <p id="value"></p>
+          <p id="travelExpense"></p>
+          <p id="travelTime"></p>
+        </div>
+      </div>
+    </div>
+    <div id="eventLog">
+      <h4>Event Log</h4>
+      <div class="container-fluid eventContainer">
+      </div>
+    </div>
+    <div id="playerInfoOverlay">
+      <div class="container-fluid">
+        <div class="row" id="stats">
+          <h4>Player Stats</h4>
+          <p id="CAB">Cash at Bank: $
+            <span class="val"></span>
+          </p>
+          <p id="workingCapital">Working Capital: $
+            <span class="val"></span>
+          </p>
+          <p id="assets">Current Assets: $
+            <span class="val"></span>
+          </p>
+          <p id="liabilities">Current Liabilities: $
+            <span class="val"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="skip">
+      <a href="chapter3.html">Skip this game?</a>
+    </div>
+  </main>
+</body>
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
+<script src="../public/javascripts/main_script.js"></script>
+<script src="../public/javascripts/game.base.js"></script>
+<script>
+  googleMap = null
+  function initMap(){
+    return googleMap = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: {
+        lat: -27.4698,
+        lng: 153.0251
+      },
+      streetViewControl: false,
+      mapTypeControl: false,
+      fullscreenControl: false
+    });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>
+<script src="../bower_components/marker-animate-unobtrusive/vendor/markerAnimate.js"></script>
+<script src="../bower_components/marker-animate-unobtrusive/SlidingMarker.js"></script>
+<script src="../public/javascripts/game.photographyExtended.js"></script>
+</html>
