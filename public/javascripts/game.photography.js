@@ -34,6 +34,14 @@
     locations = [];
     validData = [];
     gameGlobal = {
+      init: {
+        stats: {
+          'CAB': 1000,
+          'workingCapital': 0,
+          'assets': 0,
+          'liabilities': 300
+        }
+      },
       trackers: {
         monthPassed: 0,
         photosSold: 0,
@@ -132,7 +140,7 @@
       }
 
       player.prototype.initTo = function(map) {
-        return this.playerMarker = new google.maps.Marker({
+        return this.playerMarker = new SlidingMarker({
           position: this.position,
           map: map,
           icon: 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png',
@@ -160,14 +168,25 @@
       };
 
       player.prototype.updateStats = function(stats) {
-        var assets, workingCapital;
-        this.stats = stats;
+        var animateText, assets, workingCapital;
+        animateText = function(elem, from, to) {
+          return $({
+            current: from
+          }).animate({
+            current: to
+          }, {
+            duration: 500,
+            step: function() {
+              return $('#playerInfoOverlay #stats ' + elem + ' .val').text(this.current.toFixed());
+            }
+          });
+        };
         assets = parseInt(this.stats.assets + this.stats.CAB);
         workingCapital = parseInt(assets - this.stats.liabilities);
-        $('#playerInfoOverlay #stats #CAB').text('Cash at Bank $' + parseInt(this.stats.CAB));
-        $('#playerInfoOverlay #stats #liabilities').text('Current Liabilities $' + parseInt(this.stats.liabilities));
-        $('#playerInfoOverlay #stats #assets').text('Current Assets $' + assets);
-        $('#playerInfoOverlay #stats #workingCapital').text('Working Capital $' + workingCapital);
+        animateText('#CAB', parseInt($('#playerInfoOverlay #stats #CAB .val').text()), stats.CAB);
+        animateText('#liabilities', parseInt($('#playerInfoOverlay #stats #liabilities .val').text()), stats.liabilities);
+        animateText('#assets', parseInt($('#playerInfoOverlay #stats #assets .val').text()), assets);
+        animateText('#workingCapital', parseInt($('#playerInfoOverlay #stats #workingCapital .val').text()), workingCapital);
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
           return endGame();
         }
@@ -274,9 +293,9 @@
       eventManager.prototype.addEvent = function(event) {
         this.events.push(event);
         if (event.special) {
-          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').prependTo(this.domSelector);
+          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
         } else {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').prependTo(this.domSelector);
+          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
         }
       };
 
@@ -377,12 +396,8 @@
       'type': 'self'
     }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
     mark.initTo(googleMap);
-    mark.updateStats({
-      'CAB': 1000,
-      'workingCapital': 0,
-      'assets': 0,
-      'liabilities': 300
-    });
+    mark.stats = gameGlobal.init.stats;
+    mark.updateStats(mark.stats);
     photographyGame = (function() {
       function photographyGame(debug) {
         this.debug = debug;

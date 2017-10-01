@@ -28,6 +28,9 @@ jQuery(document).ready ->
   locations = []
   validData = []
   gameGlobal = {
+    init: {
+      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 }
+    },
     trackers: {
       monthPassed: 0,
       photosSold: 0,
@@ -129,13 +132,18 @@ jQuery(document).ready ->
       @updateStats(newStats)
 
     updateStats: (stats) ->
-      @stats = stats
-      assets = parseInt(@stats.assets + @stats.CAB)
-      workingCapital = parseInt(assets - @stats.liabilities)
-      $('#playerInfoOverlay #stats #CAB').text 'Cash at Bank $' + parseInt(@stats.CAB)
-      $('#playerInfoOverlay #stats #liabilities').text 'Current Liabilities $' + parseInt(@stats.liabilities)
-      $('#playerInfoOverlay #stats #assets').text 'Current Assets $' + assets
-      $('#playerInfoOverlay #stats #workingCapital').text 'Working Capital $' + workingCapital
+      animateText = (elem, from, to) ->
+        $(current: from).animate { current: to },
+          duration: 500
+          step: ->
+            $('#playerInfoOverlay #stats ' + elem + ' .val').text @current.toFixed()
+      
+      assets = parseInt (@stats.assets + @stats.CAB)
+      workingCapital = parseInt (assets - @stats.liabilities)
+      animateText '#CAB', parseInt($('#playerInfoOverlay #stats #CAB .val').text()), stats.CAB
+      animateText '#liabilities', parseInt($('#playerInfoOverlay #stats #liabilities .val').text()), stats.liabilities
+      animateText '#assets', parseInt($('#playerInfoOverlay #stats #assets .val').text()), assets
+      animateText '#workingCapital', parseInt($('#playerInfoOverlay #stats #workingCapital .val').text()), workingCapital
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
@@ -201,13 +209,13 @@ jQuery(document).ready ->
           <p class="time special">' + event.time + '</p>
           <p class="title special">' + event.title + '</p>
           <p class="content special">' + event.content + '</p>
-        </div>').prependTo(@domSelector)
+        </div>').hide().prependTo(@domSelector).fadeIn()
       else 
         $('<div class="row">
           <p class="time">' + event.time + '</p>
           <p class="title">' + event.title + '</p>
           <p class="content">' + event.content + '</p>
-        </div>').prependTo(@domSelector)
+        </div>').hide().prependTo(@domSelector).fadeIn()
 
   class event
     constructor: (@title, @time, @content, @special=false) ->
@@ -256,14 +264,13 @@ jQuery(document).ready ->
   gameTime = new timeManager [1939, 1, 1, 0]
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
-  mark.initTo(googleMap)
-  mark.updateStats({'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 })
-
+  mark.initTo googleMap
+  mark.stats = gameGlobal.init.stats
+  mark.updateStats mark.stats
   class photographyGame
     constructor: (@debug) ->
 
     init: (amount) ->
-
       localInit = ->
         validData.sort ->
           return 0.5 - Math.random()
