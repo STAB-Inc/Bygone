@@ -104,7 +104,7 @@ jQuery(document).ready ->
       @inventory = []
 
     initTo: (map) ->
-      @playerMarker = new google.maps.Marker({
+      @playerMarker = new SlidingMarker({
         position: @position,
         map: map,
         icon: 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png',
