@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, randomEvent, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -31,6 +31,162 @@
         cache: true
       });
     };
+    timeManager = (function() {
+      function timeManager(baseTime) {
+        this.baseTime = baseTime;
+        this.timeCounter = 0;
+        this.dateCounter = 0;
+        this.monthCounter = 0;
+        this.yearCounter = 0;
+      }
+
+      timeManager.prototype.incrementTime = function(hours) {
+        var results1;
+        this.timeCounter += hours;
+        results1 = [];
+        while (this.timeCounter >= 24) {
+          this.incrementDays(1);
+          this.timeCounter -= 24;
+          if (this.timeCounter < 24) {
+            this.timeCounter = this.timeCounter % 24;
+            break;
+          } else {
+            results1.push(void 0);
+          }
+        }
+        return results1;
+      };
+
+      timeManager.prototype.incrementDays = function(days) {
+        var results1;
+        this.dateCounter += days;
+        results1 = [];
+        while (this.dateCounter >= 30) {
+          this.incrementMonths(1);
+          this.dateCounter -= 30;
+          endTurn(this.getFormatted());
+          if (this.dateCounter < 30) {
+            this.dateCounter = this.dateCounter % 30;
+            break;
+          } else {
+            results1.push(void 0);
+          }
+        }
+        return results1;
+      };
+
+      timeManager.prototype.incrementMonths = function(months) {
+        var results1;
+        this.monthCounter += months;
+        results1 = [];
+        while (this.monthCounter >= 12) {
+          this.incrementYears(1);
+          this.monthCounter -= 12;
+          if (this.monthCounter < 12) {
+            this.monthCounter = this.monthCounter % 12;
+            break;
+          } else {
+            results1.push(void 0);
+          }
+        }
+        return results1;
+      };
+
+      timeManager.prototype.incrementYears = function(years) {
+        return this.yearCounter += years;
+      };
+
+      timeManager.prototype.getAll = function() {
+        return [this.baseTime[0] + this.yearCounter, this.baseTime[1] + this.monthCounter, this.baseTime[2] + this.dateCounter, parseInt(this.baseTime[3]) + this.timeCounter];
+      };
+
+      timeManager.prototype.getFormatted = function() {
+        var date, hours, minutes, month, year;
+        year = this.baseTime[0] + this.yearCounter;
+        month = this.baseTime[1] + this.monthCounter;
+        date = this.baseTime[2] + this.dateCounter;
+        hours = parseInt(this.baseTime[3]) + this.timeCounter;
+        minutes = parseInt((hours - Math.floor(hours)) * 60);
+        if (date > 30) {
+          date -= date - 30;
+        }
+        if (String(parseInt(minutes)).length === 2) {
+          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes));
+        } else {
+          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0';
+        }
+      };
+
+      return timeManager;
+
+    })();
+    eventManager = (function() {
+      function eventManager(domSelector) {
+        this.domSelector = domSelector;
+        this.events = [];
+      }
+
+      eventManager.prototype.addEvent = function(event) {
+        console.log(event);
+        if (event.time === 'currentTime') {
+          event.time = gameTime.getFormatted();
+        }
+        this.events.push(event);
+        if (event.special) {
+          $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+        } else {
+          $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+        }
+        if (event.popup) {
+
+        }
+      };
+
+      return eventManager;
+
+    })();
+    gameTime = new timeManager([1939, 1, 1, 0]);
+    gameEvents = new eventManager($('#eventLog .eventContainer'));
+    event = (function() {
+      function event(title, time, content, special, popup) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.popup = popup != null ? popup : false;
+      }
+
+      return event;
+
+    })();
+    randomEvent = (function(superClass) {
+      extend(randomEvent, superClass);
+
+      function randomEvent(title, time, content, special, popup, incInsanity) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.popup = popup != null ? popup : false;
+        this.incInsanity = incInsanity;
+        randomEvent.__super__.constructor.call(this, this.title, this.time, this.content, this.special, this.popup);
+      }
+
+      return randomEvent;
+
+    })(event);
+    gamePhoto = (function() {
+      function gamePhoto(value1, washed, img, title, quailty1) {
+        this.value = value1;
+        this.washed = washed;
+        this.img = img;
+        this.title = title;
+        this.quailty = quailty1;
+      }
+
+      return gamePhoto;
+
+    })();
     locations = [];
     validData = [];
     gameGlobal = {
@@ -50,7 +206,8 @@
       turnConsts: {
         interest: 1.5,
         pictureWashingTime: 14,
-        liability: 300
+        liability: 300,
+        randomEvents: [new randomEvent('test1', 'currentTime', 'event content', false, true, 20), new randomEvent('test2', 'currentTime', 'event content', false, true, 20), new randomEvent('test3', 'currentTime', 'event content', false, true, 20), new randomEvent('test4', 'currentTime', 'event content', false, true, 20)]
       }
     };
     deg2rad = function(deg) {
@@ -151,7 +308,7 @@
       };
 
       player.prototype.moveTo = function(location) {
-        var newStats, timeTaken;
+        var newStats, randEvent, timeTaken;
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -164,7 +321,9 @@
         gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
         $('#takePic').show();
         updateMarkers();
-        return this.updateStats(newStats);
+        this.updateStats(newStats);
+        randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)];
+        return gameEvents.addEvent(randEvent);
       };
 
       player.prototype.updateStats = function(stats) {
@@ -192,139 +351,13 @@
         }
       };
 
+      player.prototype.setBar = function(value) {
+        return alert(value);
+      };
+
       return player;
 
     })(gameLocation);
-    timeManager = (function() {
-      function timeManager(baseTime) {
-        this.baseTime = baseTime;
-        this.timeCounter = 0;
-        this.dateCounter = 0;
-        this.monthCounter = 0;
-        this.yearCounter = 0;
-      }
-
-      timeManager.prototype.incrementTime = function(hours) {
-        var results1;
-        this.timeCounter += hours;
-        results1 = [];
-        while (this.timeCounter >= 24) {
-          this.incrementDays(1);
-          this.timeCounter -= 24;
-          if (this.timeCounter < 24) {
-            this.timeCounter = this.timeCounter % 24;
-            break;
-          } else {
-            results1.push(void 0);
-          }
-        }
-        return results1;
-      };
-
-      timeManager.prototype.incrementDays = function(days) {
-        var results1;
-        this.dateCounter += days;
-        results1 = [];
-        while (this.dateCounter >= 30) {
-          this.incrementMonths(1);
-          this.dateCounter -= 30;
-          endTurn(this.getFormatted());
-          if (this.dateCounter < 30) {
-            this.dateCounter = this.dateCounter % 30;
-            break;
-          } else {
-            results1.push(void 0);
-          }
-        }
-        return results1;
-      };
-
-      timeManager.prototype.incrementMonths = function(months) {
-        var results1;
-        this.monthCounter += months;
-        results1 = [];
-        while (this.monthCounter >= 12) {
-          this.incrementYears(1);
-          this.monthCounter -= 12;
-          if (this.monthCounter < 12) {
-            this.monthCounter = this.monthCounter % 12;
-            break;
-          } else {
-            results1.push(void 0);
-          }
-        }
-        return results1;
-      };
-
-      timeManager.prototype.incrementYears = function(years) {
-        return this.yearCounter += years;
-      };
-
-      timeManager.prototype.getAll = function() {
-        return [this.baseTime[0] + this.yearCounter, this.baseTime[1] + this.monthCounter, this.baseTime[2] + this.dateCounter, parseInt(this.baseTime[3]) + this.timeCounter];
-      };
-
-      timeManager.prototype.getFormatted = function() {
-        var date, hours, minutes, month, year;
-        year = this.baseTime[0] + this.yearCounter;
-        month = this.baseTime[1] + this.monthCounter;
-        date = this.baseTime[2] + this.dateCounter;
-        hours = parseInt(this.baseTime[3]) + this.timeCounter;
-        minutes = parseInt((hours - Math.floor(hours)) * 60);
-        if (date > 30) {
-          date -= date - 30;
-        }
-        if (String(parseInt(minutes)).length === 2) {
-          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes));
-        } else {
-          return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0';
-        }
-      };
-
-      return timeManager;
-
-    })();
-    eventManager = (function() {
-      function eventManager(domSelector) {
-        this.domSelector = domSelector;
-        this.events = [];
-      }
-
-      eventManager.prototype.addEvent = function(event) {
-        this.events.push(event);
-        if (event.special) {
-          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
-        } else {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
-        }
-      };
-
-      return eventManager;
-
-    })();
-    event = (function() {
-      function event(title, time, content, special) {
-        this.title = title;
-        this.time = time;
-        this.content = content;
-        this.special = special != null ? special : false;
-      }
-
-      return event;
-
-    })();
-    gamePhoto = (function() {
-      function gamePhoto(value, washed, img, title, quailty1) {
-        this.value = value;
-        this.washed = washed;
-        this.img = img;
-        this.title = title;
-        this.quailty = quailty1;
-      }
-
-      return gamePhoto;
-
-    })();
     processData = function(data) {
       var item, j, len, processedData, ref;
       processedData = [];
@@ -387,8 +420,6 @@
       }
       return results1;
     };
-    gameEvents = new eventManager($('#eventLog .eventContainer'));
-    gameTime = new timeManager([1939, 1, 1, 0]);
     mark = new player({
       lat: -25.363,
       lng: 151.044

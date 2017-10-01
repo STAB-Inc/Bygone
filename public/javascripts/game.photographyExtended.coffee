@@ -24,6 +24,93 @@ jQuery(document).ready ->
       cache: true
     }
 
+  class timeManager
+    constructor: (@baseTime) ->
+      @timeCounter = 0
+      @dateCounter = 0
+      @monthCounter = 0
+      @yearCounter = 0
+
+    incrementTime: (hours) ->
+      @timeCounter += hours
+      while @timeCounter >= 24
+        @incrementDays(1)
+        @timeCounter -= 24
+        if @timeCounter < 24
+          @timeCounter = @timeCounter % 24
+          break
+    
+    incrementDays: (days) ->
+      @dateCounter += days
+      while @dateCounter >= 30
+        @incrementMonths(1)
+        @dateCounter -= 30
+        endTurn(@getFormatted())
+        if @dateCounter < 30
+          @dateCounter = @dateCounter % 30
+          break
+
+    incrementMonths: (months) ->
+      @monthCounter += months
+      while @monthCounter >= 12
+        @incrementYears(1)
+        @monthCounter -= 12
+        if @monthCounter < 12
+          @monthCounter = @monthCounter % 12
+          break
+
+    incrementYears: (years) ->
+      @yearCounter += years
+
+    getAll: ->
+      return [@baseTime[0] + @yearCounter, @baseTime[1] + @monthCounter, @baseTime[2] + @dateCounter, parseInt(@baseTime[3]) + @timeCounter]
+
+    getFormatted: ->
+      year = @baseTime[0] + @yearCounter
+      month = @baseTime[1] + @monthCounter
+      date = @baseTime[2] + @dateCounter
+      hours = parseInt(@baseTime[3]) + @timeCounter
+      minutes = parseInt((hours - Math.floor(hours))*60)
+      if date > 30
+        date -= date - 30
+      if String(parseInt(minutes)).length == 2 then return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) else return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0'
+
+  class eventManager
+    constructor: (@domSelector) ->
+      @events = []
+
+    addEvent: (event) ->
+      console.log event
+      if event.time == 'currentTime' then event.time = gameTime.getFormatted()
+      @events.push(event)
+      if event.special
+        $('<div class="row">
+          <p class="time special">' + event.time + '</p>
+          <p class="title special">' + event.title + '</p>
+          <p class="content special">' + event.content + '</p>
+        </div>').hide().prependTo(@domSelector).fadeIn()
+      else 
+        $('<div class="row">
+          <p class="time">' + event.time + '</p>
+          <p class="title">' + event.title + '</p>
+          <p class="content">' + event.content + '</p>
+        </div>').hide().prependTo(@domSelector).fadeIn()
+      if event.popup
+        return
+
+  gameTime = new timeManager [1939, 1, 1, 0]
+  gameEvents = new eventManager $('#eventLog .eventContainer')
+
+  class event
+    constructor: (@title, @time, @content, @special=false, @popup=false) ->
+
+  class randomEvent extends event
+    constructor: (@title, @time, @content, @special=false, @popup=false, @incInsanity) ->
+      super(@title, @time, @content, @special, @popup)
+
+  class gamePhoto
+    constructor: (@value, @washed, @img, @title, @quailty) ->
+
   #Game globals
   locations = []
   validData = []
@@ -39,7 +126,13 @@ jQuery(document).ready ->
     turnConsts: {
       interest: 1.5,
       pictureWashingTime: 14,
-      liability: 300
+      liability: 300,
+      randomEvents: [
+        new randomEvent('test1', 'currentTime', 'event content', false, true, 20),
+        new randomEvent('test2', 'currentTime', 'event content', false, true, 20),
+        new randomEvent('test3', 'currentTime', 'event content', false, true, 20),
+        new randomEvent('test4', 'currentTime', 'event content', false, true, 20)
+      ]
     }
   }
 
@@ -128,6 +221,8 @@ jQuery(document).ready ->
       $('#takePic').show()
       updateMarkers()
       @updateStats(newStats)
+      randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)]
+      gameEvents.addEvent randEvent
 
     updateStats: (stats) ->
       animateText = (elem, from, to) ->
@@ -145,81 +240,8 @@ jQuery(document).ready ->
       if workingCapital <= -1000 && @stats.CAB <= 0
         endGame()
 
-  class timeManager
-    constructor: (@baseTime) ->
-      @timeCounter = 0
-      @dateCounter = 0
-      @monthCounter = 0
-      @yearCounter = 0
-
-    incrementTime: (hours) ->
-      @timeCounter += hours
-      while @timeCounter >= 24
-        @incrementDays(1)
-        @timeCounter -= 24
-        if @timeCounter < 24
-          @timeCounter = @timeCounter % 24
-          break
-    
-    incrementDays: (days) ->
-      @dateCounter += days
-      while @dateCounter >= 30
-        @incrementMonths(1)
-        @dateCounter -= 30
-        endTurn(@getFormatted())
-        if @dateCounter < 30
-          @dateCounter = @dateCounter % 30
-          break
-
-    incrementMonths: (months) ->
-      @monthCounter += months
-      while @monthCounter >= 12
-        @incrementYears(1)
-        @monthCounter -= 12
-        if @monthCounter < 12
-          @monthCounter = @monthCounter % 12
-          break
-
-    incrementYears: (years) ->
-      @yearCounter += years
-
-    getAll: ->
-      return [@baseTime[0] + @yearCounter, @baseTime[1] + @monthCounter, @baseTime[2] + @dateCounter, parseInt(@baseTime[3]) + @timeCounter]
-
-    getFormatted: ->
-      year = @baseTime[0] + @yearCounter
-      month = @baseTime[1] + @monthCounter
-      date = @baseTime[2] + @dateCounter
-      hours = parseInt(@baseTime[3]) + @timeCounter
-      minutes = parseInt((hours - Math.floor(hours))*60)
-      if date > 30
-        date -= date - 30
-      if String(parseInt(minutes)).length == 2 then return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) else return year + '/' + month + '/' + date + ' ' + String(Math.floor(hours)) + ':' + String(parseInt(minutes)) + '0'
-
-  class eventManager
-    constructor: (@domSelector) ->
-      @events = []
-
-    addEvent: (event) ->
-      @events.push(event)
-      if event.special
-        $('<div class="row">
-          <p class="time special">' + event.time + '</p>
-          <p class="title special">' + event.title + '</p>
-          <p class="content special">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-      else 
-        $('<div class="row">
-          <p class="time">' + event.time + '</p>
-          <p class="title">' + event.title + '</p>
-          <p class="content">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-
-  class event
-    constructor: (@title, @time, @content, @special=false) ->
-
-  class gamePhoto
-    constructor: (@value, @washed, @img, @title, @quailty) ->
+    setBar: (value) ->
+      alert value
 
   processData = (data) ->
     processedData = []
@@ -257,9 +279,6 @@ jQuery(document).ready ->
       show = Math.random() <= 0.2;
       if hide
         location.marker.setVisible(false)
-
-  gameEvents = new eventManager $('#eventLog .eventContainer')
-  gameTime = new timeManager [1939, 1, 1, 0]
 
   mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   mark.initTo googleMap
