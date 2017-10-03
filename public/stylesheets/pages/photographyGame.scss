@@ -140,7 +140,8 @@
   #playerInfoOverlay,
   #locationInfoOverlay,
   #actions,
-  #eventLog {
+  #eventLog,
+  #insanityBar {
     position: fixed;
     height: 215px;
     width: 400px;
@@ -167,12 +168,13 @@
       }
     }
   }
+  #insanityBar {
+    width: 100px;
+    left: 440px;
+  }
   #locationInfoOverlay {
     height: 300px;
     top: 20px;
-    .locationStats {
-
-    }
     .locationInfo {
       height: 100px;
     }

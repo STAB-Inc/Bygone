@@ -7888,7 +7888,8 @@ main#puzzleGame button:focus {
 #photographyGame #playerInfoOverlay,
 #photographyGame #locationInfoOverlay,
 #photographyGame #actions,
-#photographyGame #eventLog {
+#photographyGame #eventLog,
+#photographyGame #insanityBar {
   position: fixed;
   height: 215px;
   width: 400px;
@@ -7903,7 +7904,8 @@ main#puzzleGame button:focus {
 #photographyGame #playerInfoOverlay img,
 #photographyGame #locationInfoOverlay img,
 #photographyGame #actions img,
-#photographyGame #eventLog img {
+#photographyGame #eventLog img,
+#photographyGame #insanityBar img {
   margin-left: 50%;
   transform: translateX(-50%);
 }
@@ -7911,7 +7913,8 @@ main#puzzleGame button:focus {
 #photographyGame #playerInfoOverlay #description,
 #photographyGame #locationInfoOverlay #description,
 #photographyGame #actions #description,
-#photographyGame #eventLog #description {
+#photographyGame #eventLog #description,
+#photographyGame #insanityBar #description {
   margin-top: 20px;
   overflow: auto;
 }
@@ -7919,15 +7922,22 @@ main#puzzleGame button:focus {
 #photographyGame #playerInfoOverlay #position,
 #photographyGame #locationInfoOverlay #position,
 #photographyGame #actions #position,
-#photographyGame #eventLog #position {
+#photographyGame #eventLog #position,
+#photographyGame #insanityBar #position {
   font-weight: 800;
 }
 
 #photographyGame #playerInfoOverlay #stats h4,
 #photographyGame #locationInfoOverlay #stats h4,
 #photographyGame #actions #stats h4,
-#photographyGame #eventLog #stats h4 {
+#photographyGame #eventLog #stats h4,
+#photographyGame #insanityBar #stats h4 {
   text-align: left;
+}
+
+#photographyGame #insanityBar {
+  width: 100px;
+  left: 440px;
 }
 
 #photographyGame #locationInfoOverlay {
@@ -7981,6 +7991,3 @@ main#puzzleGame button:focus {
 #photographyGame #eventLog .title.special {
   color: #7A9EF6;
 }
- 
-
- /*# sourceMappingURL= main_style.css.map */

@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, randomEvent, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, playerInsanityBar, processData, randomEvent, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -127,7 +127,13 @@
       }
 
       eventManager.prototype.addEvent = function(event) {
-        console.log(event);
+        if (event.constructor.name === 'randomEvent') {
+          if (Math.random() * 100 < event.chance) {
+            return;
+          } else {
+            gameInsanity.updateBar(event.incInsanity);
+          }
+        }
         if (event.time === 'currentTime') {
           event.time = gameTime.getFormatted();
         }
@@ -145,8 +151,22 @@
       return eventManager;
 
     })();
+    playerInsanityBar = (function() {
+      function playerInsanityBar(domSelector, initVal) {
+        this.domSelector = domSelector;
+        this.initVal = initVal;
+      }
+
+      playerInsanityBar.prototype.updateBar = function(value) {
+        return console.log(value);
+      };
+
+      return playerInsanityBar;
+
+    })();
     gameTime = new timeManager([1939, 1, 1, 0]);
     gameEvents = new eventManager($('#eventLog .eventContainer'));
+    gameInsanity = new playerInsanityBar($('#insanityBar'), 0);
     event = (function() {
       function event(title, time, content, special, popup) {
         this.title = title;
@@ -162,13 +182,14 @@
     randomEvent = (function(superClass) {
       extend(randomEvent, superClass);
 
-      function randomEvent(title, time, content, special, popup, incInsanity) {
+      function randomEvent(title, time, content, special, popup, incInsanity, chance) {
         this.title = title;
         this.time = time;
         this.content = content;
         this.special = special != null ? special : false;
         this.popup = popup != null ? popup : false;
         this.incInsanity = incInsanity;
+        this.chance = chance;
         randomEvent.__super__.constructor.call(this, this.title, this.time, this.content, this.special, this.popup);
       }
 
@@ -207,7 +228,7 @@
         interest: 1.5,
         pictureWashingTime: 14,
         liability: 300,
-        randomEvents: [new randomEvent('test1', 'currentTime', 'event content', false, true, 20), new randomEvent('test2', 'currentTime', 'event content', false, true, 20), new randomEvent('test3', 'currentTime', 'event content', false, true, 20), new randomEvent('test4', 'currentTime', 'event content', false, true, 20)]
+        randomEvents: [new randomEvent('test1', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test2', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test3', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test4', 'currentTime', 'event content', false, true, 20, 50)]
       }
     };
     deg2rad = function(deg) {

@@ -80,7 +80,8 @@ jQuery(document).ready ->
       @events = []
 
     addEvent: (event) ->
-      console.log event
+      if event.constructor.name == 'randomEvent'
+        if Math.random()*100 < event.chance then return else gameInsanity.updateBar(event.incInsanity)
       if event.time == 'currentTime' then event.time = gameTime.getFormatted()
       @events.push(event)
       if event.special
@@ -98,14 +99,21 @@ jQuery(document).ready ->
       if event.popup
         return
 
+  class playerInsanityBar
+    constructor: (@domSelector, @initVal) ->
+
+    updateBar: (value) ->
+      console.log value
+
   gameTime = new timeManager [1939, 1, 1, 0]
   gameEvents = new eventManager $('#eventLog .eventContainer')
+  gameInsanity = new playerInsanityBar $('#insanityBar'), 0
 
   class event
     constructor: (@title, @time, @content, @special=false, @popup=false) ->
 
   class randomEvent extends event
-    constructor: (@title, @time, @content, @special=false, @popup=false, @incInsanity) ->
+    constructor: (@title, @time, @content, @special=false, @popup=false, @incInsanity, @chance) ->
       super(@title, @time, @content, @special, @popup)
 
   class gamePhoto
@@ -128,10 +136,10 @@ jQuery(document).ready ->
       pictureWashingTime: 14,
       liability: 300,
       randomEvents: [
-        new randomEvent('test1', 'currentTime', 'event content', false, true, 20),
-        new randomEvent('test2', 'currentTime', 'event content', false, true, 20),
-        new randomEvent('test3', 'currentTime', 'event content', false, true, 20),
-        new randomEvent('test4', 'currentTime', 'event content', false, true, 20)
+        new randomEvent('test1', 'currentTime', 'event content', false, true, 20, 50),
+        new randomEvent('test2', 'currentTime', 'event content', false, true, 20, 50),
+        new randomEvent('test3', 'currentTime', 'event content', false, true, 20, 50),
+        new randomEvent('test4', 'currentTime', 'event content', false, true, 20, 50)
       ]
     }
   }
@@ -153,7 +161,7 @@ jQuery(document).ready ->
     return dist;
 
   class gameLocation
-    constructor: (@position, @name, @data, @rare, @icon ) ->
+    constructor: (@position, @name, @data, @rare, @icon) ->
       @marker
       @value
       @travelExpense
