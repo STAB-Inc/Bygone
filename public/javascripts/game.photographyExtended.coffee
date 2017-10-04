@@ -82,6 +82,10 @@ jQuery(document).ready ->
     addEvent: (event) ->
       if event.constructor.name == 'randomEvent'
         if Math.random()*100 < event.chance then return else gameInsanity.updateBar(event.incInsanity)
+      if event.effects
+        for effectName in Object.keys(event.effects)
+          newStats = mark.stats[effectName] += event.effects[effectName] 
+        mark.updateStats(newStats)
       if event.time == 'currentTime' then event.time = gameTime.getFormatted()
       @events.push(event)
       if event.special
@@ -103,7 +107,7 @@ jQuery(document).ready ->
     constructor: (@domSelector, @initVal) ->
 
     updateBar: (value) ->
-      console.log value
+      #console.log value
 
   gameTime = new timeManager [1939, 1, 1, 0]
   gameEvents = new eventManager $('#eventLog .eventContainer')
@@ -124,7 +128,7 @@ jQuery(document).ready ->
   validData = []
   gameGlobal = {
     init: {
-      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 }
+      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300, 'insanity': 0 }
     },
     trackers: {
       monthPassed: 0,

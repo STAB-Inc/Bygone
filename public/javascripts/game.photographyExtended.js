@@ -127,12 +127,21 @@
       }
 
       eventManager.prototype.addEvent = function(event) {
+        var effectName, j, len, newStats, ref;
         if (event.constructor.name === 'randomEvent') {
           if (Math.random() * 100 < event.chance) {
             return;
           } else {
             gameInsanity.updateBar(event.incInsanity);
           }
+        }
+        if (event.effects) {
+          ref = Object.keys(event.effects);
+          for (j = 0, len = ref.length; j < len; j++) {
+            effectName = ref[j];
+            newStats = mark.stats[effectName] += event.effects[effectName];
+          }
+          mark.updateStats(newStats);
         }
         if (event.time === 'currentTime') {
           event.time = gameTime.getFormatted();
@@ -157,9 +166,7 @@
         this.initVal = initVal;
       }
 
-      playerInsanityBar.prototype.updateBar = function(value) {
-        return console.log(value);
-      };
+      playerInsanityBar.prototype.updateBar = function(value) {};
 
       return playerInsanityBar;
 
@@ -216,7 +223,8 @@
           'CAB': 1000,
           'workingCapital': 0,
           'assets': 0,
-          'liabilities': 300
+          'liabilities': 300,
+          'insanity': 0
         }
       },
       trackers: {
