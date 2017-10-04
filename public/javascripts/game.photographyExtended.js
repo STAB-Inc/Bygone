@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, playerInsanityBar, processData, randomEvent, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, effects, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, playerInsanityBar, processData, randomEvent, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -182,14 +182,14 @@
     randomEvent = (function(superClass) {
       extend(randomEvent, superClass);
 
-      function randomEvent(title, time, content, special, popup, incInsanity, chance) {
+      function randomEvent(title, time, content, special, popup, chance, effects1) {
         this.title = title;
         this.time = time;
         this.content = content;
         this.special = special != null ? special : false;
         this.popup = popup != null ? popup : false;
-        this.incInsanity = incInsanity;
         this.chance = chance;
+        this.effects = effects1;
         randomEvent.__super__.constructor.call(this, this.title, this.time, this.content, this.special, this.popup);
       }
 
@@ -228,7 +228,21 @@
         interest: 1.5,
         pictureWashingTime: 14,
         liability: 300,
-        randomEvents: [new randomEvent('test1', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test2', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test3', 'currentTime', 'event content', false, true, 20, 50), new randomEvent('test4', 'currentTime', 'event content', false, true, 20, 50)]
+        randomEvents: [
+          new randomEvent('Machine Gun Fire!', 'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', false, true, 20, effects = {
+            insanity: 20
+          }), new randomEvent('German Bombs!', 'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', false, true, 20, effects = {
+            insanity: 30
+          }), new randomEvent('Air raid!', 'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', false, true, 20, effects = {
+            insanity: 20
+          }), new randomEvent('Landmines!', 'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', false, true, 20, effects = {
+            insanity: 10
+          }), new randomEvent('Dazed', 'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', false, true, 20, effects = {
+            insanity: 5
+          }), new randomEvent('The enemy charges!', 'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', false, true, 20, effects = {
+            insanity: 20
+          })
+        ]
       }
     };
     deg2rad = function(deg) {
