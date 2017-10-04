@@ -1,31 +1,79 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Bygone - Game 3</title>
+		<title>Bygone - Shooting Game</title>
 		<meta charset="UTF-8">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Raleway:200,400,900" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../public/stylesheets/main_style.css">
 		<link rel="stylesheet" type="text/css" href="../public/stylesheets/stylesheet.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<link href="../bower_components/Ionicons/css/ionicons.min.css" rel="stylesheet">
 	</head>
+	<div class="redirectTrans"></div>
+	<div id="loader">
+		<div class="loaderContent">
+			<h1>BYGONE</h1>
+			<div class="spinnerContainer">
+				<div class="spinner"></div>
+				<div class="spinner2"></div>
+				<div class="spinner3"></div>
+			</div>
+			<div class="loaderBar">
+			</div>
+		</div>
+	</div>
+	<div id="navToggle">
+		<i class="ion-navicon ionOpen buttonActive"></i>
+		<i class="ion-close-round ionClose"></i>
+	</div>
+	<nav id="global">
+		<div class="navContainer">
+			<div class="container-fluid">
+				<div class="row">
+					<a href="../index.html#campaign">
+						<div class="col-lg-6 col-sm-6 navButton">
+							<h3>CAMPAIGN</h3>
+							<p>Experience the tradegy of war through the eyes of Matt.</p>
+						</div>
+					</a>
+					<a href="../index.html#freeMode">
+						<div class="col-lg-6 col-sm-6 navButton">
+							<h3>FREE MODE</h3>
+							<p>Kill some time in these minigames.</p>
+						</div>
+					</a>
+					<a href="">
+						<div class="col-lg-6 col-sm-6 navButton">
+							<h3>HIGH SCORES</h3>
+							<p>Checkout the best players.</p>
+						</div>
+					</a>
+					<a href="">
+						<div class="col-lg-6 col-sm-6 navButton">
+							<h3>ABOUT</h3>
+							<p>See the D4NK people behind BYGONE.</p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
 	<body id="mainmenu">
 		<noscript>Your browser does not support JavaScript!</noscript>
-		<section id="level1">
-			<audio id="audio">
-				<source src="audio/ambience.mp3" type="audio/mpeg">
-				Your browser does not support the audio element.
-			</audio>
-			<script src="../public/javascripts/game3.js"></script>
-			<div id="soldiers">
-			</div>
-			<div id="enemy">
-			</div>
-			<div id="teamlist">
-				<h1>Prepare for the charge! Make sure your friends survive</h1>
-				<p>SQUAD MEMBERS</p>
-			</div>
-		</section>
-		<section id="level2">
-
-		</section>
-		<img class="scope" src="images/scope2.png">
+		<audio id="audio">
+			<source src="audio/ambience.mp3" type="audio/mpeg">
+			Your browser does not support the audio element.
+		</audio>
+		
+		<div id="soldiers">
+		</div>
+		<img class="machinegun" src="images/machineguncrew.png">
+		<div id="teamlist">
+			<p>SQUAD MEMBERS</p>
+		</div>
+		<img class="scope" src="images/scope.png">
 	</body>
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
+	<script src="../public/javascripts/game.shooting.js"></script>
+	<script src="../public/javascripts/main_script.js"></script>
 </html>
