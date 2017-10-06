@@ -1,5 +1,25 @@
 $(document).ready ->
 
+  submitUserData = (data) ->
+    $.ajax
+      url: '/routes/user.php'
+      type: 'POST'
+      data: data
+
+  $('#newUser').submit (e) ->
+    e.preventDefault()
+    submitUserData({
+      'method': 'new'
+      'username': $('form#newUser #username').val()
+      'password':  $('form#newUser #password').val()
+    }).then (res) ->
+      res = JSON.parse res
+      console.log res
+      if res.status == 'error'
+        $('#newUser').find('.error').text res.errorMsg
+      else
+        location.reload()
+    
   navToggle = ->
     navToggled = !navToggled
     $('nav#global').toggleClass 'navOn'
