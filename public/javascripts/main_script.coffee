@@ -11,12 +11,13 @@ $(document).ready ->
     }).then (res) ->
       res = JSON.parse res
       if res.status == 'success'
+        $('.formContainer').hide()
         submitUserData({
           method: 'getUserData'
           id: res.message
         }).then (userData) ->
-          console.log userData
-
+          userData = JSON.parse userData
+          $('#activeUserMsg p').text 'Welcome ' + userData.username
 
   $('#newUser').submit (e) ->
     e.preventDefault()
@@ -40,6 +41,9 @@ $(document).ready ->
 
   $('#navToggle, .navContainer').click ->
     navToggle()
+
+  $('#activeUserMsg').click ->
+    $('#userActions').toggleClass('showActions')
 
   toHash = (hash) ->
     $('body').animate({
