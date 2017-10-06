@@ -12,6 +12,47 @@
     overflow: hidden;
     pointer-events: none;
   }
+  .formContainer {
+    position: absolute;
+    left: 50%;
+    height: 100vh;
+    width: 50vw;
+    #loginUser {
+      display: none;
+    }
+    form {
+      position: absolute;
+      height: 600px;
+      width: 500px;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border: 1px solid grey;
+      border-radius: 10px;
+      @include centerXY();
+      .inputStd {
+        width: 80%;
+        border: none;
+        border-bottom: $border-std;
+        background-color: transparent;
+        display: block;
+        margin: 10px 0 40px 0;
+        color: $light-shade;
+        &:focus {
+          outline: none;
+        }
+      }
+      .formBtn {
+        position: absolute;
+        top: initial;
+        bottom: 20px;
+        left: 20px;
+      }
+      .error {
+        margin-top: 20px;
+        color: red;
+      }
+    }
+  }
   main {
     position: relative;
     width: 50vw;

@@ -69,9 +69,14 @@ $(document).ready ->
     , 500
     return
 
-  $('.close').click ->
-    $(this).parent().hide()
-    return
+  $('.close, .closeForm').click ->
+    $(this).parent().fadeOut()
+
+  $('.show').click ->
+    $($(this).attr('target')).fadeIn()
+
+  $('button').click (e) ->
+    e.preventDefault()
 
   return
 # ---

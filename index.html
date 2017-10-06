@@ -60,6 +60,29 @@
   </nav>
   <body id="index">
     <img src="Bygone.Resources/index.jpg" />
+    <div class="formContainer">
+      <form id="newUser" method="post">
+        <h2>Create new account</h2>
+        <p>Username</p>
+        <input id="username" class="inputStd" type="text" name="username" placeholder="ayylmao">
+        <p>Password</p>
+        <input id="password" class="inputStd" type="password" name="password" placeholder="***********">
+        <p>Confirm Password</p>
+        <input id="password" class="inputStd" type="Password" name="cPassword" placeholder="***********">
+        <input type="submit" class="btnStyleStd">
+        <button class="show formBtn" target="#loginUser">Already have an account? Login here</button>
+        <p class="error">Error</p>
+      </form>
+      <form id="loginUser" method="post">
+        <h2>Login</h2>
+        <p>Username</p>
+        <input id="username" class="inputStd" type="text" name="username" placeholder="ayylmao">
+        <p>Password</p>
+        <input id="password" class="inputStd" type="password" name="password" placeholder="***********">
+        <input type="submit" class="btnStyleStd">
+        <button class="closeForm formBtn">Back</button>
+      </form>
+    </div>
     <main>
       <div class="container-fluid">
         <div class="row header">
