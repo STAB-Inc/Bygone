@@ -9,17 +9,29 @@
         data: data
       });
     };
+    submitUserData({
+      method: 'getActiveUser'
+    }).then(function(res) {
+      res = JSON.parse(res);
+      if (res.status === 'success') {
+        return submitUserData({
+          method: 'getUserData',
+          id: res.message
+        }).then(function(userData) {
+          return console.log(userData);
+        });
+      }
+    });
     $('#newUser').submit(function(e) {
       e.preventDefault();
       return submitUserData({
-        'method': 'new',
-        'username': $('form#newUser #username').val(),
-        'password': $('form#newUser #password').val()
+        method: 'new',
+        username: $('form#newUser #username').val(),
+        password: $('form#newUser #password').val()
       }).then(function(res) {
         res = JSON.parse(res);
-        console.log(res);
         if (res.status === 'error') {
-          return $('#newUser').find('.error').text(res.errorMsg);
+          return $('#newUser').find('.error').text(res.message);
         } else {
           return location.reload();
         }

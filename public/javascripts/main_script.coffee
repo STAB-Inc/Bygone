@@ -6,17 +6,28 @@ $(document).ready ->
       type: 'POST'
       data: data
 
+  submitUserData({
+      method: 'getActiveUser'
+    }).then (res) ->
+      res = JSON.parse res
+      if res.status == 'success'
+        submitUserData({
+          method: 'getUserData'
+          id: res.message
+        }).then (userData) ->
+          console.log userData
+
+
   $('#newUser').submit (e) ->
     e.preventDefault()
     submitUserData({
-      'method': 'new'
-      'username': $('form#newUser #username').val()
-      'password':  $('form#newUser #password').val()
+      method: 'new'
+      username: $('form#newUser #username').val()
+      password:  $('form#newUser #password').val()
     }).then (res) ->
       res = JSON.parse res
-      console.log res
       if res.status == 'error'
-        $('#newUser').find('.error').text res.errorMsg
+        $('#newUser').find('.error').text res.message
       else
         location.reload()
     
