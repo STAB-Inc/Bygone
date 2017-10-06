@@ -1,4 +1,4 @@
-# BYGONE: A Soldier's tale.
+# BYGONE: A Soldier's Tale.
 Major Project for Design Computing Studio I 2017
 
 Install dependencies with npm and bower (although bower_components is already tracked):
@@ -10,7 +10,7 @@ bower install
 For file compilation use:
 ```
 coffee -w -c .
-node-sass -w public/stylesheets/main_style.scss main_style.css
+node-sass -w public/stylesheets/main_style.scss public/stylesheets/main_style.css
 ```
 
 For compiling typescript consider:
