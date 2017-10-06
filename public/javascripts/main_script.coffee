@@ -17,6 +17,7 @@ $(document).ready ->
           id: res.message
         }).then (userData) ->
           userData = JSON.parse userData
+          $('#activeUserMsg').show()
           $('#activeUserMsg p').text 'Welcome ' + userData.username
 
   $('#newUser').submit (e) ->
@@ -31,6 +32,20 @@ $(document).ready ->
         $('#newUser').find('.error').text res.message
       else
         location.reload()
+  
+  $('#loginUser').submit (e) ->
+    e.preventDefault()
+    submitUserData({
+      method: 'login'
+      username: $('form#loginUser #username').val()
+      password:  $('form#loginUser #password').val()
+    }).then (res) ->
+      console.log res
+      res = JSON.parse res
+      if res.status == 'error'
+        $('#loginUser').find('.error').text res.message
+      else
+        location.reload()
     
   navToggle = ->
     navToggled = !navToggled
@@ -41,6 +56,9 @@ $(document).ready ->
 
   $('#navToggle, .navContainer').click ->
     navToggle()
+
+  $('#userLoginToggle').click ->
+    userLogToggle()
 
   $('#activeUserMsg').click ->
     $('#userActions').toggleClass('showActions')
