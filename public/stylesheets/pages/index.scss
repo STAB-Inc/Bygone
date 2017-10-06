@@ -27,8 +27,9 @@
     }
   }
   #activeUserMsg {
-    width: 175px;
+    display: none;
     position: absolute;
+    width: 175px;
     z-index: 6;
     i {
       position: absolute;
@@ -61,7 +62,7 @@
     top: 0 !important;
   }
   .formContainer {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 50px;
     height: 100vh;

@@ -13,7 +13,7 @@
     $userData['password'] = $_POST['password'];
     foreach ($users as $user) {
       if ($userData['username'] == $user['username']) {
-        returnMsg('error', 'Username already exists');
+        returnMsg('error', 'Username already taken');
         return 0;
       }
     } 
@@ -33,6 +33,11 @@
 
   elseif ($_POST['method'] == 'getUserData') {
     echo json_encode(getUserDataById($_POST['id']));
+  }
+
+  elseif ($_POST['method'] == 'logout') {
+    setcookie('activeUserId', '', time() - 3600, '/');
+    returnMsg('success', 'success');
   }
 
   function getUserDataById($id) {

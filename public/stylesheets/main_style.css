@@ -5751,8 +5751,9 @@ nav#global {
     #index #userActions p {
       margin: 0; }
   #index #activeUserMsg {
-    width: 175px;
+    display: none;
     position: absolute;
+    width: 175px;
     z-index: 6; }
     #index #activeUserMsg i {
       position: absolute;
@@ -5780,7 +5781,7 @@ nav#global {
   #index .showActions {
     top: 0 !important; }
   #index .formContainer {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 50px;
     height: 100vh;
