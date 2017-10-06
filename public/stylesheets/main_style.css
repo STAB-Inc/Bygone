@@ -5805,10 +5805,7 @@ nav#global {
       transform: translateX(-50%);
       top: 50%;
       transform: translateY(-50%);
-      transform: translate(-50%, -50%);
-      transition: all 0.2s ease;
-      -webkit-transition: all 0.2s ease;
-      -moz-transition: all 0.2s ease; }
+      transform: translate(-50%, -50%); }
       #index .formContainer form:hover {
         border: 1px solid grey; }
       #index .formContainer form .inputStd {
