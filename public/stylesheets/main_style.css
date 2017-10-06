@@ -5753,7 +5753,6 @@ nav#global {
   #index #activeUserMsg {
     display: none;
     position: absolute;
-    width: 175px;
     z-index: 6; }
     #index #activeUserMsg i {
       position: absolute;
@@ -5762,12 +5761,14 @@ nav#global {
       color: white;
       font-size: 26px; }
     #index #activeUserMsg p {
-      text-align: right; }
+      text-align: left;
+      margin-left: 30px; }
   #index #userActions {
     position: absolute;
     width: 175px;
     height: 300px;
-    top: -300px;
+    top: 100px;
+    right: -200px;
     cursor: auto;
     transition: all 0.2s ease;
     -webkit-transition: all 0.2s ease;
@@ -5779,7 +5780,7 @@ nav#global {
         margin: 2px;
         width: 100%; }
   #index .showActions {
-    top: 0 !important; }
+    right: 0 !important; }
   #index .formContainer {
     position: absolute;
     top: 0;

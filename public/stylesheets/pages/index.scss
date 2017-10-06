@@ -29,7 +29,6 @@
   #activeUserMsg {
     display: none;
     position: absolute;
-    width: 175px;
     z-index: 6;
     i {
       position: absolute;
@@ -39,14 +38,16 @@
       font-size: 26px;
     }
     p {
-      text-align: right;
+      text-align: left;
+      margin-left: 30px;
     }
   }
   #userActions {
     position: absolute;
     width: 175px;
     height: 300px;
-    top: -300px;
+    top: 100px;
+    right: -200px;
     cursor: auto;
     @include transition(0.2s, ease);
     .buttonContainer {
@@ -59,7 +60,7 @@
     }
   }
   .showActions {
-    top: 0 !important;
+    right: 0 !important;
   }
   .formContainer {
     position: absolute;

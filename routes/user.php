@@ -21,7 +21,24 @@
     file_put_contents($file, json_encode($users));
     setcookie('activeUserId', $userData['id'], time() + (86400 * 30), '/');
     returnMsg('success', 'success');
-  } 
+  }
+
+  elseif ($_POST['method'] == 'login') {
+    global $file;
+    foreach (getUsers($file) as $user) {
+      if ($_POST['username'] == $user['username']) {
+        if ($_POST['password'] == $user['password']) {
+          setcookie('activeUserId', $user['id'], time() + (86400 * 30), '/');
+          returnMsg('success', 'success');
+          return 0;
+        } else {
+          returnMsg('error', 'Incorrect Password');
+          return 0;
+        }
+      }
+    }
+    returnMsg('error', 'User does not exist');
+  }
 
   elseif ($_POST['method'] == 'getActiveUser') {
     if (!empty($_COOKIE['activeUserId'])) {
