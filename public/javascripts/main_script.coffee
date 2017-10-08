@@ -20,9 +20,9 @@ $(document).ready ->
           $('#activeUserMsg').show()
           $('#activeUserMsg p').text 'Welcome ' + userData.username
           for key in Object.keys userData.unlockables
-            console.log key, userData.unlockables[key]
             if userData.unlockables[key]
               $('#' + key).removeClass 'locked'
+              $('#g' + key).find('.locked').hide()
               $('#' + key).find('.stateContainer').css 'opacity', 0
 
   $('#newUser').submit (e) ->
@@ -57,6 +57,11 @@ $(document).ready ->
     $('.ionClose, .ionOpen').toggleClass 'buttonActive'
 
   navToggled = false
+
+  userLogToggle =->
+    userToggled = !userToggled
+
+  userToggled = false
 
   $('#navToggle, .navContainer').click ->
     navToggle()

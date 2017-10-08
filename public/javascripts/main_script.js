@@ -19,9 +19,23 @@
           method: 'getUserData',
           id: res.message
         }).then(function(userData) {
+          var i, key, len, ref, results;
           userData = JSON.parse(userData);
           $('#activeUserMsg').show();
-          return $('#activeUserMsg p').text('Welcome ' + userData.username);
+          $('#activeUserMsg p').text('Welcome ' + userData.username);
+          ref = Object.keys(userData.unlockables);
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            key = ref[i];
+            if (userData.unlockables[key]) {
+              $('#' + key).removeClass('locked');
+              $('#g' + key).find('.locked').hide();
+              results.push($('#' + key).find('.stateContainer').css('opacity', 0));
+            } else {
+              results.push(void 0);
+            }
+          }
+          return results;
         });
       }
     });
@@ -47,7 +61,6 @@
         username: $('form#loginUser #username').val(),
         password: $('form#loginUser #password').val()
       }).then(function(res) {
-        console.log(res);
         res = JSON.parse(res);
         if (res.status === 'error') {
           return $('#loginUser').find('.error').text(res.message);
@@ -86,6 +99,16 @@
     $('a').click(function(e) {
       var href;
       e.preventDefault();
+      if ($(this).find('.chapter').hasClass('locked')) {
+        $(this).find('.stateContainer i').animate({
+          color: 'red'
+        }, 500, function() {
+          return $(this).animate({
+            color: 'white'
+          }, 500);
+        });
+        return 0;
+      }
       href = $(this).attr('href');
       if (href.charAt(0) === '#') {
         return toHash(href);

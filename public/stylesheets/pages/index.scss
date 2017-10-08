@@ -248,10 +248,23 @@
   section#freeMode {
     width: 100%;
     height: 300px;
-    background-color: #191919;
+    background-color: #340F0F;
     .game {
       height: 100%;
       position: relative;
+      .lockedOverlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        i {
+          color: white;
+          font-size: 2em;
+          position: absolute;
+          @include centerXY;
+        }
+      }
       h3 {
         display: inline-block;
         position: absolute;
