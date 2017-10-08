@@ -176,6 +176,16 @@
         }
       });
     });
+    $('#userActions .deleteAcc').click(function() {
+      return submitUserData({
+        method: 'deleteUser'
+      }).then(function(res) {
+        res = JSON.parse(res);
+        if (res.status === 'success') {
+          return location.reload();
+        }
+      });
+    });
   });
 
 }).call(this);

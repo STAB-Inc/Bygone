@@ -62,13 +62,27 @@
     returnMsg('success', 'success');
   }
 
+  elseif ($_POST['method'] == 'deleteUser') {
+    global $file;
+    $users = getUsers($file);
+    $updated = array();
+    foreach ($users as $user) {
+      if ($_COOKIE['activeUserId'] != $user['id']) {
+        array_push($updated, $user);
+      }
+    }
+    file_put_contents($file, json_encode($updated));
+    setcookie('activeUserId', '', time() - 3600, '/');
+    returnMsg('success', 'success');
+  }
+
   function getUserDataById($id) {
     global $file;
     foreach (getUsers($file) as $user) {
       if ($id == $user['id']) {
         return $user;
       }
-    } 
+    }
   }
 
   function getUsers($file) {
