@@ -22,7 +22,6 @@
     $userData['unlockables']['ch3'] = false; 
     $userData['unlockables']['ch4'] = false;
     $userData['collections'] = array();
-
     array_push($users, $userData);
     file_put_contents($file, json_encode($users));
     setcookie('activeUserId', $userData['id'], time() + (86400 * 30), '/');
