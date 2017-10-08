@@ -19,6 +19,11 @@ $(document).ready ->
           userData = JSON.parse userData
           $('#activeUserMsg').show()
           $('#activeUserMsg p').text 'Welcome ' + userData.username
+          for key in Object.keys userData.unlockables
+            console.log key, userData.unlockables[key]
+            if userData.unlockables[key]
+              $('#' + key).removeClass 'locked'
+              $('#' + key).find('.stateContainer').css 'opacity', 0
 
   $('#newUser').submit (e) ->
     e.preventDefault()
@@ -40,7 +45,6 @@ $(document).ready ->
       username: $('form#loginUser #username').val()
       password:  $('form#loginUser #password').val()
     }).then (res) ->
-      console.log res
       res = JSON.parse res
       if res.status == 'error'
         $('#loginUser').find('.error').text res.message
@@ -73,6 +77,14 @@ $(document).ready ->
 
   $('a').click (e) ->
     e.preventDefault()
+    if $(this).find('.chapter').hasClass 'locked'
+      $(this).find('.stateContainer i').animate {
+        color: 'red'
+      }, 500, ->
+        $(this).animate {
+          color: 'white'
+        }, 500
+      return 0;
     href = $(this).attr 'href'
     if href.charAt(0) == '#'
       toHash href
