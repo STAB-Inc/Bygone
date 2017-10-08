@@ -8,6 +8,12 @@
   
   if($_POST['method'] == 'new') {
     $users = getUsers($file);
+    foreach ($users as $user) {
+      if ($_POST['username'] == $user['username']) {
+        returnMsg('error', 'Username already taken');
+        return 0;
+      }
+    } 
     $userData['id'] = uniqid();
     $userData['username'] = $_POST['username'];
     $userData['password'] = $_POST['password'];
@@ -16,12 +22,7 @@
     $userData['unlockables']['ch3'] = false; 
     $userData['unlockables']['ch4'] = false;
     $userData['collections'] = array();
-    foreach ($users as $user) {
-      if ($userData['username'] == $user['username']) {
-        returnMsg('error', 'Username already taken');
-        return 0;
-      }
-    } 
+
     array_push($users, $userData);
     file_put_contents($file, json_encode($users));
     setcookie('activeUserId', $userData['id'], time() + (86400 * 30), '/');
