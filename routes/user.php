@@ -11,6 +11,11 @@
     $userData['id'] = uniqid();
     $userData['username'] = $_POST['username'];
     $userData['password'] = $_POST['password'];
+    $userData['unlockables']['ch1'] = true;
+    $userData['unlockables']['ch2'] = false;
+    $userData['unlockables']['ch3'] = false; 
+    $userData['unlockables']['ch4'] = false;
+    $userData['collections'] = array();
     foreach ($users as $user) {
       if ($userData['username'] == $user['username']) {
         returnMsg('error', 'Username already taken');
