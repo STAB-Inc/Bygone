@@ -1,5 +1,11 @@
 jQuery(document).ready ->
 
+  submitUserData = (data) ->
+    $.ajax
+      url: '/routes/user.php'
+      type: 'POST'
+      data: data
+
   getParam = (name) ->
     results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return results[1] || 0
@@ -9,7 +15,20 @@ jQuery(document).ready ->
     if storyMode
       $('#playAgain').text 'Continue'
       $('#playAgain').parent().attr 'href', 'chapter3.html'
-      $('.skip').show();
+      $('.skip').show()
+      $('.save').hide()
+      $('#playAgain').addClass('continue')
+
+  $('.skip, .continue').click (e) ->
+    $('.continueScreen').show()
+    $('#selectionArea, #gameArea').hide()
+    submitUserData({
+      method: 'chapterComplete'
+      chapterId: '2'
+    }).then (res) ->
+      res = JSON.parse res
+      if res.status == 'success'
+        return
 
 
   retrieveResources = (amount) ->

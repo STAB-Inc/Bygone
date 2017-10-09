@@ -158,8 +158,8 @@ jQuery(document).ready ->
       currentGame.init processData(res)
 
   $('.skip, .continue').click (e) ->
-    $('.continueScreen').show();
-    $('#selectionArea, #gameArea').hide();
+    $('.continueScreen').show()
+    $('#selectionArea, #gameArea').hide()
     submitUserData({
       method: 'chapterComplete'
       chapterId: '1'
