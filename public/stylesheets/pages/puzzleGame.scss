@@ -83,12 +83,6 @@ main#puzzleGame {
       outline: none;
     }
   }
-  .skip {
-    background-color: $theme1;
-    &:hover {
-      background-color: $theme2;
-    }
-  }
   .buttonContainer {
     text-align: center;
     a {

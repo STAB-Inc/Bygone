@@ -5520,10 +5520,41 @@ a {
     color: #dadad2;
     opacity: 1; }
 
+.continueScreen {
+  display: none;
+  width: 500px;
+  height: 300px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  position: fixed;
+  padding: 20px;
+  z-index: 7;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%); }
+  .continueScreen img {
+    width: 300px;
+    margin-left: 50%;
+    transform: translateX(-50%); }
+  .continueScreen h3 {
+    text-align: center; }
+  .continueScreen p {
+    text-align: center; }
+  .continueScreen .save {
+    display: none; }
+  .continueScreen .buttonContainer {
+    text-align: center; }
+    .continueScreen .buttonContainer a {
+      display: block; }
+    .continueScreen .buttonContainer button {
+      margin-top: 10px; }
+
 .skip {
   display: none;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #52768a !important;
   bottom: 50px;
   right: 50px;
   padding: 2px 5px 2px 5px;
@@ -5531,7 +5562,8 @@ a {
   .skip a {
     color: white; }
   .skip:hover {
-    opacity: 1; }
+    opacity: 1;
+    background-color: #46637e !important; }
 
 ::-webkit-scrollbar {
   width: 10px; }
@@ -6101,10 +6133,6 @@ main#puzzleGame {
       background-color: rgba(255, 255, 255, 0.2); }
     main#puzzleGame button:focus {
       outline: none; }
-  main#puzzleGame .skip {
-    background-color: #52768a; }
-    main#puzzleGame .skip:hover {
-      background-color: #46637e; }
   main#puzzleGame .buttonContainer {
     text-align: center; }
     main#puzzleGame .buttonContainer a {
