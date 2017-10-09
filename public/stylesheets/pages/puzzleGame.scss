@@ -1,5 +1,5 @@
 main#puzzleGame {
-  width: 1000px;
+  width: 1200px;
   margin: auto;
   #selectionArea {
     margin-top: 100px;
@@ -7,7 +7,7 @@ main#puzzleGame {
     overflow: auto;
     .choice {
       float: left;
-      width: 10%;
+      width: 8%;
       height: 150px;
       cursor: pointer;
       padding: 0;
@@ -45,11 +45,13 @@ main#puzzleGame {
       background-repeat: no-repeat;
     }
   }
-  .winScreen {
+  .winScreen,
+  .continueScreen {
     display: none;
     width: 500px;
     height: 800px;
     background-color: $trans-const;
+    border-radius: 5px;
     position: fixed;
     padding: 20px;
     @include centerXY;
@@ -58,8 +60,14 @@ main#puzzleGame {
       margin-left: 50%;
       transform: translateX(-50%);
     }
+    h3 {
+      text-align: center;
+    }
     p {
       text-align: center;
+    }
+    .save {
+      display: none;
     }
   }
   button {
@@ -73,6 +81,21 @@ main#puzzleGame {
     }
     &:focus {
       outline: none;
+    }
+  }
+  .skip {
+    background-color: $theme1;
+    &:hover {
+      background-color: $theme2;
+    }
+  }
+  .buttonContainer {
+    text-align: center;
+    a {
+      display: block;
+    }
+    button {
+      margin-top: 10px;
     }
   }
 }

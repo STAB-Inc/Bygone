@@ -17,7 +17,7 @@
     $userData['id'] = uniqid();
     $userData['username'] = $_POST['username'];
     $userData['password'] = $_POST['password'];
-    $userData['unlockables']['ch1'] = true;
+    $userData['unlockables']['ch1'] = false;
     $userData['unlockables']['ch2'] = false;
     $userData['unlockables']['ch3'] = false; 
     $userData['unlockables']['ch4'] = false;
@@ -73,6 +73,18 @@
     }
     file_put_contents($file, json_encode($updated));
     setcookie('activeUserId', '', time() - 3600, '/');
+    returnMsg('success', 'success');
+  }
+
+  elseif ($_POST['method'] == 'chapterComplete') {
+    global $file;
+    $users = getUsers($file);
+    foreach ($users as $index => $user) {
+      if ($_COOKIE['activeUserId'] == $user['id']) {
+        $users[$index]['unlockables']['ch' . $_POST['chapterId']] = true;
+      }
+    }
+    file_put_contents($file, json_encode($users));
     returnMsg('success', 'success');
   }
 

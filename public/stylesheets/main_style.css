@@ -5831,7 +5831,7 @@ nav#global {
     width: 50vw;
     height: 100vh;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 100px; }
     #index main .header {
       display: inline-block;
@@ -5914,7 +5914,7 @@ nav#global {
           height: 25%;
           padding: 20px; } }
       #index section#campaign .chapter:hover {
-        background-color: rgba(0, 0, 0, 0.7); }
+        background-color: rgba(0, 0, 0, 0.8); }
     #index section#campaign .ch1 {
       background-color: #52768a; }
     #index section#campaign .ch2 {
@@ -6022,7 +6022,7 @@ nav#global {
       background-color: #371d1f; }
 
 main#puzzleGame {
-  width: 1000px;
+  width: 1200px;
   margin: auto; }
   main#puzzleGame #selectionArea {
     margin-top: 100px;
@@ -6030,7 +6030,7 @@ main#puzzleGame {
     overflow: auto; }
     main#puzzleGame #selectionArea .choice {
       float: left;
-      width: 10%;
+      width: 8%;
       height: 150px;
       cursor: pointer;
       padding: 0;
@@ -6061,11 +6061,13 @@ main#puzzleGame {
     main#puzzleGame #gameArea .tile {
       float: left;
       background-repeat: no-repeat; }
-  main#puzzleGame .winScreen {
+  main#puzzleGame .winScreen,
+  main#puzzleGame .continueScreen {
     display: none;
     width: 500px;
     height: 800px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
     position: fixed;
     padding: 20px;
     left: 50%;
@@ -6073,12 +6075,20 @@ main#puzzleGame {
     top: 50%;
     transform: translateY(-50%);
     transform: translate(-50%, -50%); }
-    main#puzzleGame .winScreen img {
+    main#puzzleGame .winScreen img,
+    main#puzzleGame .continueScreen img {
       width: 300px;
       margin-left: 50%;
       transform: translateX(-50%); }
-    main#puzzleGame .winScreen p {
+    main#puzzleGame .winScreen h3,
+    main#puzzleGame .continueScreen h3 {
       text-align: center; }
+    main#puzzleGame .winScreen p,
+    main#puzzleGame .continueScreen p {
+      text-align: center; }
+    main#puzzleGame .winScreen .save,
+    main#puzzleGame .continueScreen .save {
+      display: none; }
   main#puzzleGame button {
     background: none;
     color: white;
@@ -6091,6 +6101,16 @@ main#puzzleGame {
       background-color: rgba(255, 255, 255, 0.2); }
     main#puzzleGame button:focus {
       outline: none; }
+  main#puzzleGame .skip {
+    background-color: #52768a; }
+    main#puzzleGame .skip:hover {
+      background-color: #46637e; }
+  main#puzzleGame .buttonContainer {
+    text-align: center; }
+    main#puzzleGame .buttonContainer a {
+      display: block; }
+    main#puzzleGame .buttonContainer button {
+      margin-top: 10px; }
 
 #photographyGame .err {
   color: red; }
