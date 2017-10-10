@@ -16,7 +16,7 @@
     } 
     $userData['id'] = uniqid();
     $userData['username'] = $_POST['username'];
-    $userData['password'] = $_POST['password'];
+    $userData['password'] = hash('sha256', $_POST['password']);
     $userData['unlockables']['ch1'] = false;
     $userData['unlockables']['ch2'] = false;
     $userData['unlockables']['ch3'] = false; 
@@ -32,7 +32,7 @@
     global $file;
     foreach (getUsers($file) as $user) {
       if ($_POST['username'] == $user['username']) {
-        if ($_POST['password'] == $user['password']) {
+        if (hash('sha256', $_POST['password']) == $user['password']) {
           setcookie('activeUserId', $user['id'], time() + (86400 * 30), '/');
           returnMsg('success', 'success');
           return 0;
