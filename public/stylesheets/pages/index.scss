@@ -12,11 +12,66 @@
     overflow: hidden;
     pointer-events: none;
   }
+  #userLoginToggle,
+  #activeUserMsg,
+  #userActions {
+    position: fixed;
+    right: 50px;
+    top: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    cursor: pointer;
+    z-index: 5;
+    p {
+      margin: 0;
+    }
+  }
+  #activeUserMsg {
+    display: none;
+    position: absolute;
+    z-index: 6;
+    i {
+      position: absolute;
+      top: 6px;
+      left: 12px;
+      color: white;
+      font-size: 26px;
+    }
+    p {
+      text-align: left;
+      margin-left: 30px;
+    }
+  }
+  #userActions {
+    position: absolute;
+    width: 175px;
+    height: 300px;
+    top: 100px;
+    right: -200px;
+    cursor: auto;
+    @include transition(0.2s, ease);
+    .buttonContainer {
+      width: 100%;
+      margin-top: 100px;
+      button {
+        margin: 2px;
+        width: 100%;
+      }
+    }
+  }
+  .showActions {
+    right: 0 !important;
+  }
   .formContainer {
     position: absolute;
-    left: 50%;
+    top: 0;
+    right: 50px;
     height: 100vh;
-    width: 50vw;
+    width: 500px;
+    z-index: 4;
+    @media (max-width: 1199px) and (min-width: 992px) {
+      right: -600px;
+    }
     #loginUser {
       display: none;
     }
@@ -26,9 +81,12 @@
       width: 500px;
       background-color: rgba(0, 0, 0, 0.9);
       padding: 20px;
-      border: 1px solid grey;
+      border: 1px solid transparent;
       border-radius: 10px;
       @include centerXY();
+      &:hover {
+        border: 1px solid grey;
+      }
       .inputStd {
         width: 80%;
         border: none;
@@ -107,7 +165,7 @@
         text-align: center;
         @include centerXY();
       }
-      @media (max-width: 1200px) {
+      @media (max-width: 1377px) {
         height: 100px;
       }
       &:hover {
@@ -190,10 +248,23 @@
   section#freeMode {
     width: 100%;
     height: 300px;
-    background-color: #191919;
+    background-color: #340F0F;
     .game {
       height: 100%;
       position: relative;
+      .lockedOverlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2;
+        i {
+          color: white;
+          font-size: 2em;
+          position: absolute;
+          @include centerXY;
+        }
+      }
       h3 {
         display: inline-block;
         position: absolute;

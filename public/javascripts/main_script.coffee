@@ -11,15 +11,28 @@ $(document).ready ->
     }).then (res) ->
       res = JSON.parse res
       if res.status == 'success'
+        $('.formContainer').hide()
         submitUserData({
           method: 'getUserData'
           id: res.message
         }).then (userData) ->
-          console.log userData
-
+          userData = JSON.parse userData
+          $('#activeUserMsg').show()
+          $('#activeUserMsg p').text 'Welcome ' + userData.username
+          for key in Object.keys userData.unlockables
+            if userData.unlockables[key]
+              $('#' + key).removeClass 'locked'
+              $('#g' + key).find('.locked').hide()
+              $('#' + key).find('.stateContainer').css 'opacity', 0
 
   $('#newUser').submit (e) ->
     e.preventDefault()
+    if $('#newUser #password').val() != $('#newUser #cPassword').val()
+      $('#newUser').find('.error').text 'Password do not match.'
+      return 0
+    if $('#newUser #password').val() == '' || $('#newUser #cPassword').val() == '' || $('#newUser #username').val()  == ''
+      $('#newUser').find('.error').text 'Field cannot be empty'
+      return 0
     submitUserData({
       method: 'new'
       username: $('form#newUser #username').val()
@@ -30,6 +43,19 @@ $(document).ready ->
         $('#newUser').find('.error').text res.message
       else
         location.reload()
+  
+  $('#loginUser').submit (e) ->
+    e.preventDefault()
+    submitUserData({
+      method: 'login'
+      username: $('form#loginUser #username').val()
+      password:  $('form#loginUser #password').val()
+    }).then (res) ->
+      res = JSON.parse res
+      if res.status == 'error'
+        $('#loginUser').find('.error').text res.message
+      else
+        location.reload()
     
   navToggle = ->
     navToggled = !navToggled
@@ -38,8 +64,19 @@ $(document).ready ->
 
   navToggled = false
 
+  userLogToggle =->
+    userToggled = !userToggled
+
+  userToggled = false
+
   $('#navToggle, .navContainer').click ->
     navToggle()
+
+  $('#userLoginToggle').click ->
+    userLogToggle()
+
+  $('#activeUserMsg').click ->
+    $('#userActions').toggleClass('showActions')
 
   toHash = (hash) ->
     $('body').animate({
@@ -51,6 +88,14 @@ $(document).ready ->
 
   $('a').click (e) ->
     e.preventDefault()
+    if $(this).find('.chapter').hasClass 'locked'
+      $(this).find('.stateContainer i').animate {
+        color: 'red'
+      }, 500, ->
+        $(this).animate {
+          color: 'white'
+        }, 500
+      return 0;
     href = $(this).attr 'href'
     if href.charAt(0) == '#'
       toHash href
@@ -108,6 +153,22 @@ $(document).ready ->
 
   $('button').click (e) ->
     e.preventDefault()
+
+  $('#userActions .logout').click ->
+    submitUserData({
+      method: 'logout'
+    }).then (res) ->
+      res = JSON.parse res
+      if res.status == 'success'
+        location.reload()
+
+  $('#userActions .deleteAcc').click ->
+    submitUserData({
+      method: 'deleteUser'
+    }).then (res) ->
+      res = JSON.parse res
+      if res.status == 'success'
+        location.reload()
 
   return
 # ---

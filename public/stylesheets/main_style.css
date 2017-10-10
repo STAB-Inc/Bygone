@@ -5496,7 +5496,8 @@ ul {
   list-style: none; }
 
 body {
-  overflow-y: hidden; }
+  overflow-y: hidden;
+  overflow-x: hidden; }
 
 a {
   cursor: pointer;
@@ -5519,10 +5520,41 @@ a {
     color: #dadad2;
     opacity: 1; }
 
+.continueScreen {
+  display: none;
+  width: 500px;
+  height: 300px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  position: fixed;
+  padding: 20px;
+  z-index: 7;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%); }
+  .continueScreen img {
+    width: 300px;
+    margin-left: 50%;
+    transform: translateX(-50%); }
+  .continueScreen h3 {
+    text-align: center; }
+  .continueScreen p {
+    text-align: center; }
+  .continueScreen .save {
+    display: none; }
+  .continueScreen .buttonContainer {
+    text-align: center; }
+    .continueScreen .buttonContainer a {
+      display: block; }
+    .continueScreen .buttonContainer button {
+      margin-top: 10px; }
+
 .skip {
   display: none;
   position: fixed;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #52768a !important;
   bottom: 50px;
   right: 50px;
   padding: 2px 5px 2px 5px;
@@ -5530,7 +5562,8 @@ a {
   .skip a {
     color: white; }
   .skip:hover {
-    opacity: 1; }
+    opacity: 1;
+    background-color: #46637e !important; }
 
 ::-webkit-scrollbar {
   width: 10px; }
@@ -5735,11 +5768,61 @@ nav#global {
     z-index: -1;
     overflow: hidden;
     pointer-events: none; }
+  #index #userLoginToggle,
+  #index #activeUserMsg,
+  #index #userActions {
+    position: fixed;
+    right: 50px;
+    top: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    cursor: pointer;
+    z-index: 5; }
+    #index #userLoginToggle p,
+    #index #activeUserMsg p,
+    #index #userActions p {
+      margin: 0; }
+  #index #activeUserMsg {
+    display: none;
+    position: absolute;
+    z-index: 6; }
+    #index #activeUserMsg i {
+      position: absolute;
+      top: 6px;
+      left: 12px;
+      color: white;
+      font-size: 26px; }
+    #index #activeUserMsg p {
+      text-align: left;
+      margin-left: 30px; }
+  #index #userActions {
+    position: absolute;
+    width: 175px;
+    height: 300px;
+    top: 100px;
+    right: -200px;
+    cursor: auto;
+    transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease; }
+    #index #userActions .buttonContainer {
+      width: 100%;
+      margin-top: 100px; }
+      #index #userActions .buttonContainer button {
+        margin: 2px;
+        width: 100%; }
+  #index .showActions {
+    right: 0 !important; }
   #index .formContainer {
     position: absolute;
-    left: 50%;
+    top: 0;
+    right: 50px;
     height: 100vh;
-    width: 50vw; }
+    width: 500px;
+    z-index: 4; }
+    @media (max-width: 1199px) and (min-width: 992px) {
+      #index .formContainer {
+        right: -600px; } }
     #index .formContainer #loginUser {
       display: none; }
     #index .formContainer form {
@@ -5748,13 +5831,15 @@ nav#global {
       width: 500px;
       background-color: rgba(0, 0, 0, 0.9);
       padding: 20px;
-      border: 1px solid grey;
+      border: 1px solid transparent;
       border-radius: 10px;
       left: 50%;
       transform: translateX(-50%);
       top: 50%;
       transform: translateY(-50%);
       transform: translate(-50%, -50%); }
+      #index .formContainer form:hover {
+        border: 1px solid grey; }
       #index .formContainer form .inputStd {
         width: 80%;
         border: none;
@@ -5778,7 +5863,7 @@ nav#global {
     width: 50vw;
     height: 100vh;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 100px; }
     #index main .header {
       display: inline-block;
@@ -5828,7 +5913,7 @@ nav#global {
         top: 50%;
         transform: translateY(-50%);
         transform: translate(-50%, -50%); }
-      @media (max-width: 1200px) {
+      @media (max-width: 1377px) {
         #index main .buttonContainer {
           height: 100px; } }
       #index main .buttonContainer:hover {
@@ -5861,7 +5946,7 @@ nav#global {
           height: 25%;
           padding: 20px; } }
       #index section#campaign .chapter:hover {
-        background-color: rgba(0, 0, 0, 0.7); }
+        background-color: rgba(0, 0, 0, 0.8); }
     #index section#campaign .ch1 {
       background-color: #52768a; }
     #index section#campaign .ch2 {
@@ -5898,10 +5983,25 @@ nav#global {
   #index section#freeMode {
     width: 100%;
     height: 300px;
-    background-color: #191919; }
+    background-color: #340F0F; }
     #index section#freeMode .game {
       height: 100%;
       position: relative; }
+      #index section#freeMode .game .lockedOverlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 2; }
+        #index section#freeMode .game .lockedOverlay i {
+          color: white;
+          font-size: 2em;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          top: 50%;
+          transform: translateY(-50%);
+          transform: translate(-50%, -50%); }
       #index section#freeMode .game h3 {
         display: inline-block;
         position: absolute;
@@ -5954,7 +6054,7 @@ nav#global {
       background-color: #371d1f; }
 
 main#puzzleGame {
-  width: 1000px;
+  width: 1200px;
   margin: auto; }
   main#puzzleGame #selectionArea {
     margin-top: 100px;
@@ -5962,7 +6062,7 @@ main#puzzleGame {
     overflow: auto; }
     main#puzzleGame #selectionArea .choice {
       float: left;
-      width: 10%;
+      width: 8%;
       height: 150px;
       cursor: pointer;
       padding: 0;
@@ -5993,11 +6093,13 @@ main#puzzleGame {
     main#puzzleGame #gameArea .tile {
       float: left;
       background-repeat: no-repeat; }
-  main#puzzleGame .winScreen {
+  main#puzzleGame .winScreen,
+  main#puzzleGame .continueScreen {
     display: none;
     width: 500px;
     height: 800px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
     position: fixed;
     padding: 20px;
     left: 50%;
@@ -6005,12 +6107,20 @@ main#puzzleGame {
     top: 50%;
     transform: translateY(-50%);
     transform: translate(-50%, -50%); }
-    main#puzzleGame .winScreen img {
+    main#puzzleGame .winScreen img,
+    main#puzzleGame .continueScreen img {
       width: 300px;
       margin-left: 50%;
       transform: translateX(-50%); }
-    main#puzzleGame .winScreen p {
+    main#puzzleGame .winScreen h3,
+    main#puzzleGame .continueScreen h3 {
       text-align: center; }
+    main#puzzleGame .winScreen p,
+    main#puzzleGame .continueScreen p {
+      text-align: center; }
+    main#puzzleGame .winScreen .save,
+    main#puzzleGame .continueScreen .save {
+      display: none; }
   main#puzzleGame button {
     background: none;
     color: white;
@@ -6023,6 +6133,12 @@ main#puzzleGame {
       background-color: rgba(255, 255, 255, 0.2); }
     main#puzzleGame button:focus {
       outline: none; }
+  main#puzzleGame .buttonContainer {
+    text-align: center; }
+    main#puzzleGame .buttonContainer a {
+      display: block; }
+    main#puzzleGame .buttonContainer button {
+      margin-top: 10px; }
 
 #photographyGame .err {
   color: red; }

@@ -60,6 +60,22 @@
   </nav>
   <body id="index">
     <img src="Bygone.Resources/index.jpg" />
+    <div id="userLoginToggle" class="hidden-md hidden-lg">
+      <p>Create a Account</p>
+    </div>
+    <div id="activeUserMsg">
+      <i class="ion-ios-person-outline"></i>
+      <p></p>
+    </div>
+    <div id="userActions">
+      <div class="container-fluid buttonContainer">
+        <div class="row">
+          <button>Profile</button>
+          <button class="logout">Log Out</button>
+          <button class="deleteAcc">Delete Account</button>
+        </div>
+      </div>
+    </div>
     <div class="formContainer">
       <form id="newUser" method="post">
         <h2>Create new account</h2>
@@ -68,7 +84,7 @@
         <p>Password</p>
         <input id="password" class="inputStd" type="password" name="password" placeholder="***********">
         <p>Confirm Password</p>
-        <input id="password" class="inputStd" type="Password" name="cPassword" placeholder="***********">
+        <input id="cPassword" class="inputStd" type="Password" name="cPassword" placeholder="***********">
         <input type="submit" class="btnStyleStd">
         <button class="show formBtn" target="#loginUser">Already have an account? Login here</button>
         <p class="error"></p>
@@ -80,6 +96,7 @@
         <p>Password</p>
         <input id="password" class="inputStd" type="password" name="password" placeholder="***********">
         <input type="submit" class="btnStyleStd">
+        <p class="error"></p>
         <button class="closeForm formBtn">Back</button>
       </form>
     </div>
@@ -133,7 +150,7 @@
       <div class="container-fluid">
         <div class="row">
           <a href="views/chapter1.html">
-            <div class="col-lg-3 col-md-6 chapter ch1">
+            <div id='ch1' class="col-lg-3 col-md-6 chapter ch1">
               <div class="stateContainer">
               </div>
               <div class="textContainer">
@@ -147,7 +164,7 @@
             </div>
           </a>
           <a href="views/chapter2.html">
-            <div class="col-lg-3 col-md-6 chapter ch2">
+            <div id='ch2' class="col-lg-3 col-md-6 chapter ch2 locked">
               <div class="stateContainer">
                 <i class="ion-locked"></i>
               </div>
@@ -162,7 +179,7 @@
             </div>
           </a>
           <a href="views/chapter3.html">
-            <div class="col-lg-3 col-md-6 chapter ch3">
+            <div id='ch3' class="col-lg-3 col-md-6 chapter ch3 locked">
               <div class="stateContainer">
                 <i class="ion-locked"></i>
               </div>
@@ -177,7 +194,7 @@
             </div>
           </a>
           <a href="views/chapter4.html">
-            <div class="col-lg-3 col-md-6 chapter ch4">
+            <div id='ch4' class="col-lg-3 col-md-6 chapter ch4 locked">
               <div class="stateContainer">
                 <i class="ion-locked"></i>
               </div>
@@ -197,7 +214,12 @@
     <section id="freeMode">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-3 game g1">
+          <div id='gch1' class="col-lg-3 game g1">
+            <div class="row locked">
+              <div class="lockedOverlay">
+                <i class="ion-locked"></i>
+              </div>
+            </div>
             <h3>Puzzle Game</h3>
             <div class="difContainer">
               <div class="col-lg-4">
@@ -217,7 +239,12 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3 game g2">
+          <div id='gch2' class="col-lg-3 game g2">
+            <div class="row locked">
+              <div class="lockedOverlay">
+                <i class="ion-locked"></i>
+              </div>
+            </div>
             <h3>Photography Game</h3>
             <div class="difContainer">
               <div class="col-lg-6">
@@ -232,7 +259,12 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3 game g3">
+          <div id='gch3' class="col-lg-3 game g3">
+            <div class="row locked">
+              <div class="lockedOverlay">
+                <i class="ion-locked"></i>
+              </div>
+            </div>
             <h3>Shooting Game</h3>
             <div class="difContainer">
               <div class="col-lg-4">
@@ -252,7 +284,12 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3 game g4">
+          <div id='gch4' class="col-lg-3 game g4">
+            <div class="row locked">
+              <div class="lockedOverlay">
+                <i class="ion-locked"></i>
+              </div>
+            </div>
             <h3>Photography Plus</h3>
             <div class="difContainer">
               <div class="col-lg-6">
@@ -272,6 +309,7 @@
     </section>
   </body>
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
   <script src="bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
   <script src="public/javascripts/main_script.js"></script>
 </html>

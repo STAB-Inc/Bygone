@@ -4,7 +4,14 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, submitUserData, timeManager, updateMarkers, validData;
+    submitUserData = function(data) {
+      return $.ajax({
+        url: '/routes/user.php',
+        type: 'POST',
+        data: data
+      });
+    };
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -16,8 +23,23 @@
         $('#playAgain').text('Continue');
         $('#playAgain').parent().attr('href', 'chapter3.html');
         $('.skip').show();
+        $('.save').hide();
+        $('#playAgain').addClass('continue');
       }
     } catch (error) {}
+    $('.skip, .continue').click(function(e) {
+      $('.continueScreen').show();
+      $('#selectionArea, #gameArea').hide();
+      return submitUserData({
+        method: 'chapterComplete',
+        chapterId: '2'
+      }).then(function(res) {
+        res = JSON.parse(res);
+        if (res.status === 'success') {
+
+        }
+      });
+    });
     retrieveResources = function(amount) {
       var reqParam;
       reqParam = {
