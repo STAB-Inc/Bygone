@@ -41,6 +41,14 @@
     });
     $('#newUser').submit(function(e) {
       e.preventDefault();
+      if ($('#newUser #password').val() !== $('#newUser #cPassword').val()) {
+        $('#newUser').find('.error').text('Password do not match.');
+        return 0;
+      }
+      if ($('#newUser #password').val() === '' || $('#newUser #cPassword').val() === '' || $('#newUser #username').val() === '') {
+        $('#newUser').find('.error').text('Field cannot be empty');
+        return 0;
+      }
       return submitUserData({
         method: 'new',
         username: $('form#newUser #username').val(),
