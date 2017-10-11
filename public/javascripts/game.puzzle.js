@@ -20,7 +20,7 @@
         this.xsplit = xsplit;
         this.ysplit = ysplit;
         this.amount = amount1;
-        this.timePassed;
+        this.attempts = 0;
       }
 
       puzzleGame.prototype.init = function(resources) {
@@ -31,7 +31,6 @@
         });
         resourceLimit = this.resources.slice(0, this.amount);
         this.solution = resourceLimit[Math.floor(Math.random() * resourceLimit.length)];
-        console.log(this.solution);
         this.reset();
         this.generateChoiceField(resourceLimit);
         this.generateTiles();
@@ -127,7 +126,9 @@
       };
 
       puzzleGame.prototype.gameWin = function() {
+        this.score = (300 * this.amount) - parseInt($('#timer').attr('value') - 1000 * this.attempts);
         $('.winScreen .timeTaken').text('Time taken : ' + $('#timer').attr('value') + ' seconds');
+        $('.winScreen .finalScore').text('Your score : ' + this.score + ' pts');
         $('.winScreen').show();
         $('.winScreen img').attr('src', this.solution['High resolution image']);
         $('.winScreen .soldierName').text(this.solution['Full name (from National Archives of Australia)']);
@@ -137,8 +138,20 @@
       };
 
       puzzleGame.prototype.gameLose = function() {
-        alert('Wrong Answer');
-        return $('.play').show();
+        this.attempts += 1;
+        return $('#attempts').text('Attempts: ' + this.attempts);
+      };
+
+      puzzleGame.prototype.saveScore = function() {
+        return submitUserData({
+          method: 'saveScore',
+          value: this.score
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            return console.log(res.status);
+          }
+        });
       };
 
       return puzzleGame;
@@ -222,6 +235,9 @@
         }
       });
     });
+    $('#saveScore').click(function() {
+      return currentGame.saveScore();
+    });
     $('.winScreen').hide();
     $('#selectionArea').on('click', '.choice', function() {
       if (parseInt($(this).attr('id').match(/[0-9]+/)) === currentGame.getAnswer()[1]) {
@@ -230,7 +246,9 @@
         currentGame.gameLose();
       }
     });
-    $('#playAgain').click(function() {});
+    $('#playAgain').click(function() {
+      return location.reload();
+    });
     $('#reset').click(function() {
       currentGame.reset();
     });

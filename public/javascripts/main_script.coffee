@@ -24,6 +24,8 @@ $(document).ready ->
               $('#' + key).removeClass 'locked'
               $('#g' + key).find('.locked').hide()
               $('#' + key).find('.stateContainer').css 'opacity', 0
+      else
+        $('.save').hide()
 
   $('#newUser').submit (e) ->
     e.preventDefault()

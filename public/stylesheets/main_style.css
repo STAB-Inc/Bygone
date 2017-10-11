@@ -6087,12 +6087,15 @@ main#puzzleGame {
         border: 1px solid red; }
       main#puzzleGame #selectionArea .choice img {
         pointer-events: none; }
-  main#puzzleGame #timer {
+  main#puzzleGame #timer,
+  main#puzzleGame #attempts {
     width: 200px;
     height: 50px;
     position: fixed;
     left: 100px;
     top: 64px; }
+  main#puzzleGame #attempts {
+    top: 80px; }
   main#puzzleGame #tileTemplate {
     float: left;
     position: relative;
@@ -6133,9 +6136,6 @@ main#puzzleGame {
     main#puzzleGame .winScreen p,
     main#puzzleGame .continueScreen p {
       text-align: center; }
-    main#puzzleGame .winScreen .save,
-    main#puzzleGame .continueScreen .save {
-      display: none; }
   main#puzzleGame button {
     background: none;
     color: white;

@@ -12,14 +12,13 @@ jQuery(document).ready ->
 
   class puzzleGame
     constructor: (@debug, @xsplit, @ysplit, @amount) ->
-      @timePassed
+      @attempts = 0
 
     init: (@resources) ->
       @resources.sort ->
         return 0.5 - Math.random()
       resourceLimit = @resources.slice(0, @amount)
       @solution = resourceLimit[Math.floor(Math.random() * resourceLimit.length)]
-      console.log @solution
       @reset()
       @generateChoiceField(resourceLimit)
       @generateTiles()
@@ -95,7 +94,9 @@ jQuery(document).ready ->
       @time = 0;
 
     gameWin: ->
+      @score = (300*@amount) - parseInt $('#timer').attr('value') - 1000*@attempts
       $('.winScreen .timeTaken').text 'Time taken : ' + $('#timer').attr('value') + ' seconds'
+      $('.winScreen .finalScore').text 'Your score : ' + @score + ' pts'
       $('.winScreen').show()
       $('.winScreen img').attr 'src', @solution['High resolution image']
       $('.winScreen .soldierName').text @solution['Full name (from National Archives of Australia)']
@@ -104,8 +105,17 @@ jQuery(document).ready ->
       @reset()
 
     gameLose: ->
-      alert('Wrong Answer')
-      $('.play').show()
+      @attempts += 1
+      $('#attempts').text 'Attempts: ' + @attempts
+
+    saveScore: ->
+      submitUserData({
+        method: 'saveScore'
+        value: @score
+      }).then (res) ->
+        res = JSON.parse res
+        if res.status == 'success'
+          console.log res.status
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -168,13 +178,8 @@ jQuery(document).ready ->
       if res.status == 'success'
         return
 
-  # $('.save').click ->
-  #   submitUserData({
-  #     method: 'saveScore'
-  #   }).then (res) ->
-  #     res = JSON.parse res
-  #     if res.status == 'success'
-  #       location.reload()
+  $('#saveScore').click ->
+    currentGame.saveScore()
 
   $('.winScreen').hide();
 
@@ -186,7 +191,7 @@ jQuery(document).ready ->
     return
 
   $('#playAgain').click ->
-    #location.reload()
+    location.reload()
 
   $('#reset').click ->
     currentGame.reset()

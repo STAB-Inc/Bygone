@@ -37,6 +37,8 @@
           }
           return results;
         });
+      } else {
+        return $('.save').hide();
       }
     });
     $('#newUser').submit(function(e) {
