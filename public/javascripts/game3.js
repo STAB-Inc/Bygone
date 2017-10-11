@@ -92,8 +92,8 @@ function wingame(score){
 }
 
 function level2(){
-	$('#level1').hide();
-	$("body").css("background-image",'url("../views/images/town.jpg")');
+	$('#soldiers').hide();
+	$("body").css("background-image",'url("../views/images/trenches.jpeg")');
 }
 
 function retrieveResources(amount) {
