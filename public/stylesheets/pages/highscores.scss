@@ -2,8 +2,12 @@
   background-color: $dark-shade;
   section.scores {
     padding: 80px;
-    h1 {
+    h1,
+    .head {
       font-weight: bold;
+    }
+    .date {
+      font-size: 12px;
     }
   }
 }

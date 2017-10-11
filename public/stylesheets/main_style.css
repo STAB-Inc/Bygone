@@ -6072,8 +6072,11 @@ nav#global {
   background-color: #101010; }
   #highscores section.scores {
     padding: 80px; }
-    #highscores section.scores h1 {
+    #highscores section.scores h1,
+    #highscores section.scores .head {
       font-weight: bold; }
+    #highscores section.scores .date {
+      font-size: 12px; }
 
 main#puzzleGame {
   width: 1200px;

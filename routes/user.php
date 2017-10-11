@@ -116,6 +116,18 @@
     returnMsg('success', 'Successfully added to collection.');
   }
 
+  elseif ($_POST['method'] == 'getAll') {
+    global $file;
+    $users = array();
+    foreach (getUsers($file) as $user) {
+      unset($user['password']);
+      unset($user['collections']);
+      unset($user['unlockables']);
+      array_push($users, $user);
+    }
+    echo json_encode($users);
+  }
+
   function getUserDataById($id) {
     global $file;
     foreach (getUsers($file) as $user) {
