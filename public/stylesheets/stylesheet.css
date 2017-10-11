@@ -1,0 +1,76 @@
+.scope {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.machinegun {
+	position: absolute;
+	transform: translate(0%, -50%);
+	right: 0px;
+	top: 50%;
+	height: 20%;
+	z-index: -1	;
+}
+
+.corpse {
+	pointer-events: none;
+	z-index: -2;
+}
+
+body {
+	font: sans-serif;
+	overflow: hidden;
+	background-image: url("../../views/images/field.jpg");
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 0% 10%; 
+}
+
+#soldiers {
+	position: relative;
+	width: 100px;
+	height: 100px;
+}
+
+#soldiers img{
+	transform: translate(-50%, -50%);
+}
+
+#teamlist{
+	position: absolute;
+	z-index: 10;
+	bottom:0;
+	left: 0%;
+	margin: auto;
+	width: 100%;
+	text-align:center;
+	color: white;
+	pointer-events: none;
+}
+
+#teamlist img{
+	width: 50px;
+	height: 75px;
+	opacity: 1;
+	display: inline-block;
+	transition: .5s ease;
+	backface-visibility: hidden;
+}
+
+.middle {
+	transition: .5s ease;
+	position: relative;
+	display: inline-block;
+	opacity: 0;
+	width: 0px;
+	height: 0px;
+	transform: translate(-40px, -50%);
+  }
+
+  .middle p{
+	background-color: #4CAF50;
+	color: black;
+	font-weight: bold;
+  }
