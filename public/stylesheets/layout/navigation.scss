@@ -6,7 +6,7 @@ nav#global {
   z-index: 10;
   opacity: 0;
   pointer-events: none;
-  @include transition(0.2s, ease-in-out)
+  @include transition(0.2s, ease-in-out);
   .navContainer {
     position: absolute;
     width: 600px;

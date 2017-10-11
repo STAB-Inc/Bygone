@@ -64,15 +64,16 @@ $(document).ready ->
 
   navToggled = false
 
-  userLogToggle =->
+  userLogToggle = ->
     userToggled = !userToggled
+    if userToggled then $('.userProfile').fadeIn()
 
   userToggled = false
 
   $('#navToggle, .navContainer').click ->
     navToggle()
 
-  $('#userLoginToggle').click ->
+  $('.viewProf').click ->
     userLogToggle()
 
   $('#activeUserMsg').click ->

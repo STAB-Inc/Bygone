@@ -86,13 +86,16 @@
     navToggled = false;
     userLogToggle = function() {
       var userToggled;
-      return userToggled = !userToggled;
+      userToggled = !userToggled;
+      if (userToggled) {
+        return $('.userProfile').fadeIn();
+      }
     };
     userToggled = false;
     $('#navToggle, .navContainer').click(function() {
       return navToggle();
     });
-    $('#userLoginToggle').click(function() {
+    $('.viewProf').click(function() {
       return userLogToggle();
     });
     $('#activeUserMsg').click(function() {

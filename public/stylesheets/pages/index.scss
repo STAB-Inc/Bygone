@@ -327,4 +327,21 @@
       background-color: rgb(55, 29, 31);
     }
   }
+  .userProfile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: $trans-const;
+    z-index: 11;
+    i.close {
+      position: absolute;
+      top: 50px;
+      right: 50px;
+      left: initial;
+      cursor: pointer;
+      font-size: 2.5em;
+    }
+  }
 }
