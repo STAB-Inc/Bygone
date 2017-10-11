@@ -6068,6 +6068,13 @@ nav#global {
       cursor: pointer;
       font-size: 2.5em; }
 
+#highscores {
+  background-color: #101010; }
+  #highscores section.scores {
+    padding: 80px; }
+    #highscores section.scores h1 {
+      font-weight: bold; }
+
 main#puzzleGame {
   width: 1200px;
   margin: auto; }
