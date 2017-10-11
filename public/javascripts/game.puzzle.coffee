@@ -118,6 +118,16 @@ jQuery(document).ready ->
         if res.status == 'success'
           $('.winScreen .status').text res.message
 
+    saveItem: ->
+      submitUserData({
+        method: 'saveItem'
+        image: @solution['High resolution image']
+        description: @solution['Title of image']
+      }).then (res) ->
+        res = JSON.parse res
+        if res.status == 'success'
+          $('.winScreen .status').text res.message
+
   retrieveResources = (amount) ->
     reqParam = {
       resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
@@ -181,6 +191,12 @@ jQuery(document).ready ->
 
   $('#saveScore').click ->
     currentGame.saveScore()
+
+  $('#saveItem').click ->
+    currentGame.saveItem()
+
+  $('.save').click ->
+    $(this).prop 'disabled', true
 
   $('.winScreen').hide();
 

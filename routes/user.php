@@ -104,6 +104,18 @@
     returnMsg('success', 'Your score has been saved.');
   }
 
+  elseif ($_POST['method'] == 'saveItem') {
+    global $file;
+    $users = getUsers($file);
+    foreach ($users as $index => $user) {
+      if ($_COOKIE['activeUserId'] == $user['id']) {
+        array_push($users[$index]['collections'], [$_POST['description'], $_POST['image']]);
+      }
+    }
+    file_put_contents($file, json_encode($users));
+    returnMsg('success', 'Successfully added to collection.');
+  }
+
   function getUserDataById($id) {
     global $file;
     foreach (getUsers($file) as $user) {

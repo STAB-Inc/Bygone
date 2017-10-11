@@ -155,6 +155,19 @@
         });
       };
 
+      puzzleGame.prototype.saveItem = function() {
+        return submitUserData({
+          method: 'saveItem',
+          image: this.solution['High resolution image'],
+          description: this.solution['Title of image']
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            return $('.winScreen .status').text(res.message);
+          }
+        });
+      };
+
       return puzzleGame;
 
     })();
@@ -238,6 +251,12 @@
     });
     $('#saveScore').click(function() {
       return currentGame.saveScore();
+    });
+    $('#saveItem').click(function() {
+      return currentGame.saveItem();
+    });
+    $('.save').click(function() {
+      return $(this).prop('disabled', true);
     });
     $('.winScreen').hide();
     $('#selectionArea').on('click', '.choice', function() {
