@@ -126,7 +126,7 @@
       };
 
       puzzleGame.prototype.gameWin = function() {
-        this.score = (300 * this.amount) - parseInt($('#timer').attr('value') - 1000 * this.attempts);
+        this.score = (300 * this.amount) - parseInt($('#timer').attr('value')) - (1000 * this.attempts);
         $('.winScreen .timeTaken').text('Time taken : ' + $('#timer').attr('value') + ' seconds');
         $('.winScreen .finalScore').text('Your score : ' + this.score + ' pts');
         $('.winScreen').show();
@@ -145,11 +145,12 @@
       puzzleGame.prototype.saveScore = function() {
         return submitUserData({
           method: 'saveScore',
+          gameId: '1',
           value: this.score
         }).then(function(res) {
           res = JSON.parse(res);
           if (res.status === 'success') {
-            return console.log(res.status);
+            return $('.winScreen .status').text(res.message);
           }
         });
       };

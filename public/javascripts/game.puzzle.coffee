@@ -94,7 +94,7 @@ jQuery(document).ready ->
       @time = 0;
 
     gameWin: ->
-      @score = (300*@amount) - parseInt $('#timer').attr('value') - 1000*@attempts
+      @score = (300*@amount) - parseInt($('#timer').attr('value')) - (1000*@attempts)
       $('.winScreen .timeTaken').text 'Time taken : ' + $('#timer').attr('value') + ' seconds'
       $('.winScreen .finalScore').text 'Your score : ' + @score + ' pts'
       $('.winScreen').show()
@@ -111,11 +111,12 @@ jQuery(document).ready ->
     saveScore: ->
       submitUserData({
         method: 'saveScore'
+        gameId: '1'
         value: @score
       }).then (res) ->
         res = JSON.parse res
         if res.status == 'success'
-          console.log res.status
+          $('.winScreen .status').text res.message
 
   retrieveResources = (amount) ->
     reqParam = {

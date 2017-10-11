@@ -6136,6 +6136,9 @@ main#puzzleGame {
     main#puzzleGame .winScreen p,
     main#puzzleGame .continueScreen p {
       text-align: center; }
+    main#puzzleGame .winScreen .status,
+    main#puzzleGame .continueScreen .status {
+      margin-top: 10px; }
   main#puzzleGame button {
     background: none;
     color: white;

@@ -21,6 +21,10 @@
     $userData['unlockables']['ch2'] = false;
     $userData['unlockables']['ch3'] = false; 
     $userData['unlockables']['ch4'] = false;
+    $userData['scores']['g1'] = array();
+    $userData['scores']['g2'] = array();
+    $userData['scores']['g3'] = array();
+    $userData['scores']['g4'] = array();
     $userData['collections'] = array();
     array_push($users, $userData);
     file_put_contents($file, json_encode($users));
@@ -86,6 +90,18 @@
     }
     file_put_contents($file, json_encode($users));
     returnMsg('success', 'success');
+  }
+
+  elseif ($_POST['method'] == 'saveScore') {
+    global $file;
+    $users = getUsers($file);
+    foreach ($users as $index => $user) {
+      if ($_COOKIE['activeUserId'] == $user['id']) {
+        array_push($users[$index]['scores']['g' . $_POST['gameId']], [$_POST['value'], date('r')]);
+      }
+    }
+    file_put_contents($file, json_encode($users));
+    returnMsg('success', 'Your score has been saved.');
   }
 
   function getUserDataById($id) {
