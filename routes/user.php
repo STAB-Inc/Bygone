@@ -1,6 +1,7 @@
 <?php
 session_start();
-$connection = mysqli_connect('localhost','Admin','Assasindie');
+return 0;
+$connection = mysqli_connect('localhost','Admin','aXises');
 if (!$connection) {
     die("Database connection failed: " . mysqli_error());
 }
