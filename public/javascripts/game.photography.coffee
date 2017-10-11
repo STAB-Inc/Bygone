@@ -48,7 +48,7 @@ jQuery(document).ready ->
   validData = []
   gameGlobal = {
     init: {
-      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 300 }
+      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 1300 }
     },
     trackers: {
       monthPassed: 0,
@@ -58,7 +58,6 @@ jQuery(document).ready ->
     turnConsts: {
       interest: 1.5,
       pictureWashingTime: 14,
-      liability: 300
     }
   }
 
@@ -134,6 +133,7 @@ jQuery(document).ready ->
       })
     
     moveTo: (location) ->
+      @depreciateInv()
       location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
       location.travelTime = parseFloat((distanceTravelled(this.position, location.position)/232).toFixed(2))
       @position = location.position
@@ -147,6 +147,10 @@ jQuery(document).ready ->
       $('#takePic').show()
       updateMarkers()
       @updateStats(newStats)
+
+    depreciateInv: ->
+      for item in @inventory
+        if item.value < 1 then return else item.value = item.value*0.75
 
     updateStats: (stats) ->
       animateText = (elem, from, to) ->

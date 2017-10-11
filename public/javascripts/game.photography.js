@@ -61,7 +61,7 @@
           'CAB': 1000,
           'workingCapital': 0,
           'assets': 0,
-          'liabilities': 300
+          'liabilities': 1300
         }
       },
       trackers: {
@@ -71,8 +71,7 @@
       },
       turnConsts: {
         interest: 1.5,
-        pictureWashingTime: 14,
-        liability: 300
+        pictureWashingTime: 14
       }
     };
     deg2rad = function(deg) {
@@ -174,6 +173,7 @@
 
       player.prototype.moveTo = function(location) {
         var newStats, timeTaken;
+        this.depreciateInv();
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -187,6 +187,19 @@
         $('#takePic').show();
         updateMarkers();
         return this.updateStats(newStats);
+      };
+
+      player.prototype.depreciateInv = function() {
+        var item, j, len, ref;
+        ref = this.inventory;
+        for (j = 0, len = ref.length; j < len; j++) {
+          item = ref[j];
+          if (item.value < 1) {
+            return;
+          } else {
+            item.value = item.value * 0.75;
+          }
+        }
       };
 
       player.prototype.updateStats = function(stats) {
