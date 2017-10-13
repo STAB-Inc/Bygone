@@ -465,7 +465,7 @@ jQuery(document).ready ->
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
 
   $('#wait').click ->
-    $('#waitTimeInput').parent().find('button.confirm').prop 'disabled', true
+    if $('#waitTimeInput').val() == '' then $('#waitTimeInput').parent().find('button.confirm').prop 'disabled', true
     $('#waitInfo').show()
 
   $('#confirmWait').click ->
@@ -501,7 +501,7 @@ jQuery(document).ready ->
 
   $('#takeLoan').click ->
     $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%')
-    $('#loanInput').parent().find('button.confirm').prop 'disabled', true
+    if $('#loanInput').val() == '' then $('#loanInput').parent().find('button.confirm').prop 'disabled', true
     $('#loanOverlay').show()
 
   $('#confirmLoan').click ->
