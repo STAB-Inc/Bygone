@@ -48,7 +48,12 @@ jQuery(document).ready ->
   validData = []
   gameGlobal = {
     init: {
-      stats: {'CAB':1000, 'workingCapital': 0, 'assets': 0, 'liabilities': 1300 }
+      stats: {
+        CAB:1000, 
+        workingCapital: 0, 
+        assets: 0, 
+        liabilities: 1300 
+      }
     },
     trackers: {
       monthPassed: 0,
@@ -335,7 +340,7 @@ jQuery(document).ready ->
     gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
-    newStats.liabilities = gameGlobal.turnConsts.liability
+    newStats.liabilities = gameGlobal.init.stats.liabilities
     mark.updateStats(newStats)
     for location in locations
       show = Math.random() > 0.2

@@ -58,10 +58,10 @@
     gameGlobal = {
       init: {
         stats: {
-          'CAB': 1000,
-          'workingCapital': 0,
-          'assets': 0,
-          'liabilities': 1300
+          CAB: 1000,
+          workingCapital: 0,
+          assets: 0,
+          liabilities: 1300
         }
       },
       trackers: {
@@ -444,6 +444,7 @@
     photographyGame = (function() {
       function photographyGame(debug) {
         this.debug = debug;
+        this.score = 0;
       }
 
       photographyGame.prototype.init = function(amount) {
@@ -491,7 +492,7 @@
       gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
-      newStats.liabilities = gameGlobal.turnConsts.liability;
+      newStats.liabilities = gameGlobal.init.stats.liabilities;
       mark.updateStats(newStats);
       results1 = [];
       for (j = 0, len = locations.length; j < len; j++) {
