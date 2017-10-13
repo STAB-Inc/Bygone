@@ -340,13 +340,27 @@ jQuery(document).ready ->
           validData = processData res
           localInit()
 
+    saveScore: ->
+      submitUserData({
+        method: 'saveScore'
+        gameId: '2'
+        value: @score
+      }).then (res) ->
+        res = JSON.parse res
+        if res.status == 'success'
+          $('#gameEnd .status').css 'color', ''
+          $('#gameEnd .status').text res.message
+        else
+          $('#gameEnd .status').css 'color', 'red'
+          $('#gameEnd .status').text res.message
+          
   currentGame = new photographyGame false
   currentGame.init(100)
 
   endGame = ->
     $('#gameEnd .stat').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
-    @score = gameGlobal.trackers.monthPassed*gameGlobal.trackers.photosSold*gameGlobal.trackers.moneyEarned
-    $('#gameEnd .score').text 'Your score: ' + @score + ' pt' 
+    currentGame.score = gameGlobal.trackers.monthPassed*gameGlobal.trackers.photosSold*gameGlobal.trackers.moneyEarned
+    $('#gameEnd .score').text 'Your score: ' + currentGame.score + ' pt' 
     $('#gameEnd').show();
 
   endTurn = (date) ->
@@ -567,5 +581,8 @@ jQuery(document).ready ->
 
   $('#actions').mousedown ->
     $('#actions p').text 'Actions'
+
+  $('#saveScore').click ->
+    currentGame.saveScore()
     
   return

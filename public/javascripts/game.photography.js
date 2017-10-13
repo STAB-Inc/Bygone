@@ -488,6 +488,23 @@
         }
       };
 
+      photographyGame.prototype.saveScore = function() {
+        return submitUserData({
+          method: 'saveScore',
+          gameId: '2',
+          value: this.score
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            $('#gameEnd .status').css('color', '');
+            return $('#gameEnd .status').text(res.message);
+          } else {
+            $('#gameEnd .status').css('color', 'red');
+            return $('#gameEnd .status').text(res.message);
+          }
+        });
+      };
+
       return photographyGame;
 
     })();
@@ -495,8 +512,8 @@
     currentGame.init(100);
     endGame = function() {
       $('#gameEnd .stat').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
-      this.score = gameGlobal.trackers.monthPassed * gameGlobal.trackers.photosSold * gameGlobal.trackers.moneyEarned;
-      $('#gameEnd .score').text('Your score: ' + this.score + ' pt');
+      currentGame.score = gameGlobal.trackers.monthPassed * gameGlobal.trackers.photosSold * gameGlobal.trackers.moneyEarned;
+      $('#gameEnd .score').text('Your score: ' + currentGame.score + ' pt');
       return $('#gameEnd').show();
     };
     endTurn = function(date) {
@@ -628,7 +645,9 @@
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
     $('#wait').click(function() {
-      $('#waitTimeInput').parent().find('button.confirm').prop('disabled', true);
+      if ($('#waitTimeInput').val() === '') {
+        $('#waitTimeInput').parent().find('button.confirm').prop('disabled', true);
+      }
       return $('#waitInfo').show();
     });
     $('#confirmWait').click(function() {
@@ -687,7 +706,9 @@
     });
     $('#takeLoan').click(function() {
       $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');
-      $('#loanInput').parent().find('button.confirm').prop('disabled', true);
+      if ($('#loanInput').val() === '') {
+        $('#loanInput').parent().find('button.confirm').prop('disabled', true);
+      }
       return $('#loanOverlay').show();
     });
     $('#confirmLoan').click(function() {
@@ -772,6 +793,9 @@
     $('#actions').draggable();
     $('#actions').mousedown(function() {
       return $('#actions p').text('Actions');
+    });
+    $('#saveScore').click(function() {
+      return currentGame.saveScore();
     });
   });
 
