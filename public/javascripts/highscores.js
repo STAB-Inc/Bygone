@@ -44,7 +44,7 @@
         ref2 = gameScore[key].sort(sortDec);
         for (l = 0, len3 = ref2.length; l < len3; l++) {
           score = ref2[l];
-          $('.' + key).append($('<div class="col-lg-4"> <p>' + score[2] + '</p> </div> <div class="col-lg-4"> <p>' + score[0] + '</p> </div> <div class="col-lg-4"> <p class="date">' + score[1] + '</p> </div>'));
+          $('.' + key).append($('<div class="row"> <div class="col-lg-4"> <p>' + score[2] + '</p> </div> <div class="col-lg-4"> <p>' + score[0] + '</p> </div> <div class="col-lg-4"> <p class="date">' + score[1] + '</p> </div> </div>'));
         }
       }
       return console.log(gameScore);
