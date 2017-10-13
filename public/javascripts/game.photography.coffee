@@ -49,10 +49,10 @@ jQuery(document).ready ->
   gameGlobal = {
     init: {
       stats: {
-        CAB:1000, 
+        CAB: 1000, 
         workingCapital: 0, 
         assets: 0, 
-        liabilities: 1300 
+        liabilities: 800
       }
     },
     trackers: {
@@ -63,6 +63,8 @@ jQuery(document).ready ->
     turnConsts: {
       interest: 1.5,
       pictureWashingTime: 14,
+      stdLiabilities: 800,
+      alert: false
     }
   }
 
@@ -125,6 +127,7 @@ jQuery(document).ready ->
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
+      @preStat
       @inventory = []
 
     initTo: (map) ->
@@ -178,8 +181,18 @@ jQuery(document).ready ->
       animateText '#liabilities', parseInt($('#playerInfoOverlay #stats #liabilities .val').text()), stats.liabilities
       animateText '#assets', parseInt($('#playerInfoOverlay #stats #assets .val').text()), assets
       animateText '#workingCapital', parseInt($('#playerInfoOverlay #stats #workingCapital .val').text()), workingCapital
+      @preStat = {
+        CAB: stats.CAB, 
+        workingCapital: workingCapital, 
+        assets: assets, 
+        liabilities: stats.liabilities
+      }
       if workingCapital <= -1000 && @stats.CAB <= 0
-        endGame()
+        $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css 'color', 'red'
+      else
+        $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css 'color', ''
+        gameGlobal.turnConsts.alert = false
+
 
   class timeManager
     constructor: (@baseTime) ->
@@ -340,12 +353,18 @@ jQuery(document).ready ->
     gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
     newStats = mark.stats
     newStats.CAB -= mark.stats.liabilities
-    newStats.liabilities = gameGlobal.init.stats.liabilities
+    newStats.liabilities = gameGlobal.turnConsts.stdLiabilities
     mark.updateStats(newStats)
+    if mark.preStat.workingCapital <= -1000 && mark.preStat.CAB <= 0
+      if gameGlobal.turnConsts.alert then endGame()
+      gameGlobal.turnConsts.alert = true
+    if gameGlobal.turnConsts.alert && mark.preStat.workingCapital > -1000 && mark.preStat.CAB > 0
+      gameGlobal.turnConsts.alert = false
     for location in locations
       show = Math.random() > 0.2
       if show
         location.marker.setVisible(true)
+    
 
   $('#takePic').hide()
   

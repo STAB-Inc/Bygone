@@ -61,7 +61,7 @@
           CAB: 1000,
           workingCapital: 0,
           assets: 0,
-          liabilities: 1300
+          liabilities: 800
         }
       },
       trackers: {
@@ -71,7 +71,9 @@
       },
       turnConsts: {
         interest: 1.5,
-        pictureWashingTime: 14
+        pictureWashingTime: 14,
+        stdLiabilities: 800,
+        alert: false
       }
     };
     deg2rad = function(deg) {
@@ -157,6 +159,7 @@
         this.stats = stats1;
         player.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
         this.playerMarker;
+        this.preStat;
         this.inventory = [];
       }
 
@@ -230,8 +233,17 @@
         animateText('#liabilities', parseInt($('#playerInfoOverlay #stats #liabilities .val').text()), stats.liabilities);
         animateText('#assets', parseInt($('#playerInfoOverlay #stats #assets .val').text()), assets);
         animateText('#workingCapital', parseInt($('#playerInfoOverlay #stats #workingCapital .val').text()), workingCapital);
+        this.preStat = {
+          CAB: stats.CAB,
+          workingCapital: workingCapital,
+          assets: assets,
+          liabilities: stats.liabilities
+        };
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
-          return endGame();
+          return $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css('color', 'red');
+        } else {
+          $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css('color', '');
+          return gameGlobal.turnConsts.alert = false;
         }
       };
 
@@ -483,6 +495,8 @@
     currentGame.init(100);
     endGame = function() {
       $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
+      this.score = gameGlobal.trackers.monthPassed * gameGlobal.trackers.photosSold * gameGlobal.trackers.moneyEarned;
+      console.log(this.score);
       return $('#gameEnd').show();
     };
     endTurn = function(date) {
@@ -492,8 +506,17 @@
       gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
       newStats = mark.stats;
       newStats.CAB -= mark.stats.liabilities;
-      newStats.liabilities = gameGlobal.init.stats.liabilities;
+      newStats.liabilities = gameGlobal.turnConsts.stdLiabilities;
       mark.updateStats(newStats);
+      if (mark.preStat.workingCapital <= -1000 && mark.preStat.CAB <= 0) {
+        if (gameGlobal.turnConsts.alert) {
+          endGame();
+        }
+        gameGlobal.turnConsts.alert = true;
+      }
+      if (gameGlobal.turnConsts.alert && mark.preStat.workingCapital > -1000 && mark.preStat.CAB > 0) {
+        gameGlobal.turnConsts.alert = false;
+      }
       results1 = [];
       for (j = 0, len = locations.length; j < len; j++) {
         location = locations[j];
