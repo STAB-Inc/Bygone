@@ -317,7 +317,7 @@ jQuery(document).ready ->
 
   class photographyGame
     constructor: (@debug) ->
-
+      @score = 0
     init: (amount) ->
       localInit = ->
         validData.sort ->
@@ -344,7 +344,9 @@ jQuery(document).ready ->
   currentGame.init(100)
 
   endGame = ->
-    $('#gameEnd p').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
+    $('#gameEnd .stat').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
+    @score = gameGlobal.trackers.monthPassed*gameGlobal.trackers.photosSold*gameGlobal.trackers.moneyEarned
+    $('#gameEnd .score').text 'Your score: ' + @score + ' pt' 
     $('#gameEnd').show();
 
   endTurn = (date) ->

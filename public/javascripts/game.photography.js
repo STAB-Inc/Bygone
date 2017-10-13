@@ -494,9 +494,9 @@
     currentGame = new photographyGame(false);
     currentGame.init(100);
     endGame = function() {
-      $('#gameEnd p').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
+      $('#gameEnd .stat').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
       this.score = gameGlobal.trackers.monthPassed * gameGlobal.trackers.photosSold * gameGlobal.trackers.moneyEarned;
-      console.log(this.score);
+      $('#gameEnd .score').text('Your score: ' + this.score + ' pt');
       return $('#gameEnd').show();
     };
     endTurn = function(date) {
