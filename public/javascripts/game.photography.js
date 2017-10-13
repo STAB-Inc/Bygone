@@ -190,16 +190,24 @@
       };
 
       player.prototype.depreciateInv = function() {
-        var item, j, len, ref;
+        var depreciation, item, j, len, newStats, ref;
+        depreciation = 0;
         ref = this.inventory;
         for (j = 0, len = ref.length; j < len; j++) {
           item = ref[j];
           if (item.value < 1) {
             return;
           } else {
+            depreciation += item.value - item.value * 0.75;
             item.value = item.value * 0.75;
           }
         }
+        newStats = mark.stats;
+        newStats.assets -= depreciation.toFixed(2);
+        if (depreciation > 0) {
+          gameEvents.addEvent(new event('Depreciation: ', gameTime.getFormatted(), 'Photos depreciated by $' + depreciation.toFixed(2)));
+        }
+        return this.updateStats(newStats);
       };
 
       player.prototype.updateStats = function(stats) {

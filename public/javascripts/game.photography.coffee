@@ -149,8 +149,17 @@ jQuery(document).ready ->
       @updateStats(newStats)
 
     depreciateInv: ->
+      depreciation = 0
       for item in @inventory
-        if item.value < 1 then return else item.value = item.value*0.75
+        if item.value < 1
+          return 
+        else 
+          depreciation += item.value - item.value*0.75
+          item.value = item.value*0.75
+      newStats = mark.stats
+      newStats.assets -= depreciation.toFixed 2
+      if depreciation > 0 then gameEvents.addEvent new event 'Depreciation: ', gameTime.getFormatted(),'Photos depreciated by $' + depreciation.toFixed 2
+      @updateStats(newStats)
 
     updateStats: (stats) ->
       animateText = (elem, from, to) ->
@@ -158,7 +167,6 @@ jQuery(document).ready ->
           duration: 500
           step: ->
             $('#playerInfoOverlay #stats ' + elem + ' .val').text @current.toFixed()
-      
       assets = parseInt (@stats.assets + @stats.CAB)
       workingCapital = parseInt (assets - @stats.liabilities)
       animateText '#CAB', parseInt($('#playerInfoOverlay #stats #CAB .val').text()), stats.CAB
