@@ -22,7 +22,7 @@
     return submitUserData({
       method: 'getAll'
     }).then(function(res) {
-      var data, gameScore, i, j, k, key, len, len1, len2, ref, ref1, results, score, scores, userData;
+      var data, gameScore, i, j, k, key, l, len, len1, len2, len3, ref, ref1, ref2, score, scores, userData;
       userData = JSON.parse(res);
       gameScore = {
         g1: [],
@@ -31,7 +31,6 @@
         g4: []
       };
       ref = Object.keys(gameScore);
-      results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         key = ref[i];
         for (j = 0, len1 = userData.length; j < len1; j++) {
@@ -39,21 +38,16 @@
           ref1 = data.scores[key];
           for (k = 0, len2 = ref1.length; k < len2; k++) {
             scores = ref1[k];
-            gameScore[key].push([scores[0], scores[1], data.username]);
+            gameScore[key].push([parseInt(scores[0]), scores[1], data.username]);
           }
         }
-        results.push((function() {
-          var l, len3, ref2, results1;
-          ref2 = gameScore[key].sort(sortDec);
-          results1 = [];
-          for (l = 0, len3 = ref2.length; l < len3; l++) {
-            score = ref2[l];
-            results1.push($('.' + key).append($('<div class="col-lg-4"> <p>' + score[2] + '</p> </div> <div class="col-lg-4"> <p>' + score[0] + '</p> </div> <div class="col-lg-4"> <p class="date">' + score[1] + '</p> </div>')));
-          }
-          return results1;
-        })());
+        ref2 = gameScore[key].sort(sortDec);
+        for (l = 0, len3 = ref2.length; l < len3; l++) {
+          score = ref2[l];
+          $('.' + key).append($('<div class="col-lg-4"> <p>' + score[2] + '</p> </div> <div class="col-lg-4"> <p>' + score[0] + '</p> </div> <div class="col-lg-4"> <p class="date">' + score[1] + '</p> </div>'));
+        }
       }
-      return results;
+      return console.log(gameScore);
     });
   });
 

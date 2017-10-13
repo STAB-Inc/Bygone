@@ -22,7 +22,7 @@ $(document).ready ->
     for key in Object.keys gameScore
       for data in userData
         for scores in data.scores[key]
-          gameScore[key].push [scores[0], scores[1], data.username]
+          gameScore[key].push [parseInt(scores[0]), scores[1], data.username]
       for score in gameScore[key].sort sortDec
         $('.' + key).append $('<div class="col-lg-4">
                           <p>' + score[2] + '</p>
@@ -33,3 +33,4 @@ $(document).ready ->
                           <div class="col-lg-4">
                             <p class="date">' + score[1] + '</p>
                         </div>')
+    console.log gameScore
