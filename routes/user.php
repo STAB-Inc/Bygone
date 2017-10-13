@@ -95,6 +95,9 @@
   elseif ($_POST['method'] == 'saveScore') {
     global $file;
     $users = getUsers($file);
+    if (isset($_COOKIE['activeUserId'])) {
+      returnMsg('error', 'You must be logged in to save');
+    }
     foreach ($users as $index => $user) {
       if ($_COOKIE['activeUserId'] == $user['id']) {
         array_push($users[$index]['scores']['g' . $_POST['gameId']], [$_POST['value'], date('r')]);
@@ -107,6 +110,9 @@
   elseif ($_POST['method'] == 'saveItem') {
     global $file;
     $users = getUsers($file);
+    if (isset($_COOKIE['activeUserId'])) {
+      returnMsg('error', 'You must be logged in to save');
+    }
     foreach ($users as $index => $user) {
       if ($_COOKIE['activeUserId'] == $user['id']) {
         array_push($users[$index]['collections'], [$_POST['description'], $_POST['image']]);
