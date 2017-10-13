@@ -465,6 +465,7 @@ jQuery(document).ready ->
     $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue))
 
   $('#wait').click ->
+    $('#waitTimeInput').parent().find('button.confirm').prop 'disabled', true
     $('#waitInfo').show()
 
   $('#confirmWait').click ->
@@ -500,6 +501,7 @@ jQuery(document).ready ->
 
   $('#takeLoan').click ->
     $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%')
+    $('#loanInput').parent().find('button.confirm').prop 'disabled', true
     $('#loanOverlay').show()
 
   $('#confirmLoan').click ->
@@ -510,7 +512,7 @@ jQuery(document).ready ->
     gameEvents.addEvent(new event 'Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val()))
   
   $('#loanInput, #waitTimeInput').keyup ->
-    if !$.isNumeric($(this).val())
+    if !$.isNumeric($(this).val()) || $(this).val() == ''
       $(this).parent().find('.err').text '*Input must be a number'
       $(this).parent().find('button.confirm').prop 'disabled', true
     else

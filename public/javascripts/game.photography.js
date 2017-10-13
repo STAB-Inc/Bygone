@@ -628,6 +628,7 @@
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
     $('#wait').click(function() {
+      $('#waitTimeInput').parent().find('button.confirm').prop('disabled', true);
       return $('#waitInfo').show();
     });
     $('#confirmWait').click(function() {
@@ -686,6 +687,7 @@
     });
     $('#takeLoan').click(function() {
       $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');
+      $('#loanInput').parent().find('button.confirm').prop('disabled', true);
       return $('#loanOverlay').show();
     });
     $('#confirmLoan').click(function() {
@@ -697,7 +699,7 @@
       return gameEvents.addEvent(new event('Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val())));
     });
     $('#loanInput, #waitTimeInput').keyup(function() {
-      if (!$.isNumeric($(this).val())) {
+      if (!$.isNumeric($(this).val()) || $(this).val() === '') {
         $(this).parent().find('.err').text('*Input must be a number');
         return $(this).parent().find('button.confirm').prop('disabled', true);
       } else {
