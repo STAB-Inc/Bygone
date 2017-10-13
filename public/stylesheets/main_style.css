@@ -6053,6 +6053,7 @@ nav#global {
     #index section#freeMode .g4 {
       background-color: #371d1f; }
   #index .userProfile {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
