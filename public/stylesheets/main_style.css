@@ -6078,6 +6078,11 @@ nav#global {
       font-weight: bold; }
     #highscores section.scores .date {
       font-size: 12px; }
+  #highscores .g .row {
+    margin: 0; }
+  #highscores .g .current {
+    background-color: #515e6f;
+    border-radius: 2px; }
 
 main#puzzleGame {
   width: 1200px;
