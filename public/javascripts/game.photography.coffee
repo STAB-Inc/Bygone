@@ -320,7 +320,7 @@ jQuery(document).ready ->
     return
 
   setValue = (location) ->
-    rare = Math.random() <= 0.5;
+    rare = Math.random() <= 0.05;
     if rare
       location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100))
       location.rare = true
