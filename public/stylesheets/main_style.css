@@ -6275,7 +6275,8 @@ main#puzzleGame {
 #photographyGame #waitInfo,
 #photographyGame #gameEnd,
 #photographyGame #takingPic,
-#photographyGame #washPicOverlay {
+#photographyGame #washPicOverlay,
+#photographyGame #savePicOverlay {
   width: 600px;
   height: 300px; }
 
@@ -6311,6 +6312,14 @@ main#puzzleGame {
         height: 20px;
         background-color: #16f3bd;
         border-radius: 10px; }
+
+#photographyGame #savePicOverlay {
+  height: 400px;
+  z-index: 8;
+  background-color: rgba(0, 0, 0, 0.9); }
+  #photographyGame #savePicOverlay img {
+    margin-left: 50%;
+    transform: translateX(-50%); }
 
 #photographyGame #playerInfoOverlay,
 #photographyGame #locationInfoOverlay,

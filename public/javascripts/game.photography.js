@@ -5,6 +5,30 @@
 
   jQuery(document).ready(function() {
     var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, submitUserData, timeManager, updateMarkers, validData;
+    locations = [];
+    validData = [];
+    gameGlobal = {
+      init: {
+        isStory: false,
+        stats: {
+          CAB: 1000,
+          workingCapital: 0,
+          assets: 0,
+          liabilities: 800
+        }
+      },
+      trackers: {
+        monthPassed: 0,
+        photosSold: 0,
+        moneyEarned: 0
+      },
+      turnConsts: {
+        interest: 1.5,
+        pictureWashingTime: 14,
+        stdLiabilities: 800,
+        alert: false
+      }
+    };
     submitUserData = function(data) {
       return $.ajax({
         url: '/routes/user.php',
@@ -12,6 +36,20 @@
         data: data
       });
     };
+    ({
+      saveItem: function() {
+        return submitUserData({
+          method: 'saveItem',
+          image: this.solution['High resolution image'],
+          description: this.solution['Title of image']
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            return $('.winScreen .status').text(res.message);
+          }
+        });
+      }
+    });
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -20,6 +58,7 @@
     try {
       storyMode = getParam('story') === 'true';
       if (storyMode) {
+        gameGlobal.isStory = true;
         $('#playAgain').text('Continue');
         $('#playAgain').parent().attr('href', 'chapter3.html');
         $('.skip').show();
@@ -52,29 +91,6 @@
         dataType: 'jsonp',
         cache: true
       });
-    };
-    locations = [];
-    validData = [];
-    gameGlobal = {
-      init: {
-        stats: {
-          CAB: 1000,
-          workingCapital: 0,
-          assets: 0,
-          liabilities: 800
-        }
-      },
-      trackers: {
-        monthPassed: 0,
-        photosSold: 0,
-        moneyEarned: 0
-      },
-      turnConsts: {
-        interest: 1.5,
-        pictureWashingTime: 14,
-        stdLiabilities: 800,
-        alert: false
-      }
     };
     deg2rad = function(deg) {
       return deg * (Math.PI / 180);
@@ -609,7 +625,16 @@
       gameTime.incrementTime(timeTaken);
       gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. ' + timeTaken + ' hours later, you finally take a picture of value.'));
       if (mark.playerAt.rare) {
-        return gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
+        gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
+        if (!gameGlobal.init.isStory) {
+          if ($('#savePicOverlay .img img').length === 0) {
+            $('#savePicOverlay .img').append($('<img src="' + mark.playerAt.data.img + '">'));
+          } else {
+            $('#savePicOverlay .img img').attr('src', mark.playerAt.data.img);
+          }
+          $('#savePicOverlay .title').text(mark.playerAt.data.title);
+          return $('#savePicOverlay').show();
+        }
       }
     };
     $('.viewInv').click(function() {

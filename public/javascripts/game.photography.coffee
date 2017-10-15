@@ -1,5 +1,31 @@
 jQuery(document).ready ->
 
+  #Game globals
+  locations = []
+  validData = []
+  gameGlobal = {
+    init: {
+      isStory: false,
+      stats: {
+        CAB: 1000, 
+        workingCapital: 0, 
+        assets: 0, 
+        liabilities: 800
+      }
+    },
+    trackers: {
+      monthPassed: 0,
+      photosSold: 0,
+      moneyEarned: 0
+    },
+    turnConsts: {
+      interest: 1.5,
+      pictureWashingTime: 14,
+      stdLiabilities: 800,
+      alert: false
+    }
+  }
+
   submitUserData = (data) ->
     $.ajax
       url: '/routes/user.php'
@@ -13,6 +39,7 @@ jQuery(document).ready ->
   try
     storyMode = getParam('story') == 'true'
     if storyMode
+      gameGlobal.isStory = true
       $('#playAgain').text 'Continue'
       $('#playAgain').parent().attr 'href', 'chapter3.html'
       $('.skip').show()
@@ -42,31 +69,6 @@ jQuery(document).ready ->
       dataType: 'jsonp',
       cache: true
     }
-
-  #Game globals
-  locations = []
-  validData = []
-  gameGlobal = {
-    init: {
-      stats: {
-        CAB: 1000, 
-        workingCapital: 0, 
-        assets: 0, 
-        liabilities: 800
-      }
-    },
-    trackers: {
-      monthPassed: 0,
-      photosSold: 0,
-      moneyEarned: 0
-    },
-    turnConsts: {
-      interest: 1.5,
-      pictureWashingTime: 14,
-      stdLiabilities: 800,
-      alert: false
-    }
-  }
 
   deg2rad = (deg) ->
     return deg * (Math.PI/180)
@@ -442,7 +444,15 @@ jQuery(document).ready ->
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
-    if mark.playerAt.rare then gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
+    if mark.playerAt.rare 
+      gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
+      if !gameGlobal.init.isStory
+        if $('#savePicOverlay .img img').length == 0
+          $('#savePicOverlay .img').append $('<img src="' + mark.playerAt.data.img + '">')
+        else
+          $('#savePicOverlay .img img').attr 'src', mark.playerAt.data.img
+        $('#savePicOverlay .title').text mark.playerAt.data.title
+        $('#savePicOverlay').show()
 
   $('.viewInv').click ->
     closeParent(this)
