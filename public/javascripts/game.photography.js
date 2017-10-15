@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, setValue, storyMode, submitUserData, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, saveItem, setValue, showResStatus, storyMode, submitUserData, timeManager, updateMarkers, validData;
     locations = [];
     validData = [];
     gameGlobal = {
@@ -36,20 +36,36 @@
         data: data
       });
     };
+    showResStatus = function(target, res) {
+      if (res.status === 'success') {
+        $(target).css('color', '');
+        return $(target).text(res.message);
+      } else {
+        $(target).css('color', 'red');
+        return $(target).text(res.message);
+      }
+    };
     ({
-      saveItem: function() {
+      saveScore: function() {
         return submitUserData({
-          method: 'saveItem',
-          image: this.solution['High resolution image'],
-          description: this.solution['Title of image']
+          method: 'saveScore',
+          gameId: '2',
+          value: this.score
         }).then(function(res) {
-          res = JSON.parse(res);
-          if (res.status === 'success') {
-            return $('.winScreen .status').text(res.message);
-          }
+          return showResStatus('#gameEnd .status', JSON.parse(res));
         });
       }
     });
+    saveItem = function(img, des) {
+      return submitUserData({
+        method: 'saveItem',
+        image: img,
+        description: des
+      }).then(function(res) {
+        console.log(res);
+        return showResStatus('#savePicOverlay .status', JSON.parse(res));
+      });
+    };
     getParam = function(name) {
       var results;
       results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -385,10 +401,10 @@
 
     })();
     gamePhoto = (function() {
-      function gamePhoto(value, washed, img, title, quailty1) {
+      function gamePhoto(value, washed, img1, title, quailty1) {
         this.value = value;
         this.washed = washed;
-        this.img = img;
+        this.img = img1;
         this.title = title;
         this.quailty = quailty1;
       }
@@ -435,7 +451,7 @@
     };
     setValue = function(location) {
       var rare;
-      rare = Math.random() <= 0.05;
+      rare = Math.random() <= 0.5;
       if (rare) {
         location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
         return location.rare = true;
@@ -502,23 +518,6 @@
             return localInit();
           });
         }
-      };
-
-      photographyGame.prototype.saveScore = function() {
-        return submitUserData({
-          method: 'saveScore',
-          gameId: '2',
-          value: this.score
-        }).then(function(res) {
-          res = JSON.parse(res);
-          if (res.status === 'success') {
-            $('#gameEnd .status').css('color', '');
-            return $('#gameEnd .status').text(res.message);
-          } else {
-            $('#gameEnd .status').css('color', 'red');
-            return $('#gameEnd .status').text(res.message);
-          }
-        });
       };
 
       return photographyGame;
@@ -633,6 +632,7 @@
             $('#savePicOverlay .img img').attr('src', mark.playerAt.data.img);
           }
           $('#savePicOverlay .title').text(mark.playerAt.data.title);
+          $('#savePicOverlay #confirmSavePic').prop('disabled', false);
           return $('#savePicOverlay').show();
         }
       }
@@ -810,6 +810,10 @@
     });
     $('.confirm, .close').click(function() {
       return closeParent(this);
+    });
+    $('#confirmSavePic').click(function() {
+      saveItem($('#savePicOverlay .img img').attr('src'), $('#savePicOverlay .title').text());
+      return $(this).prop('disabled', true);
     });
     closeParent = function(self) {
       $(self).parent().hide();

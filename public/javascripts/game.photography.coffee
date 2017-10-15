@@ -32,6 +32,31 @@ jQuery(document).ready ->
       type: 'POST'
       data: data
 
+  showResStatus = (target, res) ->
+    if res.status == 'success'
+      $(target).css 'color', ''
+      $(target).text res.message
+    else
+      $(target).css 'color', 'red'
+      $(target).text res.message
+
+  saveScore: ->
+    submitUserData({
+      method: 'saveScore'
+      gameId: '2'
+      value: @score
+    }).then (res) ->
+      showResStatus '#gameEnd .status', JSON.parse res
+
+  saveItem = (img, des) ->
+    submitUserData({
+      method: 'saveItem'
+      image: img
+      description: des
+    }).then (res) ->
+      console.log res
+      showResStatus '#savePicOverlay .status', JSON.parse res
+
   getParam = (name) ->
     results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return results[1] || 0
@@ -295,7 +320,7 @@ jQuery(document).ready ->
     return
 
   setValue = (location) ->
-    rare = Math.random() <= 0.05;
+    rare = Math.random() <= 0.5;
     if rare
       location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100))
       location.rare = true
@@ -341,20 +366,6 @@ jQuery(document).ready ->
           localStorage.setItem 'photographyGameData', JSON.stringify(res)
           validData = processData res
           localInit()
-
-    saveScore: ->
-      submitUserData({
-        method: 'saveScore'
-        gameId: '2'
-        value: @score
-      }).then (res) ->
-        res = JSON.parse res
-        if res.status == 'success'
-          $('#gameEnd .status').css 'color', ''
-          $('#gameEnd .status').text res.message
-        else
-          $('#gameEnd .status').css 'color', 'red'
-          $('#gameEnd .status').text res.message
           
   currentGame = new photographyGame false
   currentGame.init(100)
@@ -440,6 +451,7 @@ jQuery(document).ready ->
       multiplier = 0.8
       quailty = 2
       $('.shotStats').text 'The shot comes out all smudged...'
+
     addShotToInv(multiplier, quailty)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
@@ -452,6 +464,7 @@ jQuery(document).ready ->
         else
           $('#savePicOverlay .img img').attr 'src', mark.playerAt.data.img
         $('#savePicOverlay .title').text mark.playerAt.data.title
+        $('#savePicOverlay #confirmSavePic').prop 'disabled', false
         $('#savePicOverlay').show()
 
   $('.viewInv').click ->
@@ -582,6 +595,10 @@ jQuery(document).ready ->
 
   $('.confirm, .close').click ->
     closeParent(this)
+
+  $('#confirmSavePic').click ->
+    saveItem $('#savePicOverlay .img img').attr('src'), $('#savePicOverlay .title').text()
+    $(this).prop 'disabled', true
 
   closeParent = (self) ->
     $(self).parent().hide()

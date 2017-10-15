@@ -6320,6 +6320,8 @@ main#puzzleGame {
   #photographyGame #savePicOverlay img {
     margin-left: 50%;
     transform: translateX(-50%); }
+  #photographyGame #savePicOverlay .status {
+    margin-top: 15px; }
 
 #photographyGame #playerInfoOverlay,
 #photographyGame #locationInfoOverlay,
