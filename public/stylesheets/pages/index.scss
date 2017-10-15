@@ -336,6 +336,25 @@
     height: 100vh;
     background-color: $trans-const;
     z-index: 11;
+    .elemContainer {
+      position: absolute;
+      width: 80%;
+      height: 1000px;
+      overflow: auto;
+      padding-top: 50px;
+      @include centerXY;
+      .collection {
+        p {
+          display: inline;
+        }
+      }
+      img {
+        position: relative;
+        width: 100px;
+        height: 100px;
+
+      }
+    }
     i.close {
       position: absolute;
       top: 50px;

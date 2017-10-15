@@ -19,23 +19,27 @@
           method: 'getUserData',
           id: res.message
         }).then(function(userData) {
-          var i, key, len, ref, results;
+          var amt, i, item, j, key, len, len1, ref, ref1;
           userData = JSON.parse(userData);
           $('#activeUserMsg').show();
           $('#activeUserMsg p').text('Welcome ' + userData.username);
           ref = Object.keys(userData.unlockables);
-          results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             key = ref[i];
             if (userData.unlockables[key]) {
               $('#' + key).removeClass('locked');
               $('#g' + key).find('.locked').hide();
-              results.push($('#' + key).find('.stateContainer').css('opacity', 0));
-            } else {
-              results.push(void 0);
+              $('#' + key).find('.stateContainer').css('opacity', 0);
             }
           }
-          return results;
+          amt = 0;
+          ref1 = userData.collections;
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            item = ref1[j];
+            amt += 1;
+            $('.userProfile .collections').append($('<div class="collection"> <img src="' + item[1] + '"> <p>' + item[0] + '</p> </div>'));
+          }
+          return $('.colAmt').text(amt + ' Item/s');
         });
       } else {
         return $('.save').hide();
@@ -189,7 +193,7 @@
         }
       });
     });
-    $('#userActions .deleteAcc').click(function() {
+    return $('#userActions .deleteAcc').click(function() {
       return submitUserData({
         method: 'deleteUser'
       }).then(function(res) {

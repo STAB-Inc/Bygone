@@ -6061,6 +6061,23 @@ nav#global {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 11; }
+    #index .userProfile .elemContainer {
+      position: absolute;
+      width: 80%;
+      height: 1000px;
+      overflow: auto;
+      padding-top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 50%;
+      transform: translateY(-50%);
+      transform: translate(-50%, -50%); }
+      #index .userProfile .elemContainer .collection p {
+        display: inline; }
+      #index .userProfile .elemContainer img {
+        position: relative;
+        width: 100px;
+        height: 100px; }
     #index .userProfile i.close {
       position: absolute;
       top: 50px;
