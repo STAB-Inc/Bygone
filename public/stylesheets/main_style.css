@@ -6329,7 +6329,7 @@ main#puzzleGame {
 #photographyGame #eventLog,
 #photographyGame #insanityBar {
   position: fixed;
-  height: 215px;
+  height: 20%;
   width: 400px;
   background-color: rgba(0, 0, 0, 0.8);
   left: 20px;
@@ -6369,7 +6369,7 @@ main#puzzleGame {
   left: 440px; }
 
 #photographyGame #locationInfoOverlay {
-  height: 300px;
+  height: 30%;
   top: 20px; }
   #photographyGame #locationInfoOverlay .locationInfo {
     height: 100px; }
@@ -6390,8 +6390,8 @@ main#puzzleGame {
     text-align: center; }
 
 #photographyGame #eventLog {
-  top: 350px;
-  height: 375px;
+  top: 35%;
+  height: 40%;
   overflow-y: auto; }
   #photographyGame #eventLog .row {
     border-bottom: 1px solid white;
