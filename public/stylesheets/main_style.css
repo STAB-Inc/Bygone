@@ -6402,3 +6402,36 @@ main#puzzleGame {
     display: block; }
   #photographyGame #eventLog .title.special {
     color: #7A9EF6; }
+  #photographyGame #eventLog .warn {
+    color: red; }
+
+#photographyGame #tutorial .tutorial {
+  display: none;
+  position: absolute;
+  border-radius: 5px;
+  width: 400px;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  padding-top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  transform: translateY(-50%);
+  transform: translate(-50%, -50%); }
+
+#photographyGame #tutorial .t1 {
+  left: 650px;
+  top: initial;
+  bottom: -115px; }
+
+#photographyGame #tutorial .t2 {
+  left: 650px;
+  top: 250px; }
+
+#photographyGame #tutorial .t3 {
+  left: 50%;
+  top: 200px; }
+
+#photographyGame #tutorial .t4 {
+  left: 650px;
+  top: 50%; }

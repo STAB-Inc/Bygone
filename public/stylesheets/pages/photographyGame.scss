@@ -213,6 +213,38 @@
     .title.special {
       color: $blue-const;
     }
+    .warn {
+      color: red;
+    }
+  }
+  #tutorial {
+    .tutorial {
+      display: none;
+      position: absolute;
+      border-radius: 5px;
+      width: 400px;
+      background-color: rgba(0,0,0, 0.9);
+      padding: 20px;
+      padding-top: 40px;
+      @include centerXY;
+    }
+    .t1 {
+      left: 650px;
+      top: initial;
+      bottom: -115px;
+    }
+    .t2 {
+      left: 650px;
+      top: 250px;
+    }
+    .t3 {
+      left: 50%;
+      top: 200px;
+    }
+    .t4 {
+      left: 650px;
+      top: 50%;
+    }
   }
 }
 

@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, photographyGame, player, playerMarker, processData, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerMarker, processData, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
     locations = [];
     validData = [];
     gameGlobal = {
@@ -130,6 +130,45 @@
       dist = R * c;
       return dist;
     };
+    tutorialHandler = (function() {
+      function tutorialHandler(domPanels) {
+        this.domPanels = domPanels;
+        this.step = 0;
+      }
+
+      tutorialHandler.prototype.init = function() {
+        $(this.domPanels[this.step]).show();
+        return this.setButton();
+      };
+
+      tutorialHandler.prototype.next = function() {
+        this.step++;
+        $(this.domPanels[this.step]).show();
+        $(this.domPanels[this.step - 1]).hide();
+        return this.setButton();
+      };
+
+      tutorialHandler.prototype.prev = function() {
+        this.step--;
+        $(this.domPanels[this.step]).show();
+        $(this.domPanels[this.step + 1]).hide();
+        return this.setButton();
+      };
+
+      tutorialHandler.prototype.setButton = function() {
+        this.domPanels.find('.buttonContainer').remove();
+        if (this.step === 0) {
+          return this.domPanels.append($('<div class="buttonContainer"> <button class="prev hidden">Previous</button> <button class="next">Next</button> </div>'));
+        } else if (this.step === this.domPanels.length - 1) {
+          return this.domPanels.append($('<div class="buttonContainer"> <button class="prev">Previous</button> <button class="next hidden">Next</button> </div>'));
+        } else {
+          return this.domPanels.append($('<div class="buttonContainer"> <button class="prev">Previous</button> <button class="next">Next</button> </div>'));
+        }
+      };
+
+      return tutorialHandler;
+
+    })();
     gameLocation = (function() {
       function gameLocation(position, name1, data1, rare1, icon) {
         this.position = position;
@@ -245,7 +284,7 @@
         newStats = player.stats;
         newStats.assets -= depreciation.toFixed(2);
         if (depreciation > 0) {
-          gameEvents.addEvent(new event('Depreciation: ', gameTime.getFormatted(), 'Photos depreciated by $' + depreciation.toFixed(2)));
+          gameEvents.addEvent(new event('Depreciation - ', gameTime.getFormatted(), 'Photos depreciated by $' + depreciation.toFixed(2), false, true));
         }
         return this.updateStats(newStats);
       };
@@ -384,7 +423,9 @@
 
       eventManager.prototype.addEvent = function(event) {
         this.events.push(event);
-        if (event.special) {
+        if (event.warn) {
+          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title warn">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+        } else if (event.special) {
           return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
         } else {
           return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
@@ -395,11 +436,12 @@
 
     })();
     event = (function() {
-      function event(title, time, content, special) {
+      function event(title, time, content, special, warn) {
         this.title = title;
         this.time = time;
         this.content = content;
         this.special = special != null ? special : false;
+        this.warn = warn != null ? warn : false;
       }
 
       return event;
@@ -481,6 +523,7 @@
     };
     gameEvents = new eventManager($('#eventLog .eventContainer'));
     gameTime = new timeManager([1939, 1, 1, 0]);
+    gameTutorial = new tutorialHandler($('.tutorial'));
     player = new playerMarker({
       lat: -25.363,
       lng: 151.044
@@ -503,6 +546,7 @@
             return 0.5 - Math.random();
           });
           generateMarkers(validData.slice(0, amount));
+          gameTutorial.init();
           return gameEvents.addEvent(new event('Game started', gameTime.getFormatted(), ''));
         };
         if (localStorage.getItem('photographyGameData')) {
@@ -633,7 +677,7 @@
       gameTime.incrementTime(timeTaken);
       gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. ' + timeTaken + ' hours later, you finally take a picture of value.'));
       if (player.playerAt.rare) {
-        gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
+        gameEvents.addEvent(new event('Rare Picture -', gameTime.getFormatted(), 'You take a rare picture.', true));
         if (!gameGlobal.init.isStory) {
           if ($('#savePicOverlay .img img').length === 0) {
             $('#savePicOverlay .img').append($('<img src="' + player.playerAt.data.img + '">'));
@@ -834,6 +878,12 @@
     });
     $('#saveScore').click(function() {
       return currentGame.saveScore();
+    });
+    $('body').on('click', '.tutorial .next', function() {
+      return gameTutorial.next();
+    });
+    return $('body').on('click', '.tutorial .prev', function() {
+      return gameTutorial.prev();
     });
   });
 

@@ -115,6 +115,44 @@ jQuery(document).ready ->
     dist = R * c
     return dist;
 
+  class tutorialHandler
+    constructor: (@domPanels) ->
+      @step = 0;
+
+    init: ->
+      $(@domPanels[@step]).show()
+      @setButton()
+
+    next: ->
+      @step++
+      $(@domPanels[@step]).show()
+      $(@domPanels[@step - 1]).hide()
+      @setButton()
+
+    prev: ->
+      @step--
+      $(@domPanels[@step]).show()
+      $(@domPanels[@step + 1]).hide()
+      @setButton()
+
+    setButton: ->
+      @domPanels.find('.buttonContainer').remove()
+      if @step == 0
+        @domPanels.append $('<div class="buttonContainer">
+            <button class="prev hidden">Previous</button>
+            <button class="next">Next</button>
+          </div>') 
+      else if @step == @domPanels.length - 1
+        @domPanels.append $('<div class="buttonContainer">
+          <button class="prev">Previous</button>
+          <button class="next hidden">Next</button>
+        </div>') 
+      else
+        @domPanels.append $('<div class="buttonContainer">
+          <button class="prev">Previous</button>
+          <button class="next">Next</button>
+        </div>') 
+
   class gameLocation
     constructor: (@position, @name, @data, @rare, @icon ) ->
       @marker
@@ -223,7 +261,6 @@ jQuery(document).ready ->
       else
         $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css 'color', ''
         gameGlobal.turnConsts.alert = false
-
 
   class timeManager
     constructor: (@baseTime) ->
@@ -346,6 +383,7 @@ jQuery(document).ready ->
 
   gameEvents = new eventManager $('#eventLog .eventContainer')
   gameTime = new timeManager [1939, 1, 1, 0]
+  gameTutorial = new tutorialHandler $('.tutorial')
 
   player = new playerMarker {lat: -25.363, lng: 151.044}, 'player', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   player.initTo googleMap
@@ -360,6 +398,7 @@ jQuery(document).ready ->
         validData.sort ->
           return 0.5 - Math.random()
         generateMarkers(validData.slice(0, amount))
+        gameTutorial.init()
         gameEvents.addEvent(new event 'Game started', gameTime.getFormatted(), '')
 
       if localStorage.getItem 'photographyGameData'
@@ -382,7 +421,7 @@ jQuery(document).ready ->
     currentGame.init(100)
   else if  getParam('diff') == 'extended'
     currentGame.init(500)
-    
+
   endGame = ->
     $('#gameEnd .stat').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
     currentGame.score = gameGlobal.trackers.monthPassed*gameGlobal.trackers.photosSold*gameGlobal.trackers.moneyEarned
@@ -406,7 +445,6 @@ jQuery(document).ready ->
       show = Math.random() > 0.2
       if show
         location.marker.setVisible(true)
-    
 
   $('#takePic').hide()
   
@@ -470,7 +508,7 @@ jQuery(document).ready ->
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
     if player.playerAt.rare 
-      gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
+      gameEvents.addEvent(new event 'Rare Picture -', gameTime.getFormatted(), 'You take a rare picture.', true)
       if !gameGlobal.init.isStory
         if $('#savePicOverlay .img img').length == 0
           $('#savePicOverlay .img').append $('<img src="' + player.playerAt.data.img + '">')
@@ -624,5 +662,9 @@ jQuery(document).ready ->
 
   $('#saveScore').click ->
     currentGame.saveScore()
-    
-  return
+
+  $('body').on 'click', '.tutorial .next', ->
+    gameTutorial.next()
+  
+  $('body').on 'click', '.tutorial .prev', ->
+    gameTutorial.prev()
