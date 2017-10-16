@@ -197,7 +197,7 @@ jQuery(document).ready ->
           item.value = item.value*0.75
       newStats = player.stats
       newStats.assets -= depreciation.toFixed 2
-      if depreciation > 0 then gameEvents.addEvent new event 'Depreciation: ', gameTime.getFormatted(),'Photos depreciated by $' + depreciation.toFixed 2
+      if depreciation > 0 then gameEvents.addEvent new event 'Depreciation - ', gameTime.getFormatted(),'Photos depreciated by $' + depreciation.toFixed(2), false, true
       @updateStats(newStats)
 
     updateStats: (stats) ->
@@ -282,7 +282,13 @@ jQuery(document).ready ->
 
     addEvent: (event) ->
       @events.push(event)
-      if event.special
+      if event.warn
+        $('<div class="row">
+          <p class="time">' + event.time + '</p>
+          <p class="title warn">' + event.title + '</p>
+          <p class="content">' + event.content + '</p>
+        </div>').hide().prependTo(@domSelector).fadeIn()
+      else if event.special
         $('<div class="row">
           <p class="time special">' + event.time + '</p>
           <p class="title special">' + event.title + '</p>
@@ -296,7 +302,7 @@ jQuery(document).ready ->
         </div>').hide().prependTo(@domSelector).fadeIn()
 
   class event
-    constructor: (@title, @time, @content, @special=false) ->
+    constructor: (@title, @time, @content, @special=false, @warn=false) ->
 
   class gamePhoto
     constructor: (@value, @washed, @img, @title, @quailty) ->
