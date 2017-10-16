@@ -78,6 +78,14 @@
         $('.save').hide();
         $('#playAgain').addClass('continue');
       }
+      if (getParam('diff') === 'extended') {
+        gameGlobal.init.stats = {
+          CAB: 2500,
+          workingCapital: 0,
+          assets: 0,
+          liabilities: 1000
+        };
+      }
     } catch (error) {}
     $('.skip, .continue').click(function(e) {
       $('.continueScreen').show();
@@ -500,7 +508,7 @@
         if (localStorage.getItem('photographyGameData')) {
           validData = processData(JSON.parse(localStorage.getItem('photographyGameData')));
           if (amount > validData.length) {
-            return retrieveResources(1000).then(function(res) {
+            return retrieveResources(3000).then(function(res) {
               localStorage.setItem('photographyGameData', JSON.stringify(res));
               validData = processData(res);
               return localInit();
@@ -509,7 +517,7 @@
             return localInit();
           }
         } else {
-          return retrieveResources(1000).then(function(res) {
+          return retrieveResources(3000).then(function(res) {
             localStorage.setItem('photographyGameData', JSON.stringify(res));
             validData = processData(res);
             return localInit();
@@ -521,7 +529,11 @@
 
     })();
     currentGame = new photographyGame(false);
-    currentGame.init(100);
+    if (getParam('diff') === 'normal') {
+      currentGame.init(100);
+    } else if (getParam('diff') === 'extended') {
+      currentGame.init(500);
+    }
     endGame = function() {
       $('#gameEnd .stat').text('You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned);
       currentGame.score = gameGlobal.trackers.monthPassed * gameGlobal.trackers.photosSold * gameGlobal.trackers.moneyEarned;

@@ -59,7 +59,6 @@ jQuery(document).ready ->
   getParam = (name) ->
     results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href)
     return results[1] || 0
-
   try
     storyMode = getParam('story') == 'true'
     if storyMode
@@ -69,6 +68,13 @@ jQuery(document).ready ->
       $('.skip').show()
       $('.save').hide()
       $('#playAgain').addClass('continue')
+    if getParam('diff') == 'extended'
+      gameGlobal.init.stats = {
+        CAB: 2500, 
+        workingCapital: 0, 
+        assets: 0, 
+        liabilities: 1000
+      }
 
   $('.skip, .continue').click (e) ->
     $('.continueScreen').show()
@@ -80,7 +86,6 @@ jQuery(document).ready ->
       res = JSON.parse res
       if res.status == 'success'
         return 0
-
 
   retrieveResources = (amount) ->
     reqParam = {
@@ -354,21 +359,24 @@ jQuery(document).ready ->
       if localStorage.getItem 'photographyGameData'
         validData = processData(JSON.parse(localStorage.getItem 'photographyGameData'))
         if amount > validData.length
-          retrieveResources(1000).then (res) ->
+          retrieveResources(3000).then (res) ->
             localStorage.setItem 'photographyGameData', JSON.stringify(res)
             validData = processData res
             localInit()
         else
           localInit()
       else
-        retrieveResources(1000).then (res) ->
+        retrieveResources(3000).then (res) ->
           localStorage.setItem 'photographyGameData', JSON.stringify(res)
           validData = processData res
           localInit()
-          
-  currentGame = new photographyGame false
-  currentGame.init(100)
 
+  currentGame = new photographyGame false
+  if getParam('diff') == 'normal'
+    currentGame.init(100)
+  else if  getParam('diff') == 'extended'
+    currentGame.init(500)
+    
   endGame = ->
     $('#gameEnd .stat').text 'You survived for ' + gameGlobal.trackers.monthPassed + ' Months, selling ' + gameGlobal.trackers.photosSold + ' photos and making over $' + gameGlobal.trackers.moneyEarned
     currentGame.score = gameGlobal.trackers.monthPassed*gameGlobal.trackers.photosSold*gameGlobal.trackers.moneyEarned
