@@ -4,7 +4,7 @@
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, mark, photographyGame, player, processData, retrieveResources, saveItem, setValue, showResStatus, storyMode, submitUserData, timeManager, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, generateMarkers, getParam, locations, photographyGame, player, playerMarker, processData, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, updateMarkers, validData;
     locations = [];
     validData = [];
     gameGlobal = {
@@ -45,24 +45,21 @@
         return $(target).text(res.message);
       }
     };
-    ({
-      saveScore: function() {
-        return submitUserData({
-          method: 'saveScore',
-          gameId: '2',
-          value: this.score
-        }).then(function(res) {
-          return showResStatus('#gameEnd .status', JSON.parse(res));
-        });
-      }
-    });
+    saveScore = function() {
+      return submitUserData({
+        method: 'saveScore',
+        gameId: '2',
+        value: this.score
+      }).then(function(res) {
+        return showResStatus('#gameEnd .status', JSON.parse(res));
+      });
+    };
     saveItem = function(img, des) {
       return submitUserData({
         method: 'saveItem',
         image: img,
         description: des
       }).then(function(res) {
-        console.log(res);
         return showResStatus('#savePicOverlay .status', JSON.parse(res));
       });
     };
@@ -91,7 +88,7 @@
       }).then(function(res) {
         res = JSON.parse(res);
         if (res.status === 'success') {
-
+          return 0;
         }
       });
     });
@@ -162,11 +159,11 @@
         var self;
         self = this;
         marker.addListener('click', function() {
-          return mark.moveTo(self);
+          return player.moveTo(self);
         });
         return marker.addListener('mouseover', function() {
           var travelDistance, travelTime;
-          travelDistance = parseInt(distanceTravelled(mark.position, self.position));
+          travelDistance = parseInt(distanceTravelled(player.position, self.position));
           travelTime = travelDistance / 232;
           $('#locationInfoOverlay #title').text(self.data.description);
           $('#locationInfoOverlay #position').text('Distance away ' + travelDistance + 'km');
@@ -180,22 +177,22 @@
       return gameLocation;
 
     })();
-    player = (function(superClass) {
-      extend(player, superClass);
+    playerMarker = (function(superClass) {
+      extend(playerMarker, superClass);
 
-      function player(position, name1, data1, icon, stats1) {
+      function playerMarker(position, name1, data1, icon, stats1) {
         this.position = position;
         this.name = name1;
         this.data = data1;
         this.icon = icon;
         this.stats = stats1;
-        player.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
+        playerMarker.__super__.constructor.call(this, this.position, this.name, this.data, this.icon);
         this.playerMarker;
         this.preStat;
         this.inventory = [];
       }
 
-      player.prototype.initTo = function(map) {
+      playerMarker.prototype.initTo = function(map) {
         return this.playerMarker = new SlidingMarker({
           position: this.position,
           map: map,
@@ -206,7 +203,7 @@
         });
       };
 
-      player.prototype.moveTo = function(location) {
+      playerMarker.prototype.moveTo = function(location) {
         var newStats, timeTaken;
         this.depreciateInv();
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
@@ -215,7 +212,7 @@
         this.playerAt = location;
         this.playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng));
         newStats = this.stats;
-        newStats.CAB -= mark.playerAt.travelExpense;
+        newStats.CAB -= player.playerAt.travelExpense;
         timeTaken = location.travelTime + Math.random() * 5;
         gameTime.incrementTime(timeTaken);
         gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
@@ -224,7 +221,7 @@
         return this.updateStats(newStats);
       };
 
-      player.prototype.depreciateInv = function() {
+      playerMarker.prototype.depreciateInv = function() {
         var depreciation, item, j, len, newStats, ref;
         depreciation = 0;
         ref = this.inventory;
@@ -237,7 +234,7 @@
             item.value = item.value * 0.75;
           }
         }
-        newStats = mark.stats;
+        newStats = player.stats;
         newStats.assets -= depreciation.toFixed(2);
         if (depreciation > 0) {
           gameEvents.addEvent(new event('Depreciation: ', gameTime.getFormatted(), 'Photos depreciated by $' + depreciation.toFixed(2)));
@@ -245,7 +242,7 @@
         return this.updateStats(newStats);
       };
 
-      player.prototype.updateStats = function(stats) {
+      playerMarker.prototype.updateStats = function(stats) {
         var animateText, assets, workingCapital;
         animateText = function(elem, from, to) {
           return $({
@@ -279,7 +276,7 @@
         }
       };
 
-      return player;
+      return playerMarker;
 
     })(gameLocation);
     timeManager = (function() {
@@ -453,10 +450,10 @@
       var rare;
       rare = Math.random() <= 0.05;
       if (rare) {
-        location.value = parseInt(Math.random() * distanceTravelled(mark.position, location.position) + 100);
+        location.value = parseInt(Math.random() * distanceTravelled(player.position, location.position) + 100);
         return location.rare = true;
       } else {
-        return location.value = parseInt((Math.random() * distanceTravelled(mark.position, location.position) + 100) / 10);
+        return location.value = parseInt((Math.random() * distanceTravelled(player.position, location.position) + 100) / 10);
       }
     };
     updateMarkers = function() {
@@ -476,15 +473,15 @@
     };
     gameEvents = new eventManager($('#eventLog .eventContainer'));
     gameTime = new timeManager([1939, 1, 1, 0]);
-    mark = new player({
+    player = new playerMarker({
       lat: -25.363,
       lng: 151.044
-    }, 'Mark', {
+    }, 'player', {
       'type': 'self'
     }, 'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png');
-    mark.initTo(googleMap);
-    mark.stats = gameGlobal.init.stats;
-    mark.updateStats(mark.stats);
+    player.initTo(googleMap);
+    player.stats = gameGlobal.init.stats;
+    player.updateStats(player.stats);
     photographyGame = (function() {
       function photographyGame(debug) {
         this.debug = debug;
@@ -535,18 +532,18 @@
       var j, len, location, newStats, results1, show;
       gameGlobal.trackers.monthPassed += 1;
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
-      gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true));
-      newStats = mark.stats;
-      newStats.CAB -= mark.stats.liabilities;
+      gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + player.stats.liabilities + ' in expenses', true));
+      newStats = player.stats;
+      newStats.CAB -= player.stats.liabilities;
       newStats.liabilities = gameGlobal.turnConsts.stdLiabilities;
-      mark.updateStats(newStats);
-      if (mark.preStat.workingCapital <= -1000 && mark.preStat.CAB <= 0) {
+      player.updateStats(newStats);
+      if (player.preStat.workingCapital <= -1000 && player.preStat.CAB <= 0) {
         if (gameGlobal.turnConsts.alert) {
           endGame();
         }
         gameGlobal.turnConsts.alert = true;
       }
-      if (gameGlobal.turnConsts.alert && mark.preStat.workingCapital > -1000 && mark.preStat.CAB > 0) {
+      if (gameGlobal.turnConsts.alert && player.preStat.workingCapital > -1000 && player.preStat.CAB > 0) {
         gameGlobal.turnConsts.alert = false;
       }
       results1 = [];
@@ -576,14 +573,14 @@
     });
     addShotToInv = function(multiplier, quailty) {
       var newStats, photoValue, shotTaken;
-      photoValue = mark.playerAt.value * multiplier;
-      shotTaken = new gamePhoto(photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty);
-      mark.inventory.push(shotTaken);
-      mark.playerAt.marker.setVisible(false);
-      newStats = mark.stats;
+      photoValue = player.playerAt.value * multiplier;
+      shotTaken = new gamePhoto(photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty);
+      player.inventory.push(shotTaken);
+      player.playerAt.marker.setVisible(false);
+      newStats = player.stats;
       newStats.assets += photoValue;
-      newStats.workingCapital -= mark.playerAt.travelExpense / 2;
-      return mark.updateStats(newStats);
+      newStats.workingCapital -= player.playerAt.travelExpense / 2;
+      return player.updateStats(newStats);
     };
     $('#takingPic .start').click(function() {
       $(this).prop('disabled', true);
@@ -622,16 +619,16 @@
       addShotToInv(multiplier, quailty);
       timeTaken = Math.floor(Math.random() * 10) + 24;
       gameTime.incrementTime(timeTaken);
-      gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. ' + timeTaken + ' hours later, you finally take a picture of value.'));
-      if (mark.playerAt.rare) {
+      gameEvents.addEvent(new event('Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. ' + timeTaken + ' hours later, you finally take a picture of value.'));
+      if (player.playerAt.rare) {
         gameEvents.addEvent(new event('Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true));
         if (!gameGlobal.init.isStory) {
           if ($('#savePicOverlay .img img').length === 0) {
-            $('#savePicOverlay .img').append($('<img src="' + mark.playerAt.data.img + '">'));
+            $('#savePicOverlay .img').append($('<img src="' + player.playerAt.data.img + '">'));
           } else {
-            $('#savePicOverlay .img img').attr('src', mark.playerAt.data.img);
+            $('#savePicOverlay .img img').attr('src', player.playerAt.data.img);
           }
-          $('#savePicOverlay .title').text(mark.playerAt.data.title);
+          $('#savePicOverlay .title').text(player.playerAt.data.title);
           $('#savePicOverlay #confirmSavePic').prop('disabled', false);
           return $('#savePicOverlay').show();
         }
@@ -651,7 +648,7 @@
       $('#inventory').show();
       potentialValue = 0;
       sellableValue = 0;
-      ref = mark.inventory;
+      ref = player.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         item = ref[j];
         pictureContainer = $('<div class="photoContainer"></div>');
@@ -702,7 +699,7 @@
     $('#washPic').click(function() {
       var item, j, k, len, len1, notWashed, ref, ref1;
       notWashed = [];
-      ref = mark.inventory;
+      ref = player.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         item = ref[j];
         if (!item.washed) {
@@ -714,7 +711,7 @@
         $('#washPicOverlay').show();
         return $('#washPicOverlay #confirmWashPic').hide();
       } else {
-        ref1 = mark.inventory;
+        ref1 = player.inventory;
         for (k = 0, len1 = ref1.length; k < len1; k++) {
           item = ref1[k];
           item.washed = true;
@@ -738,10 +735,10 @@
     });
     $('#confirmLoan').click(function() {
       var newStats;
-      newStats = mark.stats;
+      newStats = player.stats;
       newStats.liabilities += parseInt($('#loanInput').val()) + parseInt($('#loanInput').val()) * (gameGlobal.turnConsts.interest / 10);
       newStats.CAB += parseInt($('#loanInput').val());
-      mark.updateStats(newStats);
+      player.updateStats(newStats);
       return gameEvents.addEvent(new event('Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val())));
     });
     $('#loanInput, #waitTimeInput').keyup(function() {
@@ -757,7 +754,7 @@
       var j, len, photo, photosValue, ref, sellablePhotos;
       sellablePhotos = 0;
       photosValue = 0;
-      ref = mark.inventory;
+      ref = player.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         photo = ref[j];
         if (photo.washed) {
@@ -779,8 +776,8 @@
       earningsEst = 0;
       earningsAct = 0;
       newInventory = [];
-      newStats = mark.stats;
-      ref = mark.inventory;
+      newStats = player.stats;
+      ref = player.inventory;
       for (j = 0, len = ref.length; j < len; j++) {
         photo = ref[j];
         if (photo.washed) {
@@ -794,10 +791,10 @@
         }
       }
       timeTaken = ((Math.random() * 2) + 1) * photosSold;
-      mark.inventory = newInventory;
+      player.inventory = newInventory;
       newStats.CAB += earningsAct;
       newStats.assets -= earningsEst;
-      mark.updateStats(newStats);
+      player.updateStats(newStats);
       gameTime.incrementDays(parseInt(timeTaken));
       if (parseInt(timeTaken) === 1) {
         return gameEvents.addEvent(new event('Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' day to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.'));

@@ -40,7 +40,7 @@ jQuery(document).ready ->
       $(target).css 'color', 'red'
       $(target).text res.message
 
-  saveScore: ->
+  saveScore = ->
     submitUserData({
       method: 'saveScore'
       gameId: '2'
@@ -54,7 +54,6 @@ jQuery(document).ready ->
       image: img
       description: des
     }).then (res) ->
-      console.log res
       showResStatus '#savePicOverlay .status', JSON.parse res
 
   getParam = (name) ->
@@ -80,7 +79,7 @@ jQuery(document).ready ->
     }).then (res) ->
       res = JSON.parse res
       if res.status == 'success'
-        return
+        return 0
 
 
   retrieveResources = (amount) ->
@@ -138,10 +137,10 @@ jQuery(document).ready ->
     setListener: (marker) ->
       self = this
       marker.addListener 'click', ->
-        mark.moveTo(self)
+        player.moveTo(self)
 
       marker.addListener 'mouseover', ->
-        travelDistance = parseInt(distanceTravelled(mark.position, self.position))
+        travelDistance = parseInt(distanceTravelled(player.position, self.position))
         travelTime = travelDistance/232
         $('#locationInfoOverlay #title').text self.data.description
         $('#locationInfoOverlay #position').text 'Distance away ' + travelDistance + 'km'
@@ -150,7 +149,7 @@ jQuery(document).ready ->
         $('#locationInfoOverlay #travelTime').text 'Travel Time: at least ' + travelTime.toFixed(2) + ' Hours'
         @value = self.value
 
-  class player extends gameLocation
+  class playerMarker extends gameLocation
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
@@ -175,7 +174,7 @@ jQuery(document).ready ->
       @playerAt = location
       @playerMarker.setPosition(new google.maps.LatLng(location.position.lat, location.position.lng))
       newStats = @stats
-      newStats.CAB -= mark.playerAt.travelExpense
+      newStats.CAB -= player.playerAt.travelExpense
       timeTaken = location.travelTime + Math.random()*5
       gameTime.incrementTime(timeTaken)
       gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours')
@@ -191,7 +190,7 @@ jQuery(document).ready ->
         else 
           depreciation += item.value - item.value*0.75
           item.value = item.value*0.75
-      newStats = mark.stats
+      newStats = player.stats
       newStats.assets -= depreciation.toFixed 2
       if depreciation > 0 then gameEvents.addEvent new event 'Depreciation: ', gameTime.getFormatted(),'Photos depreciated by $' + depreciation.toFixed 2
       @updateStats(newStats)
@@ -322,10 +321,10 @@ jQuery(document).ready ->
   setValue = (location) ->
     rare = Math.random() <= 0.05;
     if rare
-      location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100))
+      location.value = parseInt((Math.random()*distanceTravelled(player.position, location.position) + 100))
       location.rare = true
     else
-      location.value = parseInt((Math.random()*distanceTravelled(mark.position, location.position) + 100)/10)
+      location.value = parseInt((Math.random()*distanceTravelled(player.position, location.position) + 100)/10)
 
   updateMarkers = ->
     for location in locations
@@ -337,10 +336,10 @@ jQuery(document).ready ->
   gameEvents = new eventManager $('#eventLog .eventContainer')
   gameTime = new timeManager [1939, 1, 1, 0]
 
-  mark = new player {lat: -25.363, lng: 151.044}, 'Mark', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
-  mark.initTo googleMap
-  mark.stats = gameGlobal.init.stats
-  mark.updateStats mark.stats
+  player = new playerMarker {lat: -25.363, lng: 151.044}, 'player', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
+  player.initTo googleMap
+  player.stats = gameGlobal.init.stats
+  player.updateStats player.stats
 
   class photographyGame
     constructor: (@debug) ->
@@ -379,15 +378,15 @@ jQuery(document).ready ->
   endTurn = (date) ->
     gameGlobal.trackers.monthPassed += 1
     gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
-    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + mark.stats.liabilities + ' in expenses', true)
-    newStats = mark.stats
-    newStats.CAB -= mark.stats.liabilities
+    gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + player.stats.liabilities + ' in expenses', true)
+    newStats = player.stats
+    newStats.CAB -= player.stats.liabilities
     newStats.liabilities = gameGlobal.turnConsts.stdLiabilities
-    mark.updateStats(newStats)
-    if mark.preStat.workingCapital <= -1000 && mark.preStat.CAB <= 0
+    player.updateStats(newStats)
+    if player.preStat.workingCapital <= -1000 && player.preStat.CAB <= 0
       if gameGlobal.turnConsts.alert then endGame()
       gameGlobal.turnConsts.alert = true
-    if gameGlobal.turnConsts.alert && mark.preStat.workingCapital > -1000 && mark.preStat.CAB > 0
+    if gameGlobal.turnConsts.alert && player.preStat.workingCapital > -1000 && player.preStat.CAB > 0
       gameGlobal.turnConsts.alert = false
     for location in locations
       show = Math.random() > 0.2
@@ -410,14 +409,14 @@ jQuery(document).ready ->
     $(this).hide()
     
   addShotToInv = (multiplier, quailty) ->
-    photoValue = mark.playerAt.value*multiplier
-    shotTaken = new gamePhoto photoValue, false, mark.playerAt.data.img, mark.playerAt.data.title, quailty
-    mark.inventory.push(shotTaken)
-    mark.playerAt.marker.setVisible(false)
-    newStats = mark.stats
+    photoValue = player.playerAt.value*multiplier
+    shotTaken = new gamePhoto photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty
+    player.inventory.push(shotTaken)
+    player.playerAt.marker.setVisible(false)
+    newStats = player.stats
     newStats.assets += photoValue
-    newStats.workingCapital -= mark.playerAt.travelExpense/2
-    mark.updateStats(newStats)
+    newStats.workingCapital -= player.playerAt.travelExpense/2
+    player.updateStats(newStats)
 
   $('#takingPic .start').click ->
     $(this).prop 'disabled', true
@@ -455,15 +454,15 @@ jQuery(document).ready ->
     addShotToInv(multiplier, quailty)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
-    gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + mark.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
-    if mark.playerAt.rare 
+    gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
+    if player.playerAt.rare 
       gameEvents.addEvent(new event 'Rare Picture.', gameTime.getFormatted(), 'You take a rare picture.', true)
       if !gameGlobal.init.isStory
         if $('#savePicOverlay .img img').length == 0
-          $('#savePicOverlay .img').append $('<img src="' + mark.playerAt.data.img + '">')
+          $('#savePicOverlay .img').append $('<img src="' + player.playerAt.data.img + '">')
         else
-          $('#savePicOverlay .img img').attr 'src', mark.playerAt.data.img
-        $('#savePicOverlay .title').text mark.playerAt.data.title
+          $('#savePicOverlay .img img').attr 'src', player.playerAt.data.img
+        $('#savePicOverlay .title').text player.playerAt.data.title
         $('#savePicOverlay #confirmSavePic').prop 'disabled', false
         $('#savePicOverlay').show()
 
@@ -480,7 +479,7 @@ jQuery(document).ready ->
     $('#inventory').show()
     potentialValue = 0;
     sellableValue = 0;
-    for item in mark.inventory
+    for item in player.inventory
       pictureContainer = $('<div class="photoContainer"></div>')
       picture = $('
       <div class="crop">
@@ -518,14 +517,14 @@ jQuery(document).ready ->
 
   $('#washPic').click ->
     notWashed = []
-    for item in mark.inventory
+    for item in player.inventory
       if !item.washed then notWashed.push(item)
     if notWashed.length == 0
       $('#washPicOverlay p').text 'There are no pictures to wash.'
       $('#washPicOverlay').show()
       $('#washPicOverlay #confirmWashPic').hide()
     else
-      for item in mark.inventory
+      for item in player.inventory
         item.washed = true
       $('#washPicOverlay p').text 'Washing photos takes ' + gameGlobal.turnConsts.pictureWashingTime + ' days. Proceed?'
       $('#washPicOverlay').show()
@@ -542,10 +541,10 @@ jQuery(document).ready ->
     $('#loanOverlay').show()
 
   $('#confirmLoan').click ->
-    newStats = mark.stats
+    newStats = player.stats
     newStats.liabilities += parseInt($('#loanInput').val())+parseInt($('#loanInput').val())*(gameGlobal.turnConsts.interest/10)
     newStats.CAB += parseInt($('#loanInput').val())
-    mark.updateStats(newStats)
+    player.updateStats(newStats)
     gameEvents.addEvent(new event 'Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val()))
   
   $('#loanInput, #waitTimeInput').keyup ->
@@ -559,7 +558,7 @@ jQuery(document).ready ->
   $('#sellPic').click ->
     sellablePhotos = 0
     photosValue = 0
-    for photo in mark.inventory
+    for photo in player.inventory
       if photo.washed
         sellablePhotos += 1
         photosValue += photo.value
@@ -572,8 +571,8 @@ jQuery(document).ready ->
     earningsEst = 0
     earningsAct = 0
     newInventory = []
-    newStats = mark.stats
-    for photo in mark.inventory
+    newStats = player.stats
+    for photo in player.inventory
       if photo.washed
         earningsAct += parseInt(photo.value + (photo.value*Math.random()))
         earningsEst += photo.value
@@ -583,10 +582,10 @@ jQuery(document).ready ->
       else
         newInventory.push(photo)
     timeTaken = ((Math.random()*2)+1)*photosSold
-    mark.inventory = newInventory
+    player.inventory = newInventory
     newStats.CAB += earningsAct
     newStats.assets -= earningsEst
-    mark.updateStats(newStats)
+    player.updateStats(newStats)
     gameTime.incrementDays(parseInt(timeTaken))
     if parseInt(timeTaken) == 1 then gameEvents.addEvent(new event 'Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' day to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.') else gameEvents.addEvent(new event 'Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' days to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.')
 
