@@ -14,7 +14,7 @@
           CAB: 1000,
           workingCapital: 0,
           assets: 0,
-          liabilities: 800
+          liabilities: 600
         }
       },
       trackers: {
@@ -25,7 +25,7 @@
       turnConsts: {
         interest: 1.5,
         pictureWashingTime: 14,
-        stdLiabilities: 800,
+        stdLiabilities: 600,
         alert: false
       }
     };
@@ -71,7 +71,8 @@
     try {
       storyMode = getParam('story') === 'true';
       if (storyMode) {
-        gameGlobal.isStory = true;
+        gameGlobal.init.isStory = true;
+        $('.tutorial .init').text('Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.');
         $('#playAgain').text('Continue');
         $('#playAgain').parent().attr('href', 'chapter3.html');
         $('.skip').show();
@@ -252,7 +253,6 @@
 
       playerMarker.prototype.moveTo = function(location) {
         var newStats, timeTaken;
-        this.depreciateInv();
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -277,8 +277,8 @@
           if (item.value < 1) {
             return;
           } else {
-            depreciation += item.value - item.value * 0.75;
-            item.value = item.value * 0.75;
+            depreciation += item.value - item.value * 0.9;
+            item.value = item.value * 0.9;
           }
         }
         newStats = player.stats;
@@ -355,6 +355,7 @@
       timeManager.prototype.incrementDays = function(days) {
         var results1;
         this.dateCounter += days;
+        player.depreciateInv();
         results1 = [];
         while (this.dateCounter >= 30) {
           this.incrementMonths(1);
@@ -586,7 +587,11 @@
     };
     endTurn = function(date) {
       var j, len, location, newStats, results1, show;
-      gameGlobal.trackers.monthPassed += 1;
+      if (gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6) {
+        $('#gameEnd h4').text('You recieve a letter from the army. Now you can finally join the front lines.');
+        $('#gameEnd .score').hide();
+        endGame();
+      }
       gameGlobal.turnConsts.interest = (Math.random() * 5).toFixed(2);
       gameEvents.addEvent(new event('The month comes to an end.', date, 'Paid $' + player.stats.liabilities + ' in expenses', true));
       newStats = player.stats;
@@ -596,8 +601,12 @@
       if (player.preStat.workingCapital <= -1000 && player.preStat.CAB <= 0) {
         if (gameGlobal.turnConsts.alert) {
           endGame();
+        } else {
+          gameGlobal.trackers.monthPassed += 1;
         }
         gameGlobal.turnConsts.alert = true;
+      } else {
+        gameGlobal.trackers.monthPassed += 1;
       }
       if (gameGlobal.turnConsts.alert && player.preStat.workingCapital > -1000 && player.preStat.CAB > 0) {
         gameGlobal.turnConsts.alert = false;
@@ -870,7 +879,8 @@
     });
     closeParent = function(self) {
       $(self).parent().hide();
-      return $('#blockOverlay').hide();
+      $('#blockOverlay').hide();
+      return $('.status').text('');
     };
     $('#actions').draggable();
     $('#actions').mousedown(function() {
