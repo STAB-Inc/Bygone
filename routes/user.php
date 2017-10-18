@@ -104,7 +104,7 @@
           array_push($users[$index]['scores']['g' . $_POST['gameId']], [$_POST['value'], date('r')]);
         }
       }
-      #file_put_contents($file, json_encode($users));
+      file_put_contents($file, json_encode($users));
       returnMsg('success', 'Your score has been saved.');
     }
   }
