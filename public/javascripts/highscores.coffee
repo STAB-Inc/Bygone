@@ -1,13 +1,32 @@
+###
+@file
+Generates the appropiate view for highscores.html
+###
+
 $(document).ready ->
+
+  ###
+    Sorts an array by the first element of the array.
+  ###
 
   sortDec = (a, b) ->
     if a[0] == b[0] then return 0 else return a[0] < b[0] ? -1 : 1
+
+  ###
+    Submits session data to the server. 
+    @param {Object} data - the data to be submitted.
+    @return AJAX deferred promise.
+  ###
 
   submitUserData = (data) ->
     $.ajax
       url: '/routes/user.php'
       type: 'POST'
       data: data
+
+  ###
+    Generates the elements containing the highscores info by requesting the apporiate data.
+  ###
 
   submitUserData({
     method: 'getAll'
@@ -53,4 +72,3 @@ $(document).ready ->
                             <p class="date">' + score[1] + '</p>
                           </div>
                         </div>')
-    #console.log gameScore

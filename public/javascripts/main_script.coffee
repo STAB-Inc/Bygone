@@ -3,12 +3,12 @@
   Global scripts for BYGONE.
 ###
 
-
 $(document).ready ->
 
   ###
     Submits session data to the server. 
     @param {Object} data - the data to be submitted.
+    @return AJAX deferred promise.
   ###
 
   submitUserData = (data) ->
@@ -96,7 +96,7 @@ $(document).ready ->
   ###
     Toggles the navigation.
   ###
-    
+
   navToggle = ->
     navToggled = !navToggled
     $('nav#global').toggleClass 'navOn'
@@ -110,6 +110,7 @@ $(document).ready ->
   ###
     Toggles user profile.
   ###
+
   userLogToggle = ->
     userToggled = !userToggled
     if userToggled then $('.userProfile').fadeIn()
@@ -146,7 +147,6 @@ $(document).ready ->
     $('body').animate({
       'scrollTop': $(hash).offset().top
     }, 750)
-    return
 
   ###
     Page transitions.
@@ -215,7 +215,6 @@ $(document).ready ->
     setTimeout ->
       load()
     , 500
-    return
 
   ###
     Hides overlays.

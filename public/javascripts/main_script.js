@@ -11,6 +11,7 @@
     /*
       Submits session data to the server. 
       @param {Object} data - the data to be submitted.
+      @return AJAX deferred promise.
      */
     var imagesTotal, load, loaded, navToggle, navToggled, segment, submitUserData, toHash, userLogToggle, userToggled;
     submitUserData = function(data) {
@@ -160,7 +161,7 @@
       @param {string} hash - the element with the hash to scroll to.
      */
     toHash = function(hash) {
-      $('body').animate({
+      return $('body').animate({
         'scrollTop': $(hash).offset().top
       }, 750);
     };
@@ -233,7 +234,7 @@
         $('.failed').append('<p>Fail to load: ' + image.img.src + '</p>');
       }
     }).done(function() {
-      setTimeout(function() {
+      return setTimeout(function() {
         return load();
       }, 500);
     });
