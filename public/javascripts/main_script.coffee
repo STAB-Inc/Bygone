@@ -1,10 +1,19 @@
 $(document).ready ->
 
+  ###
+    Submits session data to the server. 
+    @param {Object} data - the data to be submitted.
+  ###
+
   submitUserData = (data) ->
     $.ajax
       url: '/routes/user.php'
       type: 'POST'
       data: data
+
+  ###
+    Gets the active user.
+  ###
 
   submitUserData({
       method: 'getActiveUser'
@@ -38,6 +47,10 @@ $(document).ready ->
       else
         $('.save').hide()
 
+  ###
+    Creates a new user.
+  ###
+
   $('#newUser').submit (e) ->
     e.preventDefault()
     if $('#newUser #password').val() != $('#newUser #cPassword').val()
@@ -56,6 +69,10 @@ $(document).ready ->
         $('#newUser').find('.error').text res.message
       else
         location.reload()
+
+  ###
+    Logs users in.
+  ###
   
   $('#loginUser').submit (e) ->
     e.preventDefault()
@@ -69,28 +86,55 @@ $(document).ready ->
         $('#loginUser').find('.error').text res.message
       else
         location.reload()
+
+  ###
+    Toggles the navigation.
+  ###
     
   navToggle = ->
     navToggled = !navToggled
     $('nav#global').toggleClass 'navOn'
     $('.ionClose, .ionOpen').toggleClass 'buttonActive'
 
+  ###
+    Initial navigation menu status.
+  ###
   navToggled = false
 
+  ###
+    Toggles user profile.
+  ###
   userLogToggle = ->
     userToggled = !userToggled
     if userToggled then $('.userProfile').fadeIn()
 
   userToggled = false
 
+  ###
+    Shows/Hides the navigation.
+  ###
+
   $('#navToggle, .navContainer').click ->
     navToggle()
+
+  ###
+    Shows/Hides the user profile.
+  ###
 
   $('.viewProf').click ->
     userLogToggle()
 
+  ###
+    Toggles user actions.
+  ###
+
   $('#activeUserMsg').click ->
     $('#userActions').toggleClass('showActions')
+
+  ###
+    Scrolls the user to a section.
+    @param {string} hash - the element with the hash to scroll to.
+  ###
 
   toHash = (hash) ->
     $('body').animate({
@@ -98,7 +142,9 @@ $(document).ready ->
     }, 750)
     return
 
-  toLink= (link) ->
+  ###
+    Page transitions.
+  ###
 
   $('a').click (e) ->
     e.preventDefault()
@@ -125,6 +171,10 @@ $(document).ready ->
         , 1000
       )
 
+  ###
+    Loads the page by removing the loading screen.
+  ###
+
   load = ->
     $('#loader').css {
       'opacity': 0,
@@ -139,7 +189,9 @@ $(document).ready ->
         }
     , 1000
 
-  #loader delayed for testing
+  ###
+    Images loaded plugin, waits for all images to load and fires a event once complete.
+  ###
 
   imagesTotal = $('img').length
   segment = 100 / imagesTotal
@@ -159,14 +211,35 @@ $(document).ready ->
     , 500
     return
 
+  ###
+    Hides overlays.
+  ###
+
   $('.close, .closeForm').click ->
+  ###
+    @file
+    Tge global scripts for BYGONE.
+  ###
+
     $(this).parent().fadeOut()
+
+  ###
+    Show overlays.
+  ###
 
   $('.show').click ->
     $($(this).attr('target')).fadeIn()
 
+  ###
+    Stops button redirects.
+  ###
+
   $('button').click (e) ->
     e.preventDefault()
+
+  ###
+    Log out the current user.
+  ###
 
   $('#userActions .logout').click ->
     submitUserData({
@@ -175,6 +248,10 @@ $(document).ready ->
       res = JSON.parse res
       if res.status == 'success'
         location.reload()
+
+  ###
+    Deletes the user's account.
+  ###
 
   $('#userActions .deleteAcc').click ->
     submitUserData({
