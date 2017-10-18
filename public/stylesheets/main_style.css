@@ -5515,7 +5515,8 @@ a {
   left: 10px;
   opacity: 1;
   font-weight: 300;
-  text-shadow: none; }
+  text-shadow: none;
+  font-size: 16px; }
   .close:hover {
     color: #dadad2;
     opacity: 1; }
