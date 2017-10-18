@@ -1,3 +1,9 @@
+###
+  @file
+  Global scripts for BYGONE.
+###
+
+
 $(document).ready ->
 
   ###
@@ -216,12 +222,7 @@ $(document).ready ->
   ###
 
   $('.close, .closeForm').click ->
-  ###
-    @file
-    Tge global scripts for BYGONE.
-  ###
-
-    $(this).parent().fadeOut()
+    $(this).parent().fadeOut()    
 
   ###
     Show overlays.
