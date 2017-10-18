@@ -135,12 +135,12 @@
         padding-left: 15px;
       }
     }
-    @media (max-width: 1200px) {
-      width: 75vw;
-    }
-    @media (max-width: 800px) {
-      width: 100vw;
+    @media (max-width: 1280px) {
       padding: 50px;
+    }
+    @media (max-width: 1200px) {
+      width: 100vw;
+      height: 800px;
     }
     @media (max-width: 500px) {
       padding: 20px;
@@ -178,6 +178,9 @@
   section#campaign {
     width: 100%;
     height: 100vh;
+    @media (max-width: 1280px) {
+      height: initial;
+    }
     img {
       top: 100vh;
     }
@@ -195,10 +198,10 @@
         padding: 20px;
       }
       @media (max-width: 1200px) {
-        padding: 100px;
+        padding: 20px;
       }
       @media (max-width: 992px) {
-        height: 25%;
+        height: 300px;
         padding: 20px;
       }
       &:hover {
@@ -249,6 +252,11 @@
     width: 100%;
     height: 300px;
     background-color: #340F0F;
+    @media (max-width: 1280px) {
+      h3 {
+        font-size: 16px;
+      }
+    }
     .game {
       height: 100%;
       position: relative;

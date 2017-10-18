@@ -5615,29 +5615,30 @@ nav#global {
   transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out; }
+  @media (max-height: 650px) {
+    nav#global {
+      overflow-y: scroll; } }
   nav#global .navContainer {
     position: absolute;
     width: 600px;
-    height: 600px;
     left: 50%;
     transform: translateX(-50%);
     top: 50%;
     transform: translateY(-50%);
     transform: translate(-50%, -50%); }
-    @media (max-height: 650px) {
-      nav#global .navContainer {
-        height: 100vh;
-        overflow-y: scroll; } }
     nav#global .navContainer .navButton {
       width: 50%;
-      height: 300px !important;
-      background-color: red;
+      height: 300px;
       padding-top: 15%; }
       nav#global .navContainer .navButton h3 {
         font-weight: bold;
         text-align: center; }
       nav#global .navContainer .navButton p {
         text-align: center; }
+      @media (max-width: 1280px) {
+        nav#global .navContainer .navButton {
+          height: 200px;
+          padding-top: 7.5%; } }
       @media (max-width: 768px) {
         nav#global .navContainer .navButton {
           width: 100%;
@@ -5878,13 +5879,13 @@ nav#global {
             font-size: 2em; } }
       #index main .header h3 {
         padding-left: 15px; }
+    @media (max-width: 1280px) {
+      #index main {
+        padding: 50px; } }
     @media (max-width: 1200px) {
       #index main {
-        width: 75vw; } }
-    @media (max-width: 800px) {
-      #index main {
         width: 100vw;
-        padding: 50px; } }
+        height: 800px; } }
     @media (max-width: 500px) {
       #index main {
         padding: 20px; } }
@@ -5921,6 +5922,9 @@ nav#global {
   #index section#campaign {
     width: 100%;
     height: 100vh; }
+    @media (max-width: 1280px) {
+      #index section#campaign {
+        height: initial; } }
     #index section#campaign img {
       top: 100vh; }
     #index section#campaign h3 {
@@ -5940,10 +5944,10 @@ nav#global {
           padding: 20px; } }
       @media (max-width: 1200px) {
         #index section#campaign .chapter {
-          padding: 100px; } }
+          padding: 20px; } }
       @media (max-width: 992px) {
         #index section#campaign .chapter {
-          height: 25%;
+          height: 300px;
           padding: 20px; } }
       #index section#campaign .chapter:hover {
         background-color: rgba(0, 0, 0, 0.8); }
@@ -5984,6 +5988,9 @@ nav#global {
     width: 100%;
     height: 300px;
     background-color: #340F0F; }
+    @media (max-width: 1280px) {
+      #index section#freeMode h3 {
+        font-size: 16px; } }
     #index section#freeMode .game {
       height: 100%;
       position: relative; }

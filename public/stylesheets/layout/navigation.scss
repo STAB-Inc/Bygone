@@ -6,20 +6,17 @@ nav#global {
   z-index: 10;
   opacity: 0;
   pointer-events: none;
+  @media (max-height: 650px) {
+    overflow-y: scroll;
+  }
   @include transition(0.2s, ease-in-out);
   .navContainer {
     position: absolute;
     width: 600px;
-    height: 600px;
     @include centerXY;
-    @media (max-height: 650px) {
-      height: 100vh;
-      overflow-y: scroll;
-    }
     .navButton {
       width: 50%;
-      height: 300px !important;
-      background-color: red;
+      height: 300px;
       padding-top: 15%;
       h3 {
         font-weight: bold;
@@ -27,6 +24,10 @@ nav#global {
       }
       p {
         text-align: center;
+      }
+      @media (max-width: 1280px) {
+        height: 200px;
+        padding-top: 7.5%;
       }
       @media (max-width: 768px) {
         width: 100%;
