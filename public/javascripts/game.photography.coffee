@@ -154,18 +154,6 @@ jQuery(document).ready ->
       $(target).text res.message
 
   ###
-    Saves the current user score.
-  ###
-
-  saveScore = ->
-    submitUserData({
-      method: 'saveScore'
-      gameId: '2'
-      value: @score
-    }).then (res) ->
-      showResStatus '#gameEnd .status', JSON.parse res
-
-  ###
     Saves the a item to the user's collection.
   ###
 
@@ -213,8 +201,10 @@ jQuery(document).ready ->
         liabilities: 1000
       }
     if plusMode
+      $('#tutorial .pPlus').text 'In Plus Mode, you will have to deal with additional events and control your insanity meter. The game will end should it gets too high.'
       gameGlobal.init.isPlus = true
-
+    else
+      $('.pPlus').remove()
   ###
     Skips the game when in story mode. Completes the chapter for the user.
   ###
@@ -833,9 +823,28 @@ jQuery(document).ready ->
           validData = processData res
           localInit()
 
+    ###
+      Saves the current user score to the database.
+    ###
+
+    saveScore: ->
+      submitUserData({
+        method: 'saveScore'
+        gameId: '2'
+        value: @score
+      }).then (res) ->
+        res = JSON.parse res
+        if res.status == 'success'
+          $('#gameEnd .status').css 'color', ''
+          $('#gameEnd .status').text res.message
+        else
+          $('#gameEnd .status').css 'color', 'red'
+          $('#gameEnd .status').text res.message
+
   ###
     Instantiate the photography game.
   ###
+  
   currentGame = new photographyGame false
 
   if getParam('diff') == 'normal'

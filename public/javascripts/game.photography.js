@@ -10,7 +10,7 @@ Handles the functionality of the photography game.
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, effects, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerInsanity, playerMarker, plusMode, processData, randomEvent, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, effects, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerInsanity, playerMarker, plusMode, processData, randomEvent, retrieveResources, saveItem, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
     event = (function() {
 
       /*
@@ -186,19 +186,6 @@ Handles the functionality of the photography game.
     };
 
     /*
-      Saves the current user score.
-     */
-    saveScore = function() {
-      return submitUserData({
-        method: 'saveScore',
-        gameId: '2',
-        value: this.score
-      }).then(function(res) {
-        return showResStatus('#gameEnd .status', JSON.parse(res));
-      });
-    };
-
-    /*
       Saves the a item to the user's collection.
      */
     saveItem = function(img, des) {
@@ -249,7 +236,10 @@ Handles the functionality of the photography game.
         };
       }
       if (plusMode) {
+        $('#tutorial .pPlus').text('In Plus Mode, you will have to deal with additional events and control your insanity meter. The game will end should it gets too high.');
         gameGlobal.init.isPlus = true;
+      } else {
+        $('.pPlus').remove();
       }
     } catch (error) {}
 
@@ -1033,6 +1023,28 @@ Handles the functionality of the photography game.
             return localInit();
           });
         }
+      };
+
+
+      /*
+        Saves the current user score to the database.
+       */
+
+      photographyGame.prototype.saveScore = function() {
+        return submitUserData({
+          method: 'saveScore',
+          gameId: '2',
+          value: this.score
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            $('#gameEnd .status').css('color', '');
+            return $('#gameEnd .status').text(res.message);
+          } else {
+            $('#gameEnd .status').css('color', 'red');
+            return $('#gameEnd .status').text(res.message);
+          }
+        });
       };
 
       return photographyGame;
