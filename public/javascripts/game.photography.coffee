@@ -5,6 +5,70 @@ Handles the functionality of the photography game.
 
 jQuery(document).ready ->
 
+  class event
+
+    ###
+      Constructs the event object.
+      @constructor
+      @param {string} title
+        Title of the event.
+      @param {string} time
+        The game time of when the event occurred.
+      @param {string} content
+        The description of the event.
+      @param {boolean} special
+        Whether if the event is a special event.
+      @param {boolean} warn
+        Whether if the event is a warning.
+    ###
+
+    constructor: (@title, @time, @content, @special=false, @warn=false) ->
+
+  class randomEvent extends event
+
+    ###
+      Constructs the random event object. Extends events.
+      @constructor
+      @param {string} title
+        Title of the event.
+      @param {string} time
+        The game time of when the event occurred.
+      @param {string} content
+        The description of the event.
+      @param {boolean} special
+        Whether if the event is a special event.
+      @param {boolean} warn
+        Whether if the event is a warning.
+      @param {boolean} popup
+        Whether if the event has its own overlay, or added to the event log.
+      @param {integer} chance
+        The chance of the event occurance should it be selected.
+      @param {object} effects
+        The list of effects to affect the player by.
+    ###
+
+    constructor: (@title, @time, @content, @special=false, @popup=false, @chance, @effects) ->
+      super(@title, @time, @content, @special, @warn)
+
+  class gamePhoto
+
+    ###
+      Constructs the game photo object.
+      @constructor
+      @param {integer} value
+        The value of the photo.
+      @param {boolean} washed
+        Whether if the photo has been washed
+      @param {string} img
+        The image associated with the photo.
+      @param {string} title
+        The title of the photo.
+      @param {integer} quailty
+        The quailty of the photo.
+    ###
+
+    constructor: (@value, @washed, @img, @title, @quailty) ->
+
   ###
     Global variables and constants.
   ###
@@ -12,25 +76,48 @@ jQuery(document).ready ->
   locations = []
   validData = []
   gameGlobal = {
+    eventOccurrence: 0
     init: {
-      isStory: false,
+      isStory: false
+      isPlus: false
       stats: {
-        CAB: 1000, 
-        workingCapital: 0, 
-        assets: 0, 
+        CAB: 1000
+        workingCapital: 0
+        assets: 0
         liabilities: 600
+        insanity: 0
       }
     },
     trackers: {
-      monthPassed: 0,
-      photosSold: 0,
+      monthPassed: 0
+      photosSold: 0
       moneyEarned: 0
     },
     turnConsts: {
-      interest: 1.5,
-      pictureWashingTime: 14,
-      stdLiabilities: 600,
+      interest: 1.5
+      pictureWashingTime: 14
+      stdLiabilities: 600
       alert: false
+      randomEvents: [
+        new randomEvent('Machine Gun Fire!', 
+        'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', 
+        false, true, 30, effects = {insanity: 20}),
+        new randomEvent('German Bombs!', 
+        'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', 
+        false, true, 20, effects = {insanity: 30}),
+        new randomEvent('Air raid!', 
+        'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', 
+        false, true, 24, effects = {insanity: 20}),
+        new randomEvent('Landmines!', 
+        'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', 
+        false, true, 20, effects = {insanity: 10}),
+        new randomEvent('Dazed', 
+        'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', 
+        false, true, 20, effects = {insanity: 10}),
+        new randomEvent('The enemy charges!', 
+        'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', 
+        false, true, 20, effects = {insanity: 20})
+      ]
     }
   }
 
@@ -67,18 +154,6 @@ jQuery(document).ready ->
       $(target).text res.message
 
   ###
-    Saves the current user score.
-  ###
-
-  saveScore = ->
-    submitUserData({
-      method: 'saveScore'
-      gameId: '2'
-      value: @score
-    }).then (res) ->
-      showResStatus '#gameEnd .status', JSON.parse res
-
-  ###
     Saves the a item to the user's collection.
   ###
 
@@ -109,6 +184,7 @@ jQuery(document).ready ->
 
   try
     storyMode = getParam('story') == 'true'
+    plusMode = getParam('plus') == 'true'
     if storyMode
       gameGlobal.init.isStory = true
       $('.tutorial .init').text 'Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.'
@@ -124,7 +200,11 @@ jQuery(document).ready ->
         assets: 0, 
         liabilities: 1000
       }
-
+    if plusMode
+      $('#tutorial .pPlus').text 'In Plus Mode, you will have to deal with additional events and control your insanity meter. The game will end should it gets too high.'
+      gameGlobal.init.isPlus = true
+    else
+      $('.pPlus').remove()
   ###
     Skips the game when in story mode. Completes the chapter for the user.
   ###
@@ -327,6 +407,7 @@ jQuery(document).ready ->
         @value = self.value
 
   class playerMarker extends gameLocation
+
     ###
       Constructs the player marker object. Extends the game location object
       @constructor
@@ -341,6 +422,7 @@ jQuery(document).ready ->
       @param {object} stats
         JSON data of the player's stats.
     ###
+
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
@@ -381,8 +463,16 @@ jQuery(document).ready ->
       gameTime.incrementTime(timeTaken)
       gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours')
       $('#takePic').show()
+      $('#takeDrink').show()
       updateMarkers()
       @updateStats(newStats)
+      if gameGlobal.init.isPlus
+        gameGlobal.eventOccurrence += 0.5
+        if gameGlobal.eventOccurrence > 1
+          randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)]
+          if randEvent.chance > Math.random() * 100 
+            gameEvents.addEvent randEvent
+            gameGlobal.eventOccurrence = 0
 
     ###
       Depreciates the player's inventory.
@@ -424,6 +514,7 @@ jQuery(document).ready ->
         workingCapital: workingCapital, 
         assets: assets, 
         liabilities: stats.liabilities
+        insanity: stats.insanity
       }
       if workingCapital <= -1000 && @stats.CAB <= 0
         $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css 'color', 'red'
@@ -477,7 +568,6 @@ jQuery(document).ready ->
         if @dateCounter < 30
           @dateCounter = @dateCounter % 30
           break
-
 
     ###
       Increases the game time by months.
@@ -536,7 +626,8 @@ jQuery(document).ready ->
       @param {DOMElement} domSelector
         The DOM element to display the event on.
     ###
-    constructor: (@domSelector) ->
+
+    constructor: (@domSelector, @domOverlay) ->
       @events = []
 
     ###
@@ -546,63 +637,75 @@ jQuery(document).ready ->
     ###
 
     addEvent: (event) ->
-      @events.push(event)
-      if event.warn
-        $('<div class="row">
-          <p class="time">' + event.time + '</p>
-          <p class="title warn">' + event.title + '</p>
-          <p class="content">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-      else if event.special
-        $('<div class="row">
-          <p class="time special">' + event.time + '</p>
-          <p class="title special">' + event.title + '</p>
-          <p class="content special">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-      else 
-        $('<div class="row">
-          <p class="time">' + event.time + '</p>
-          <p class="title">' + event.title + '</p>
-          <p class="content">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
+      if event.time == 'currentTime' then event.time = gameTime.getFormatted()
+      if event.constructor.name == 'randomEvent'
+        if event.effects
+          gameInsanity.updateBar event.effects.insanity
+          newStats = player.stats
+          for effectName in Object.keys event.effects
+            newStats[effectName] += event.effects[effectName]
+          player.updateStats(newStats)
+        @domOverlay.find('.title').text event.title
+        @domOverlay.find('.content').text event.content
+        @domOverlay.show()
+      else
+        @events.push(event)
+        if event.warn
+          $('<div class="row">
+            <p class="time">' + event.time + '</p>
+            <p class="title warn">' + event.title + '</p>
+            <p class="content">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
+        else if event.special
+          $('<div class="row">
+            <p class="time special">' + event.time + '</p>
+            <p class="title special">' + event.title + '</p>
+            <p class="content special">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
+        else 
+          $('<div class="row">
+            <p class="time">' + event.time + '</p>
+            <p class="title">' + event.title + '</p>
+            <p class="content">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
 
-  class event
+  class playerInsanity
 
     ###
-      Constructs the event object.
+      Constructs playerInsanity object to handle player insanity events.
       @constructor
-      @param {string} title
-        Title of the event.
-      @param {string} time
-        The game time of when the event occurred.
-      @param {string} content
-        The description of the event.
-      @param {boolean} special
-        Whether if the event is a special event.
-      @param {boolean} warn
-        Whether if the event is a warning.
+      @param {DOMElement} domSelector
+        The DOM element to display the event on.
+      @param {integer} initValue
+        The initial insanity value
     ###
 
-    constructor: (@title, @time, @content, @special=false, @warn=false) ->
-
-  class gamePhoto
+    constructor: (@domSelector, @initVal) ->
+      @value = @initVal
 
     ###
-      Constructs the game photo object.
-      @constructor
+      Sets the insanity bar to a value
       @param {integer} value
-        The value of the photo.
-      @param {boolean} washed
-        Whether if the photo has been washed
-      @param {string} img
-        The image associated with the photo.
-      @param {string} title
-        The title of the photo.
-      @param {integer} quailty
-        The quailty of the photo.
+        the level of insanity to set to.
     ###
 
-    constructor: (@value, @washed, @img, @title, @quailty) ->
+    setBar: (value) ->
+      @value = value
+      @domSelector.find('.bar').css 'height', @value + '%'
+
+    ###
+      Update the insanity level by a value
+      @param {integer} value
+        the level to increase the current insanity level by.
+    ###
+
+    updateBar: (value) ->
+      if @value + value > 100 
+        endGame()
+        @domSelector.find('.bar').css 'height', '100%'
+      else
+        @value += value
+        if @value < 0 then return else @domSelector.find('.bar').css 'height', @value + '%'
 
   ###
     Processes and validates an array of data.
@@ -658,6 +761,7 @@ jQuery(document).ready ->
     Updates the markers as the user player moves.
     @see playerMarker.prototype.moveTo()
   ###
+
   updateMarkers = ->
     for location in locations
       hide = Math.random() >= 0.8;
@@ -669,9 +773,10 @@ jQuery(document).ready ->
     Instantiate the game components.
   ###
 
-  gameEvents = new eventManager $('#eventLog .eventContainer')
+  gameEvents = new eventManager $('#eventLog .eventContainer'), $('#randomEventOverlay')
   gameTime = new timeManager [1939, 1, 1, 0]
   gameTutorial = new tutorialHandler $('.tutorial')
+  gameInsanity = new playerInsanity $('#insanityBar'), 0
 
   player = new playerMarker {lat: -25.363, lng: 151.044}, 'player', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   player.initTo googleMap
@@ -718,9 +823,29 @@ jQuery(document).ready ->
           validData = processData res
           localInit()
 
+    ###
+      Saves the current user score to the database.
+    ###
+
+    saveScore: ->
+      if gameGlobal.init.isPlus then gameId = '4' else gameId = '2'
+      submitUserData({
+        method: 'saveScore'
+        gameId: gameId
+        value: @score
+      }).then (res) ->
+        res = JSON.parse res
+        if res.status == 'success'
+          $('#gameEnd .status').css 'color', ''
+          $('#gameEnd .status').text res.message
+        else
+          $('#gameEnd .status').css 'color', 'red'
+          $('#gameEnd .status').text res.message
+
   ###
     Instantiate the photography game.
   ###
+
   currentGame = new photographyGame false
 
   if getParam('diff') == 'normal'
@@ -782,6 +907,7 @@ jQuery(document).ready ->
     $('#takingPic .viewInv').hide()
     $('#takingPic .close').hide()
     $(this).hide()
+    $('#takeDrink').hide()
 
   ###
     Starts the animation of the slider when taking the picture.
@@ -818,7 +944,7 @@ jQuery(document).ready ->
     inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left
     inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left
     if inBlue && inGreen
-      multiplier = 1.2
+      multiplier = 1.4
       quailty = 0
       $('.shotStats').text 'You take a high quailty photo, this will surely sell for more!'
     else if inBlue
@@ -827,16 +953,7 @@ jQuery(document).ready ->
       multiplier = 0.8
       quailty = 2
       $('.shotStats').text 'The shot comes out all smudged...'
-
-  ###
-    Instantiate the game photo object and Adds a photographic shot to the inventory
-    @param {integer} multiplier
-      The scalar to multiple the value of the shot by.
-    @param {integer} quailty
-      The quailty of the picture.
-  ###
-
-  addShotToInv(multiplier, quailty)
+    addShotToInv(multiplier, quailty)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
@@ -850,6 +967,24 @@ jQuery(document).ready ->
         $('#savePicOverlay .title').text player.playerAt.data.title
         $('#savePicOverlay #confirmSavePic').prop 'disabled', false
         $('#savePicOverlay').show()
+
+  ###
+    Instantiate the game photo object and adds a photographic shot to the inventory
+    @param {integer} multiplier
+      The scalar to multiple the value of the shot by.
+    @param {integer} quailty
+      The quailty of the picture.
+  ###
+
+  addShotToInv = (multiplier, quailty) ->
+    photoValue = player.playerAt.value*multiplier
+    shotTaken = new gamePhoto photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty
+    player.inventory.push(shotTaken)
+    player.playerAt.marker.setVisible(false)
+    newStats = player.stats
+    newStats.assets += photoValue
+    newStats.workingCapital -= player.playerAt.travelExpense/2
+    player.updateStats(newStats)
 
   ###
     Displays the player inventory and closes previous element's parent.
@@ -1027,7 +1162,7 @@ jQuery(document).ready ->
   ###
 
   $('#actions button').click ->
-    $('#blockOverlay').show()
+    if $(this).attr('id') != 'takeDrink' then $('#blockOverlay').show()
 
   ###
     Closes the overlay.
@@ -1080,3 +1215,31 @@ jQuery(document).ready ->
   
   $('body').on 'click', '.tutorial .prev', ->
     gameTutorial.prev()
+
+  ###
+    Handles new Plus mode mechanics
+  ###
+
+  $('#randomEventOverlay .break').click ->
+    gameTime.incrementDays(5)
+    gameEvents.addEvent new event 'You take sometime off...', gameTime.getFormatted(), ''
+    gameInsanity.setBar gameInsanity.value*0.75
+
+  $('#randomEventOverlay .seeDoc').click ->
+    gameTime.incrementDays(2)
+    newStats = player.stats
+    newStats.CAB -= 500
+    player.updateStats newStats
+    gameEvents.addEvent new event 'You visit a nearby doctor...', gameTime.getFormatted(), ''
+    gameInsanity.setBar gameInsanity.value*0.25
+    gameGlobal.eventOccurrence = -1
+
+  $('#takeDrink').hide()
+  $('#takeDrink').click ->
+    $('#takePic').hide()
+    $(this).hide()
+    gameEvents.addEvent new event 'You go to a nearby pub', gameTime.getFormatted(), 'You spend $50 on some shots. It relieves some of your stress...'
+    newStats = player.stats
+    newStats.CAB -= 50
+    player.updateStats newStats
+    gameInsanity.updateBar -5

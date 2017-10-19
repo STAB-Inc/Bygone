@@ -6106,8 +6106,7 @@ nav#global {
   #highscores .g .row {
     margin: 0; }
   #highscores .g .current {
-    background-color: #515e6f;
-    border-radius: 2px; }
+    background-color: #515e6f; }
 
 main#puzzleGame {
   width: 1200px;
@@ -6284,7 +6283,8 @@ main#puzzleGame {
 #photographyGame #gameEnd,
 #photographyGame #takingPic,
 #photographyGame #washPicOverlay,
-#photographyGame #savePicOverlay {
+#photographyGame #savePicOverlay,
+#photographyGame #randomEventOverlay {
   width: 600px;
   height: 300px; }
 
@@ -6373,8 +6373,28 @@ main#puzzleGame {
     text-align: left; }
 
 #photographyGame #insanityBar {
-  width: 100px;
+  width: 60px;
   left: 440px; }
+  #photographyGame #insanityBar .bar,
+  #photographyGame #insanityBar .barOutline {
+    position: absolute;
+    bottom: 0;
+    width: 10px;
+    height: 0%;
+    background-color: lime;
+    left: 50%;
+    transform: translateX(-50%); }
+  #photographyGame #insanityBar .barOutline {
+    bottom: 25px;
+    height: 150px;
+    border: solid 1px white;
+    background-color: transparent;
+    z-index: 1; }
+  #photographyGame #insanityBar .bar {
+    width: 100%;
+    transition: all 50ms ease-in-out;
+    -webkit-transition: all 50ms ease-in-out;
+    -moz-transition: all 50ms ease-in-out; }
 
 #photographyGame #locationInfoOverlay {
   height: 30%;

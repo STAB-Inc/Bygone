@@ -10,21 +10,117 @@ Handles the functionality of the photography game.
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, effects, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerInsanity, playerMarker, plusMode, processData, randomEvent, retrieveResources, saveItem, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
+    event = (function() {
+
+      /*
+        Constructs the event object.
+        @constructor
+        @param {string} title
+          Title of the event.
+        @param {string} time
+          The game time of when the event occurred.
+        @param {string} content
+          The description of the event.
+        @param {boolean} special
+          Whether if the event is a special event.
+        @param {boolean} warn
+          Whether if the event is a warning.
+       */
+      function event(title, time, content, special, warn) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.warn = warn != null ? warn : false;
+      }
+
+      return event;
+
+    })();
+    randomEvent = (function(superClass) {
+      extend(randomEvent, superClass);
+
+
+      /*
+        Constructs the random event object. Extends events.
+        @constructor
+        @param {string} title
+          Title of the event.
+        @param {string} time
+          The game time of when the event occurred.
+        @param {string} content
+          The description of the event.
+        @param {boolean} special
+          Whether if the event is a special event.
+        @param {boolean} warn
+          Whether if the event is a warning.
+        @param {boolean} popup
+          Whether if the event has its own overlay, or added to the event log.
+        @param {integer} chance
+          The chance of the event occurance should it be selected.
+        @param {object} effects
+          The list of effects to affect the player by.
+       */
+
+      function randomEvent(title, time, content, special, popup, chance, effects1) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.popup = popup != null ? popup : false;
+        this.chance = chance;
+        this.effects = effects1;
+        randomEvent.__super__.constructor.call(this, this.title, this.time, this.content, this.special, this.warn);
+      }
+
+      return randomEvent;
+
+    })(event);
+    gamePhoto = (function() {
+
+      /*
+        Constructs the game photo object.
+        @constructor
+        @param {integer} value
+          The value of the photo.
+        @param {boolean} washed
+          Whether if the photo has been washed
+        @param {string} img
+          The image associated with the photo.
+        @param {string} title
+          The title of the photo.
+        @param {integer} quailty
+          The quailty of the photo.
+       */
+      function gamePhoto(value1, washed, img1, title, quailty1) {
+        this.value = value1;
+        this.washed = washed;
+        this.img = img1;
+        this.title = title;
+        this.quailty = quailty1;
+      }
+
+      return gamePhoto;
+
+    })();
 
     /*
       Global variables and constants.
      */
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerMarker, processData, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
     locations = [];
     validData = [];
     gameGlobal = {
+      eventOccurrence: 0,
       init: {
         isStory: false,
+        isPlus: false,
         stats: {
           CAB: 1000,
           workingCapital: 0,
           assets: 0,
-          liabilities: 600
+          liabilities: 600,
+          insanity: 0
         }
       },
       trackers: {
@@ -36,7 +132,22 @@ Handles the functionality of the photography game.
         interest: 1.5,
         pictureWashingTime: 14,
         stdLiabilities: 600,
-        alert: false
+        alert: false,
+        randomEvents: [
+          new randomEvent('Machine Gun Fire!', 'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', false, true, 30, effects = {
+            insanity: 20
+          }), new randomEvent('German Bombs!', 'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', false, true, 20, effects = {
+            insanity: 30
+          }), new randomEvent('Air raid!', 'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', false, true, 24, effects = {
+            insanity: 20
+          }), new randomEvent('Landmines!', 'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', false, true, 20, effects = {
+            insanity: 10
+          }), new randomEvent('Dazed', 'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', false, true, 20, effects = {
+            insanity: 10
+          }), new randomEvent('The enemy charges!', 'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', false, true, 20, effects = {
+            insanity: 20
+          })
+        ]
       }
     };
 
@@ -75,19 +186,6 @@ Handles the functionality of the photography game.
     };
 
     /*
-      Saves the current user score.
-     */
-    saveScore = function() {
-      return submitUserData({
-        method: 'saveScore',
-        gameId: '2',
-        value: this.score
-      }).then(function(res) {
-        return showResStatus('#gameEnd .status', JSON.parse(res));
-      });
-    };
-
-    /*
       Saves the a item to the user's collection.
      */
     saveItem = function(img, des) {
@@ -119,6 +217,7 @@ Handles the functionality of the photography game.
      */
     try {
       storyMode = getParam('story') === 'true';
+      plusMode = getParam('plus') === 'true';
       if (storyMode) {
         gameGlobal.init.isStory = true;
         $('.tutorial .init').text('Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.');
@@ -135,6 +234,12 @@ Handles the functionality of the photography game.
           assets: 0,
           liabilities: 1000
         };
+      }
+      if (plusMode) {
+        $('#tutorial .pPlus').text('In Plus Mode, you will have to deal with additional events and control your insanity meter. The game will end should it gets too high.');
+        gameGlobal.init.isPlus = true;
+      } else {
+        $('.pPlus').remove();
       }
     } catch (error) {}
 
@@ -421,7 +526,7 @@ Handles the functionality of the photography game.
        */
 
       playerMarker.prototype.moveTo = function(location) {
-        var newStats, timeTaken;
+        var newStats, randEvent, timeTaken;
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -433,8 +538,19 @@ Handles the functionality of the photography game.
         gameTime.incrementTime(timeTaken);
         gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
         $('#takePic').show();
+        $('#takeDrink').show();
         updateMarkers();
-        return this.updateStats(newStats);
+        this.updateStats(newStats);
+        if (gameGlobal.init.isPlus) {
+          gameGlobal.eventOccurrence += 0.5;
+          if (gameGlobal.eventOccurrence > 1) {
+            randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)];
+            if (randEvent.chance > Math.random() * 100) {
+              gameEvents.addEvent(randEvent);
+              return gameGlobal.eventOccurrence = 0;
+            }
+          }
+        }
       };
 
 
@@ -494,7 +610,8 @@ Handles the functionality of the photography game.
           CAB: stats.CAB,
           workingCapital: workingCapital,
           assets: assets,
-          liabilities: stats.liabilities
+          liabilities: stats.liabilities,
+          insanity: stats.insanity
         };
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
           return $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css('color', 'red');
@@ -654,8 +771,9 @@ Handles the functionality of the photography game.
         @param {DOMElement} domSelector
           The DOM element to display the event on.
        */
-      function eventManager(domSelector) {
+      function eventManager(domSelector, domOverlay) {
         this.domSelector = domSelector;
+        this.domOverlay = domOverlay;
         this.events = [];
       }
 
@@ -667,71 +785,89 @@ Handles the functionality of the photography game.
        */
 
       eventManager.prototype.addEvent = function(event) {
-        this.events.push(event);
-        if (event.warn) {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title warn">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
-        } else if (event.special) {
-          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+        var effectName, j, len, newStats, ref;
+        if (event.time === 'currentTime') {
+          event.time = gameTime.getFormatted();
+        }
+        if (event.constructor.name === 'randomEvent') {
+          if (event.effects) {
+            gameInsanity.updateBar(event.effects.insanity);
+            newStats = player.stats;
+            ref = Object.keys(event.effects);
+            for (j = 0, len = ref.length; j < len; j++) {
+              effectName = ref[j];
+              newStats[effectName] += event.effects[effectName];
+            }
+            player.updateStats(newStats);
+          }
+          this.domOverlay.find('.title').text(event.title);
+          this.domOverlay.find('.content').text(event.content);
+          return this.domOverlay.show();
         } else {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          this.events.push(event);
+          if (event.warn) {
+            return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title warn">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          } else if (event.special) {
+            return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          } else {
+            return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          }
         }
       };
 
       return eventManager;
 
     })();
-    event = (function() {
+    playerInsanity = (function() {
 
       /*
-        Constructs the event object.
+        Constructs playerInsanity object to handle player insanity events.
         @constructor
-        @param {string} title
-          Title of the event.
-        @param {string} time
-          The game time of when the event occurred.
-        @param {string} content
-          The description of the event.
-        @param {boolean} special
-          Whether if the event is a special event.
-        @param {boolean} warn
-          Whether if the event is a warning.
+        @param {DOMElement} domSelector
+          The DOM element to display the event on.
+        @param {integer} initValue
+          The initial insanity value
        */
-      function event(title, time, content, special, warn) {
-        this.title = title;
-        this.time = time;
-        this.content = content;
-        this.special = special != null ? special : false;
-        this.warn = warn != null ? warn : false;
+      function playerInsanity(domSelector, initVal) {
+        this.domSelector = domSelector;
+        this.initVal = initVal;
+        this.value = this.initVal;
       }
 
-      return event;
-
-    })();
-    gamePhoto = (function() {
 
       /*
-        Constructs the game photo object.
-        @constructor
+        Sets the insanity bar to a value
         @param {integer} value
-          The value of the photo.
-        @param {boolean} washed
-          Whether if the photo has been washed
-        @param {string} img
-          The image associated with the photo.
-        @param {string} title
-          The title of the photo.
-        @param {integer} quailty
-          The quailty of the photo.
+          the level of insanity to set to.
        */
-      function gamePhoto(value, washed, img1, title, quailty1) {
-        this.value = value;
-        this.washed = washed;
-        this.img = img1;
-        this.title = title;
-        this.quailty = quailty1;
-      }
 
-      return gamePhoto;
+      playerInsanity.prototype.setBar = function(value) {
+        this.value = value;
+        return this.domSelector.find('.bar').css('height', this.value + '%');
+      };
+
+
+      /*
+        Update the insanity level by a value
+        @param {integer} value
+          the level to increase the current insanity level by.
+       */
+
+      playerInsanity.prototype.updateBar = function(value) {
+        if (this.value + value > 100) {
+          endGame();
+          return this.domSelector.find('.bar').css('height', '100%');
+        } else {
+          this.value += value;
+          if (this.value < 0) {
+
+          } else {
+            return this.domSelector.find('.bar').css('height', this.value + '%');
+          }
+        }
+      };
+
+      return playerInsanity;
 
     })();
 
@@ -826,9 +962,10 @@ Handles the functionality of the photography game.
     /*
       Instantiate the game components.
      */
-    gameEvents = new eventManager($('#eventLog .eventContainer'));
+    gameEvents = new eventManager($('#eventLog .eventContainer'), $('#randomEventOverlay'));
     gameTime = new timeManager([1939, 1, 1, 0]);
     gameTutorial = new tutorialHandler($('.tutorial'));
+    gameInsanity = new playerInsanity($('#insanityBar'), 0);
     player = new playerMarker({
       lat: -25.363,
       lng: 151.044
@@ -886,6 +1023,34 @@ Handles the functionality of the photography game.
             return localInit();
           });
         }
+      };
+
+
+      /*
+        Saves the current user score to the database.
+       */
+
+      photographyGame.prototype.saveScore = function() {
+        var gameId;
+        if (gameGlobal.init.isPlus) {
+          gameId = '4';
+        } else {
+          gameId = '2';
+        }
+        return submitUserData({
+          method: 'saveScore',
+          gameId: gameId,
+          value: this.score
+        }).then(function(res) {
+          res = JSON.parse(res);
+          if (res.status === 'success') {
+            $('#gameEnd .status').css('color', '');
+            return $('#gameEnd .status').text(res.message);
+          } else {
+            $('#gameEnd .status').css('color', 'red');
+            return $('#gameEnd .status').text(res.message);
+          }
+        });
       };
 
       return photographyGame;
@@ -970,27 +1135,9 @@ Handles the functionality of the photography game.
       $('#takingPic').show();
       $('#takingPic .viewInv').hide();
       $('#takingPic .close').hide();
-      return $(this).hide();
+      $(this).hide();
+      return $('#takeDrink').hide();
     });
-
-    /*
-      Instantiate the game photo object and Adds a photographic shot to the inventory
-      @param {integer} multiplier
-        The scalar to multiple the value of the shot by.
-      @param {integer} quailty
-        The quailty of the picture.
-     */
-    addShotToInv = function(multiplier, quailty) {
-      var newStats, photoValue, shotTaken;
-      photoValue = player.playerAt.value * multiplier;
-      shotTaken = new gamePhoto(photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty);
-      player.inventory.push(shotTaken);
-      player.playerAt.marker.setVisible(false);
-      newStats = player.stats;
-      newStats.assets += photoValue;
-      newStats.workingCapital -= player.playerAt.travelExpense / 2;
-      return player.updateStats(newStats);
-    };
 
     /*
       Starts the animation of the slider when taking the picture.
@@ -1027,7 +1174,7 @@ Handles the functionality of the photography game.
       inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left;
       inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left;
       if (inBlue && inGreen) {
-        multiplier = 1.2;
+        multiplier = 1.4;
         quailty = 0;
         $('.shotStats').text('You take a high quailty photo, this will surely sell for more!');
       } else if (inBlue) {
@@ -1055,13 +1202,44 @@ Handles the functionality of the photography game.
         }
       }
     };
+
+    /*
+      Instantiate the game photo object and adds a photographic shot to the inventory
+      @param {integer} multiplier
+        The scalar to multiple the value of the shot by.
+      @param {integer} quailty
+        The quailty of the picture.
+     */
+    addShotToInv = function(multiplier, quailty) {
+      var newStats, photoValue, shotTaken;
+      photoValue = player.playerAt.value * multiplier;
+      shotTaken = new gamePhoto(photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty);
+      player.inventory.push(shotTaken);
+      player.playerAt.marker.setVisible(false);
+      newStats = player.stats;
+      newStats.assets += photoValue;
+      newStats.workingCapital -= player.playerAt.travelExpense / 2;
+      return player.updateStats(newStats);
+    };
+
+    /*
+      Displays the player inventory and closes previous element's parent.
+     */
     $('.viewInv').click(function() {
       closeParent(this);
       return displayInv();
     });
+
+    /*
+      Displays the player inventory.
+     */
     $('#checkInv').click(function() {
       return displayInv();
     });
+
+    /*
+      Generates the player inventory.
+     */
     displayInv = function() {
       var item, j, len, picture, pictureContainer, potentialValue, ref, sellableValue;
       $('#blockOverlay').show();
@@ -1087,12 +1265,20 @@ Handles the functionality of the photography game.
       $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
+
+    /*
+      Displays the waiting screen.
+     */
     $('#wait').click(function() {
       if ($('#waitTimeInput').val() === '') {
         $('#waitTimeInput').parent().find('button.confirm').prop('disabled', true);
       }
       return $('#waitInfo').show();
     });
+
+    /*
+      Waits and passes the game time.
+     */
     $('#confirmWait').click(function() {
       var j, len, location, results1, show;
       gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
@@ -1117,6 +1303,10 @@ Handles the functionality of the photography game.
       }
       return results1;
     });
+
+    /*
+      Displays the pictures avaliable for washing.
+     */
     $('#washPic').click(function() {
       var item, j, k, len, len1, notWashed, ref, ref1;
       notWashed = [];
@@ -1142,11 +1332,19 @@ Handles the functionality of the photography game.
         return $('#washPicOverlay #confirmWashPic').show();
       }
     });
+
+    /*
+      Washes all unwashed pictures in the player's inventory.
+     */
     $('#confirmWashPic').click(function() {
       gameTime.incrementTime(10 * Math.random());
       gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime);
       return gameEvents.addEvent(new event('Washed pictures.', gameTime.getFormatted(), 'You wash all pictures in your camera.'));
     });
+
+    /*
+      Displays the take loan screen.
+     */
     $('#takeLoan').click(function() {
       $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');
       if ($('#loanInput').val() === '') {
@@ -1154,6 +1352,10 @@ Handles the functionality of the photography game.
       }
       return $('#loanOverlay').show();
     });
+
+    /*
+      Confirms the loan to the player.
+     */
     $('#confirmLoan').click(function() {
       var newStats;
       newStats = player.stats;
@@ -1162,6 +1364,10 @@ Handles the functionality of the photography game.
       player.updateStats(newStats);
       return gameEvents.addEvent(new event('Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val())));
     });
+
+    /*
+      Validates the input to ensure the input is a number and non empty.
+     */
     $('#loanInput, #waitTimeInput').keyup(function() {
       if (!$.isNumeric($(this).val()) || $(this).val() === '') {
         $(this).parent().find('.err').text('*Input must be a number');
@@ -1171,6 +1377,10 @@ Handles the functionality of the photography game.
         return $(this).parent().find('button.confirm').prop('disabled', false);
       }
     });
+
+    /*
+      Displays the sell pictures screen.
+     */
     $('#sellPic').click(function() {
       var j, len, photo, photosValue, ref, sellablePhotos;
       sellablePhotos = 0;
@@ -1191,6 +1401,10 @@ Handles the functionality of the photography game.
       }
       return $('#soldInfoOverlay').show();
     });
+
+    /*
+      Sells the washed photos in the player's inventory.
+     */
     $('#sellPhotos').click(function() {
       var earningsAct, earningsEst, j, len, newInventory, newStats, photo, photosSold, ref, timeTaken;
       photosSold = 0;
@@ -1223,33 +1437,95 @@ Handles the functionality of the photography game.
         return gameEvents.addEvent(new event('Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' days to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.'));
       }
     });
+
+    /*
+      Blocks the game when a overlay/interface is active.
+     */
     $('#actions button').click(function() {
-      return $('#blockOverlay').show();
+      if ($(this).attr('id') !== 'takeDrink') {
+        return $('#blockOverlay').show();
+      }
     });
+
+    /*
+      Closes the overlay.
+     */
     $('.confirm, .close').click(function() {
       return closeParent(this);
     });
+
+    /*
+      Saves the DOM element to the player's collection.
+     */
     $('#confirmSavePic').click(function() {
       saveItem($('#savePicOverlay .img img').attr('src'), $('#savePicOverlay .title').text());
       return $(this).prop('disabled', true);
     });
+
+    /*
+      Closes the parent of the original DOM element
+      @param {DOMElement} self
+        The element whose parent should be hidden.
+     */
     closeParent = function(self) {
       $(self).parent().hide();
       $('#blockOverlay').hide();
       return $('.status').text('');
     };
+
+    /*
+      jQuery UI draggable handler.
+     */
     $('#actions').draggable();
     $('#actions').mousedown(function() {
       return $('#actions p').text('Actions');
     });
+
+    /*
+      Saves the current user score.
+     */
     $('#saveScore').click(function() {
       return currentGame.saveScore();
     });
+
+    /*
+      Binds the generated buttons to the click event.
+     */
     $('body').on('click', '.tutorial .next', function() {
       return gameTutorial.next();
     });
-    return $('body').on('click', '.tutorial .prev', function() {
+    $('body').on('click', '.tutorial .prev', function() {
       return gameTutorial.prev();
+    });
+
+    /*
+      Handles new Plus mode mechanics
+     */
+    $('#randomEventOverlay .break').click(function() {
+      gameTime.incrementDays(5);
+      gameEvents.addEvent(new event('You take sometime off...', gameTime.getFormatted(), ''));
+      return gameInsanity.setBar(gameInsanity.value * 0.75);
+    });
+    $('#randomEventOverlay .seeDoc').click(function() {
+      var newStats;
+      gameTime.incrementDays(2);
+      newStats = player.stats;
+      newStats.CAB -= 500;
+      player.updateStats(newStats);
+      gameEvents.addEvent(new event('You visit a nearby doctor...', gameTime.getFormatted(), ''));
+      gameInsanity.setBar(gameInsanity.value * 0.25);
+      return gameGlobal.eventOccurrence = -1;
+    });
+    $('#takeDrink').hide();
+    return $('#takeDrink').click(function() {
+      var newStats;
+      $('#takePic').hide();
+      $(this).hide();
+      gameEvents.addEvent(new event('You go to a nearby pub', gameTime.getFormatted(), 'You spend $50 on some shots. It relieves some of your stress...'));
+      newStats = player.stats;
+      newStats.CAB -= 50;
+      player.updateStats(newStats);
+      return gameInsanity.updateBar(-5);
     });
   });
 
