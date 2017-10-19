@@ -54,14 +54,16 @@ jQuery(document).ready ->
   locations = []
   validData = []
   gameGlobal = {
+    eventOccurrence: 0
     init: {
       isStory: false
       isPlus: false
       stats: {
-        CAB: 1000, 
+        CAB: 1000
         workingCapital: 0
-        assets: 0, 
+        assets: 0
         liabilities: 600
+        insanity: 0
       }
     },
     trackers: {
@@ -77,22 +79,22 @@ jQuery(document).ready ->
       randomEvents: [
         new randomEvent('Machine Gun Fire!', 
         'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', 
-        false, true, 100, effects = {insanity: 20}),
+        false, true, 30, effects = {insanity: 20}),
         new randomEvent('German Bombs!', 
         'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', 
-        false, true, 10, effects = {insanity: 30}),
+        false, true, 20, effects = {insanity: 30}),
         new randomEvent('Air raid!', 
         'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', 
-        false, true, 14, effects = {insanity: 20}),
+        false, true, 24, effects = {insanity: 20}),
         new randomEvent('Landmines!', 
         'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', 
         false, true, 20, effects = {insanity: 10}),
         new randomEvent('Dazed', 
         'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', 
-        false, true, 10, effects = {insanity: 5}),
+        false, true, 20, effects = {insanity: 10}),
         new randomEvent('The enemy charges!', 
         'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', 
-        false, true, 10, effects = {insanity: 20})
+        false, true, 20, effects = {insanity: 20})
       ]
     }
   }
@@ -447,11 +449,16 @@ jQuery(document).ready ->
       gameTime.incrementTime(timeTaken)
       gameEvents.addEvent(new event 'Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours')
       $('#takePic').show()
+      $('#takeDrink').show()
       updateMarkers()
       @updateStats(newStats)
       if gameGlobal.init.isPlus
-        randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)]
-        if randEvent.chance > Math.random() * 100 then gameEvents.addEvent randEvent else return
+        gameGlobal.eventOccurrence += 0.5
+        if gameGlobal.eventOccurrence > 1
+          randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)]
+          if randEvent.chance > Math.random() * 100 
+            gameEvents.addEvent randEvent
+            gameGlobal.eventOccurrence = 0
 
     ###
       Depreciates the player's inventory.
@@ -493,6 +500,7 @@ jQuery(document).ready ->
         workingCapital: workingCapital, 
         assets: assets, 
         liabilities: stats.liabilities
+        insanity: stats.insanity
       }
       if workingCapital <= -1000 && @stats.CAB <= 0
         $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css 'color', 'red'
@@ -616,10 +624,11 @@ jQuery(document).ready ->
     addEvent: (event) ->
       if event.time == 'currentTime' then event.time = gameTime.getFormatted()
       if event.constructor.name == 'randomEvent'
-        if Math.random()*100 < event.chance then gameInsanity.updateBar(event.incInsanity)
         if event.effects
-          for effectName in Object.keys(event.effects)
-            newStats = player.stats[effectName] += event.effects[effectName] 
+          gameInsanity.updateBar event.effects.insanity
+          newStats = player.stats
+          for effectName in Object.keys event.effects
+            newStats[effectName] += event.effects[effectName]
           player.updateStats(newStats)
         @domOverlay.find('.title').text event.title
         @domOverlay.find('.content').text event.content
@@ -647,9 +656,19 @@ jQuery(document).ready ->
 
   class playerInsanity
     constructor: (@domSelector, @initVal) ->
+      @value = @initVal
+
+    setBar: (value) ->
+      @value = value
+      @domSelector.find('.bar').css 'height', @value + '%'
 
     updateBar: (value) ->
-      #console.log value
+      if @value + value > 100 
+        endGame()
+        @domSelector.find('.bar').css 'height', '100%'
+      else
+        @value += value
+        if @value < 0 then return else @domSelector.find('.bar').css 'height', @value + '%'
 
   ###
     Processes and validates an array of data.
@@ -705,6 +724,7 @@ jQuery(document).ready ->
     Updates the markers as the user player moves.
     @see playerMarker.prototype.moveTo()
   ###
+
   updateMarkers = ->
     for location in locations
       hide = Math.random() >= 0.8;
@@ -830,6 +850,7 @@ jQuery(document).ready ->
     $('#takingPic .viewInv').hide()
     $('#takingPic .close').hide()
     $(this).hide()
+    $('#takeDrink').hide()
 
   ###
     Starts the animation of the slider when taking the picture.
@@ -1084,7 +1105,7 @@ jQuery(document).ready ->
   ###
 
   $('#actions button').click ->
-    $('#blockOverlay').show()
+    if $(this).attr('id') != 'takeDrink' then $('#blockOverlay').show()
 
   ###
     Closes the overlay.
@@ -1137,3 +1158,31 @@ jQuery(document).ready ->
   
   $('body').on 'click', '.tutorial .prev', ->
     gameTutorial.prev()
+
+  ###
+
+  ###
+
+  $('#randomEventOverlay .break').click ->
+    gameTime.incrementDays(5)
+    gameEvents.addEvent new event 'You take sometime off...', gameTime.getFormatted(), ''
+    gameInsanity.setBar gameInsanity.value*0.75
+
+  $('#randomEventOverlay .seeDoc').click ->
+    gameTime.incrementDays(2)
+    newStats = player.stats
+    newStats.CAB -= 500
+    player.updateStats newStats
+    gameEvents.addEvent new event 'You visit a nearby doctor...', gameTime.getFormatted(), ''
+    gameInsanity.setBar gameInsanity.value*0.25
+    gameGlobal.eventOccurrence = -1
+
+  $('#takeDrink').hide()
+  $('#takeDrink').click ->
+    $('#takePic').hide()
+    $(this).hide()
+    gameEvents.addEvent new event 'You go to a nearby pub', gameTime.getFormatted(), 'You spend $50 on some shots. It relieves some of your stress...'
+    newStats = player.stats
+    newStats.CAB -= 50
+    player.updateStats newStats
+    gameInsanity.updateBar -5

@@ -89,6 +89,7 @@ Handles the functionality of the photography game.
     locations = [];
     validData = [];
     gameGlobal = {
+      eventOccurrence: 0,
       init: {
         isStory: false,
         isPlus: false,
@@ -96,7 +97,8 @@ Handles the functionality of the photography game.
           CAB: 1000,
           workingCapital: 0,
           assets: 0,
-          liabilities: 600
+          liabilities: 600,
+          insanity: 0
         }
       },
       trackers: {
@@ -110,17 +112,17 @@ Handles the functionality of the photography game.
         stdLiabilities: 600,
         alert: false,
         randomEvents: [
-          new randomEvent('Machine Gun Fire!', 'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', false, true, 100, effects = {
+          new randomEvent('Machine Gun Fire!', 'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', false, true, 30, effects = {
             insanity: 20
-          }), new randomEvent('German Bombs!', 'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', false, true, 10, effects = {
+          }), new randomEvent('German Bombs!', 'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', false, true, 20, effects = {
             insanity: 30
-          }), new randomEvent('Air raid!', 'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', false, true, 14, effects = {
+          }), new randomEvent('Air raid!', 'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', false, true, 24, effects = {
             insanity: 20
           }), new randomEvent('Landmines!', 'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', false, true, 20, effects = {
             insanity: 10
-          }), new randomEvent('Dazed', 'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', false, true, 10, effects = {
-            insanity: 5
-          }), new randomEvent('The enemy charges!', 'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', false, true, 10, effects = {
+          }), new randomEvent('Dazed', 'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', false, true, 20, effects = {
+            insanity: 10
+          }), new randomEvent('The enemy charges!', 'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', false, true, 20, effects = {
             insanity: 20
           })
         ]
@@ -524,14 +526,17 @@ Handles the functionality of the photography game.
         gameTime.incrementTime(timeTaken);
         gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
         $('#takePic').show();
+        $('#takeDrink').show();
         updateMarkers();
         this.updateStats(newStats);
         if (gameGlobal.init.isPlus) {
-          randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)];
-          if (randEvent.chance > Math.random() * 100) {
-            return gameEvents.addEvent(randEvent);
-          } else {
-
+          gameGlobal.eventOccurrence += 0.5;
+          if (gameGlobal.eventOccurrence > 1) {
+            randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)];
+            if (randEvent.chance > Math.random() * 100) {
+              gameEvents.addEvent(randEvent);
+              return gameGlobal.eventOccurrence = 0;
+            }
           }
         }
       };
@@ -593,7 +598,8 @@ Handles the functionality of the photography game.
           CAB: stats.CAB,
           workingCapital: workingCapital,
           assets: assets,
-          liabilities: stats.liabilities
+          liabilities: stats.liabilities,
+          insanity: stats.insanity
         };
         if (workingCapital <= -1000 && this.stats.CAB <= 0) {
           return $('#playerInfoOverlay #stats #workingCapital, #playerInfoOverlay #stats #CAB').css('color', 'red');
@@ -772,14 +778,13 @@ Handles the functionality of the photography game.
           event.time = gameTime.getFormatted();
         }
         if (event.constructor.name === 'randomEvent') {
-          if (Math.random() * 100 < event.chance) {
-            gameInsanity.updateBar(event.incInsanity);
-          }
           if (event.effects) {
+            gameInsanity.updateBar(event.effects.insanity);
+            newStats = player.stats;
             ref = Object.keys(event.effects);
             for (j = 0, len = ref.length; j < len; j++) {
               effectName = ref[j];
-              newStats = player.stats[effectName] += event.effects[effectName];
+              newStats[effectName] += event.effects[effectName];
             }
             player.updateStats(newStats);
           }
@@ -805,9 +810,27 @@ Handles the functionality of the photography game.
       function playerInsanity(domSelector, initVal) {
         this.domSelector = domSelector;
         this.initVal = initVal;
+        this.value = this.initVal;
       }
 
-      playerInsanity.prototype.updateBar = function(value) {};
+      playerInsanity.prototype.setBar = function(value) {
+        this.value = value;
+        return this.domSelector.find('.bar').css('height', this.value + '%');
+      };
+
+      playerInsanity.prototype.updateBar = function(value) {
+        if (this.value + value > 100) {
+          endGame();
+          return this.domSelector.find('.bar').css('height', '100%');
+        } else {
+          this.value += value;
+          if (this.value < 0) {
+
+          } else {
+            return this.domSelector.find('.bar').css('height', this.value + '%');
+          }
+        }
+      };
 
       return playerInsanity;
 
@@ -1049,7 +1072,8 @@ Handles the functionality of the photography game.
       $('#takingPic').show();
       $('#takingPic .viewInv').hide();
       $('#takingPic .close').hide();
-      return $(this).hide();
+      $(this).hide();
+      return $('#takeDrink').hide();
     });
 
     /*
@@ -1355,7 +1379,9 @@ Handles the functionality of the photography game.
       Blocks the game when a overlay/interface is active.
      */
     $('#actions button').click(function() {
-      return $('#blockOverlay').show();
+      if ($(this).attr('id') !== 'takeDrink') {
+        return $('#blockOverlay').show();
+      }
     });
 
     /*
@@ -1405,8 +1431,37 @@ Handles the functionality of the photography game.
     $('body').on('click', '.tutorial .next', function() {
       return gameTutorial.next();
     });
-    return $('body').on('click', '.tutorial .prev', function() {
+    $('body').on('click', '.tutorial .prev', function() {
       return gameTutorial.prev();
+    });
+
+    /*
+     */
+    $('#randomEventOverlay .break').click(function() {
+      gameTime.incrementDays(5);
+      gameEvents.addEvent(new event('You take sometime off...', gameTime.getFormatted(), ''));
+      return gameInsanity.setBar(gameInsanity.value * 0.75);
+    });
+    $('#randomEventOverlay .seeDoc').click(function() {
+      var newStats;
+      gameTime.incrementDays(2);
+      newStats = player.stats;
+      newStats.CAB -= 500;
+      player.updateStats(newStats);
+      gameEvents.addEvent(new event('You visit a nearby doctor...', gameTime.getFormatted(), ''));
+      gameInsanity.setBar(gameInsanity.value * 0.25);
+      return gameGlobal.eventOccurrence = -1;
+    });
+    $('#takeDrink').hide();
+    return $('#takeDrink').click(function() {
+      var newStats;
+      $('#takePic').hide();
+      $(this).hide();
+      gameEvents.addEvent(new event('You go to a nearby pub', gameTime.getFormatted(), 'You spend $50 on some shots. It relieves some of your stress...'));
+      newStats = player.stats;
+      newStats.CAB -= 50;
+      player.updateStats(newStats);
+      return gameInsanity.updateBar(-5);
     });
   });
 
