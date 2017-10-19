@@ -41,6 +41,28 @@ Handles the functionality of the photography game.
     randomEvent = (function(superClass) {
       extend(randomEvent, superClass);
 
+
+      /*
+        Constructs the random event object. Extends events.
+        @constructor
+        @param {string} title
+          Title of the event.
+        @param {string} time
+          The game time of when the event occurred.
+        @param {string} content
+          The description of the event.
+        @param {boolean} special
+          Whether if the event is a special event.
+        @param {boolean} warn
+          Whether if the event is a warning.
+        @param {boolean} popup
+          Whether if the event has its own overlay, or added to the event log.
+        @param {integer} chance
+          The chance of the event occurance should it be selected.
+        @param {object} effects
+          The list of effects to affect the player by.
+       */
+
       function randomEvent(title, time, content, special, popup, chance, effects1) {
         this.title = title;
         this.time = time;
@@ -807,16 +829,39 @@ Handles the functionality of the photography game.
 
     })();
     playerInsanity = (function() {
+
+      /*
+        Constructs playerInsanity object to handle player insanity events.
+        @constructor
+        @param {DOMElement} domSelector
+          The DOM element to display the event on.
+        @param {integer} initValue
+          The initial insanity value
+       */
       function playerInsanity(domSelector, initVal) {
         this.domSelector = domSelector;
         this.initVal = initVal;
         this.value = this.initVal;
       }
 
+
+      /*
+        Sets the insanity bar to a value
+        @param {integer} value
+          the level of insanity to set to.
+       */
+
       playerInsanity.prototype.setBar = function(value) {
         this.value = value;
         return this.domSelector.find('.bar').css('height', this.value + '%');
       };
+
+
+      /*
+        Update the insanity level by a value
+        @param {integer} value
+          the level to increase the current insanity level by.
+       */
 
       playerInsanity.prototype.updateBar = function(value) {
         if (this.value + value > 100) {
@@ -1436,6 +1481,7 @@ Handles the functionality of the photography game.
     });
 
     /*
+      Handles new Plus mode mechanics
      */
     $('#randomEventOverlay .break').click(function() {
       gameTime.incrementDays(5);

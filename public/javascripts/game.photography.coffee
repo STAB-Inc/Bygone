@@ -25,6 +25,28 @@ jQuery(document).ready ->
     constructor: (@title, @time, @content, @special=false, @warn=false) ->
 
   class randomEvent extends event
+
+    ###
+      Constructs the random event object. Extends events.
+      @constructor
+      @param {string} title
+        Title of the event.
+      @param {string} time
+        The game time of when the event occurred.
+      @param {string} content
+        The description of the event.
+      @param {boolean} special
+        Whether if the event is a special event.
+      @param {boolean} warn
+        Whether if the event is a warning.
+      @param {boolean} popup
+        Whether if the event has its own overlay, or added to the event log.
+      @param {integer} chance
+        The chance of the event occurance should it be selected.
+      @param {object} effects
+        The list of effects to affect the player by.
+    ###
+
     constructor: (@title, @time, @content, @special=false, @popup=false, @chance, @effects) ->
       super(@title, @time, @content, @special, @warn)
 
@@ -395,6 +417,7 @@ jQuery(document).ready ->
         @value = self.value
 
   class playerMarker extends gameLocation
+
     ###
       Constructs the player marker object. Extends the game location object
       @constructor
@@ -409,6 +432,7 @@ jQuery(document).ready ->
       @param {object} stats
         JSON data of the player's stats.
     ###
+
     constructor: (@position, @name, @data, @icon, @stats) ->
       super(@position, @name, @data, @icon)
       @playerMarker
@@ -612,6 +636,7 @@ jQuery(document).ready ->
       @param {DOMElement} domSelector
         The DOM element to display the event on.
     ###
+
     constructor: (@domSelector, @domOverlay) ->
       @events = []
 
@@ -655,12 +680,34 @@ jQuery(document).ready ->
           </div>').hide().prependTo(@domSelector).fadeIn()
 
   class playerInsanity
+
+    ###
+      Constructs playerInsanity object to handle player insanity events.
+      @constructor
+      @param {DOMElement} domSelector
+        The DOM element to display the event on.
+      @param {integer} initValue
+        The initial insanity value
+    ###
+
     constructor: (@domSelector, @initVal) ->
       @value = @initVal
+
+    ###
+      Sets the insanity bar to a value
+      @param {integer} value
+        the level of insanity to set to.
+    ###
 
     setBar: (value) ->
       @value = value
       @domSelector.find('.bar').css 'height', @value + '%'
+
+    ###
+      Update the insanity level by a value
+      @param {integer} value
+        the level to increase the current insanity level by.
+    ###
 
     updateBar: (value) ->
       if @value + value > 100 
@@ -1160,7 +1207,7 @@ jQuery(document).ready ->
     gameTutorial.prev()
 
   ###
-
+    Handles new Plus mode mechanics
   ###
 
   $('#randomEventOverlay .break').click ->
