@@ -6106,8 +6106,7 @@ nav#global {
   #highscores .g .row {
     margin: 0; }
   #highscores .g .current {
-    background-color: #515e6f;
-    border-radius: 2px; }
+    background-color: #515e6f; }
 
 main#puzzleGame {
   width: 1200px;
