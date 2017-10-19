@@ -6284,7 +6284,8 @@ main#puzzleGame {
 #photographyGame #gameEnd,
 #photographyGame #takingPic,
 #photographyGame #washPicOverlay,
-#photographyGame #savePicOverlay {
+#photographyGame #savePicOverlay,
+#photographyGame #randomEventOverlay {
   width: 600px;
   height: 300px; }
 
