@@ -1031,9 +1031,15 @@ Handles the functionality of the photography game.
        */
 
       photographyGame.prototype.saveScore = function() {
+        var gameId;
+        if (gameGlobal.init.isPlus) {
+          gameId = '4';
+        } else {
+          gameId = '2';
+        }
         return submitUserData({
           method: 'saveScore',
-          gameId: '2',
+          gameId: gameId,
           value: this.score
         }).then(function(res) {
           res = JSON.parse(res);

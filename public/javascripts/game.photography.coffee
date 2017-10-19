@@ -828,9 +828,10 @@ jQuery(document).ready ->
     ###
 
     saveScore: ->
+      if gameGlobal.init.isPlus then gameId = '4' else gameId = '2'
       submitUserData({
         method: 'saveScore'
-        gameId: '2'
+        gameId: gameId
         value: @score
       }).then (res) ->
         res = JSON.parse res
@@ -844,7 +845,7 @@ jQuery(document).ready ->
   ###
     Instantiate the photography game.
   ###
-  
+
   currentGame = new photographyGame false
 
   if getParam('diff') == 'normal'
