@@ -974,25 +974,6 @@ Handles the functionality of the photography game.
     });
 
     /*
-      Instantiate the game photo object and Adds a photographic shot to the inventory
-      @param {integer} multiplier
-        The scalar to multiple the value of the shot by.
-      @param {integer} quailty
-        The quailty of the picture.
-     */
-    addShotToInv = function(multiplier, quailty) {
-      var newStats, photoValue, shotTaken;
-      photoValue = player.playerAt.value * multiplier;
-      shotTaken = new gamePhoto(photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty);
-      player.inventory.push(shotTaken);
-      player.playerAt.marker.setVisible(false);
-      newStats = player.stats;
-      newStats.assets += photoValue;
-      newStats.workingCapital -= player.playerAt.travelExpense / 2;
-      return player.updateStats(newStats);
-    };
-
-    /*
       Starts the animation of the slider when taking the picture.
      */
     $('#takingPic .start').click(function() {
@@ -1027,7 +1008,7 @@ Handles the functionality of the photography game.
       inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left;
       inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left;
       if (inBlue && inGreen) {
-        multiplier = 1.2;
+        multiplier = 1.4;
         quailty = 0;
         $('.shotStats').text('You take a high quailty photo, this will surely sell for more!');
       } else if (inBlue) {
@@ -1055,13 +1036,44 @@ Handles the functionality of the photography game.
         }
       }
     };
+
+    /*
+      Instantiate the game photo object and adds a photographic shot to the inventory
+      @param {integer} multiplier
+        The scalar to multiple the value of the shot by.
+      @param {integer} quailty
+        The quailty of the picture.
+     */
+    addShotToInv = function(multiplier, quailty) {
+      var newStats, photoValue, shotTaken;
+      photoValue = player.playerAt.value * multiplier;
+      shotTaken = new gamePhoto(photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty);
+      player.inventory.push(shotTaken);
+      player.playerAt.marker.setVisible(false);
+      newStats = player.stats;
+      newStats.assets += photoValue;
+      newStats.workingCapital -= player.playerAt.travelExpense / 2;
+      return player.updateStats(newStats);
+    };
+
+    /*
+      Displays the player inventory and closes previous element's parent.
+     */
     $('.viewInv').click(function() {
       closeParent(this);
       return displayInv();
     });
+
+    /*
+      Displays the player inventory.
+     */
     $('#checkInv').click(function() {
       return displayInv();
     });
+
+    /*
+      Generates the player inventory.
+     */
     displayInv = function() {
       var item, j, len, picture, pictureContainer, potentialValue, ref, sellableValue;
       $('#blockOverlay').show();
@@ -1087,12 +1099,20 @@ Handles the functionality of the photography game.
       $('#rollValue').text('Total value $' + parseInt(potentialValue + sellableValue));
       return $('#sellableValue').text('Sellable Pictures value $' + parseInt(sellableValue));
     };
+
+    /*
+      Displays the waiting screen.
+     */
     $('#wait').click(function() {
       if ($('#waitTimeInput').val() === '') {
         $('#waitTimeInput').parent().find('button.confirm').prop('disabled', true);
       }
       return $('#waitInfo').show();
     });
+
+    /*
+      Waits and passes the game time.
+     */
     $('#confirmWait').click(function() {
       var j, len, location, results1, show;
       gameTime.incrementDays(parseInt($('#waitTimeInput').val()));
@@ -1117,6 +1137,10 @@ Handles the functionality of the photography game.
       }
       return results1;
     });
+
+    /*
+      Displays the pictures avaliable for washing.
+     */
     $('#washPic').click(function() {
       var item, j, k, len, len1, notWashed, ref, ref1;
       notWashed = [];
@@ -1142,11 +1166,19 @@ Handles the functionality of the photography game.
         return $('#washPicOverlay #confirmWashPic').show();
       }
     });
+
+    /*
+      Washes all unwashed pictures in the player's inventory.
+     */
     $('#confirmWashPic').click(function() {
       gameTime.incrementTime(10 * Math.random());
       gameTime.incrementDays(gameGlobal.turnConsts.pictureWashingTime);
       return gameEvents.addEvent(new event('Washed pictures.', gameTime.getFormatted(), 'You wash all pictures in your camera.'));
     });
+
+    /*
+      Displays the take loan screen.
+     */
     $('#takeLoan').click(function() {
       $('#IR').text('Current interest rate ' + gameGlobal.turnConsts.interest + '%');
       if ($('#loanInput').val() === '') {
@@ -1154,6 +1186,10 @@ Handles the functionality of the photography game.
       }
       return $('#loanOverlay').show();
     });
+
+    /*
+      Confirms the loan to the player.
+     */
     $('#confirmLoan').click(function() {
       var newStats;
       newStats = player.stats;
@@ -1162,6 +1198,10 @@ Handles the functionality of the photography game.
       player.updateStats(newStats);
       return gameEvents.addEvent(new event('Bank loan.', gameTime.getFormatted(), 'You take a bank loan of $' + parseInt($('#loanInput').val())));
     });
+
+    /*
+      Validates the input to ensure the input is a number and non empty.
+     */
     $('#loanInput, #waitTimeInput').keyup(function() {
       if (!$.isNumeric($(this).val()) || $(this).val() === '') {
         $(this).parent().find('.err').text('*Input must be a number');
@@ -1171,6 +1211,10 @@ Handles the functionality of the photography game.
         return $(this).parent().find('button.confirm').prop('disabled', false);
       }
     });
+
+    /*
+      Displays the sell pictures screen.
+     */
     $('#sellPic').click(function() {
       var j, len, photo, photosValue, ref, sellablePhotos;
       sellablePhotos = 0;
@@ -1191,6 +1235,10 @@ Handles the functionality of the photography game.
       }
       return $('#soldInfoOverlay').show();
     });
+
+    /*
+      Sells the washed photos in the player's inventory.
+     */
     $('#sellPhotos').click(function() {
       var earningsAct, earningsEst, j, len, newInventory, newStats, photo, photosSold, ref, timeTaken;
       photosSold = 0;
@@ -1223,28 +1271,58 @@ Handles the functionality of the photography game.
         return gameEvents.addEvent(new event('Selling Pictures.', gameTime.getFormatted(), 'It took ' + parseInt(timeTaken) + ' days to finally sell everything. Earned $' + earningsAct + ' from selling ' + photosSold + ' Photo/s.'));
       }
     });
+
+    /*
+      Blocks the game when a overlay/interface is active.
+     */
     $('#actions button').click(function() {
       return $('#blockOverlay').show();
     });
+
+    /*
+      Closes the overlay.
+     */
     $('.confirm, .close').click(function() {
       return closeParent(this);
     });
+
+    /*
+      Saves the DOM element to the player's collection.
+     */
     $('#confirmSavePic').click(function() {
       saveItem($('#savePicOverlay .img img').attr('src'), $('#savePicOverlay .title').text());
       return $(this).prop('disabled', true);
     });
+
+    /*
+      Closes the parent of the original DOM element
+      @param {DOMElement} self
+        The element whose parent should be hidden.
+     */
     closeParent = function(self) {
       $(self).parent().hide();
       $('#blockOverlay').hide();
       return $('.status').text('');
     };
+
+    /*
+      jQuery UI draggable handler.
+     */
     $('#actions').draggable();
     $('#actions').mousedown(function() {
       return $('#actions p').text('Actions');
     });
+
+    /*
+      Saves the current user score.
+     */
     $('#saveScore').click(function() {
       return currentGame.saveScore();
     });
+
+    /*
+      Binds the generated buttons to the click event.
+     */
     $('body').on('click', '.tutorial .next', function() {
       return gameTutorial.next();
     });

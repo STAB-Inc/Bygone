@@ -818,7 +818,7 @@ jQuery(document).ready ->
     inBlue = ($('#takingPic .section1').position().left + $('#takingPic .section1').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section5').position().left
     inGreen = ($('#takingPic .section2').position().left + $('#takingPic .section2').width()) <= sliderPosition && sliderPosition <= $('#takingPic .section4').position().left
     if inBlue && inGreen
-      multiplier = 1.2
+      multiplier = 1.4
       quailty = 0
       $('.shotStats').text 'You take a high quailty photo, this will surely sell for more!'
     else if inBlue
@@ -827,16 +827,7 @@ jQuery(document).ready ->
       multiplier = 0.8
       quailty = 2
       $('.shotStats').text 'The shot comes out all smudged...'
-
-  ###
-    Instantiate the game photo object and Adds a photographic shot to the inventory
-    @param {integer} multiplier
-      The scalar to multiple the value of the shot by.
-    @param {integer} quailty
-      The quailty of the picture.
-  ###
-
-  addShotToInv(multiplier, quailty)
+    addShotToInv(multiplier, quailty)
     timeTaken = Math.floor(Math.random()*10) + 24
     gameTime.incrementTime(timeTaken)
     gameEvents.addEvent(new event 'Taking Pictures', gameTime.getFormatted(), 'You spend some time around ' + player.playerAt.name + '. '+ timeTaken + ' hours later, you finally take a picture of value.')
@@ -850,6 +841,24 @@ jQuery(document).ready ->
         $('#savePicOverlay .title').text player.playerAt.data.title
         $('#savePicOverlay #confirmSavePic').prop 'disabled', false
         $('#savePicOverlay').show()
+
+  ###
+    Instantiate the game photo object and adds a photographic shot to the inventory
+    @param {integer} multiplier
+      The scalar to multiple the value of the shot by.
+    @param {integer} quailty
+      The quailty of the picture.
+  ###
+
+  addShotToInv = (multiplier, quailty) ->
+    photoValue = player.playerAt.value*multiplier
+    shotTaken = new gamePhoto photoValue, false, player.playerAt.data.img, player.playerAt.data.title, quailty
+    player.inventory.push(shotTaken)
+    player.playerAt.marker.setVisible(false)
+    newStats = player.stats
+    newStats.assets += photoValue
+    newStats.workingCapital -= player.playerAt.travelExpense/2
+    player.updateStats(newStats)
 
   ###
     Displays the player inventory and closes previous element's parent.

@@ -311,6 +311,7 @@ jQuery(document).ready ->
     
   ###
     Saves the current score.
+    @see puzzleGame.prototype.saveScore()
   ###
 
   $('#saveScore').click ->
@@ -318,6 +319,7 @@ jQuery(document).ready ->
 
   ###
     Saves the item to the user's collection.
+    @see puzzleGame.prototype.saveItem()
   ###
 
   $('#saveItem').click ->

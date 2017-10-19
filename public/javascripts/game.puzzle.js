@@ -385,6 +385,7 @@ Handles the functionality of the puzzle game.
 
     /*
       Saves the current score.
+      @see puzzleGame.prototype.saveScore()
      */
     $('#saveScore').click(function() {
       return currentGame.saveScore();
@@ -392,6 +393,7 @@ Handles the functionality of the puzzle game.
 
     /*
       Saves the item to the user's collection.
+      @see puzzleGame.prototype.saveItem()
      */
     $('#saveItem').click(function() {
       return currentGame.saveItem();
