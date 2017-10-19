@@ -5,6 +5,48 @@ Handles the functionality of the photography game.
 
 jQuery(document).ready ->
 
+  class event
+
+    ###
+      Constructs the event object.
+      @constructor
+      @param {string} title
+        Title of the event.
+      @param {string} time
+        The game time of when the event occurred.
+      @param {string} content
+        The description of the event.
+      @param {boolean} special
+        Whether if the event is a special event.
+      @param {boolean} warn
+        Whether if the event is a warning.
+    ###
+
+    constructor: (@title, @time, @content, @special=false, @warn=false) ->
+
+  class randomEvent extends event
+    constructor: (@title, @time, @content, @special=false, @popup=false, @chance, @effects) ->
+      super(@title, @time, @content, @special, @warn)
+
+  class gamePhoto
+
+    ###
+      Constructs the game photo object.
+      @constructor
+      @param {integer} value
+        The value of the photo.
+      @param {boolean} washed
+        Whether if the photo has been washed
+      @param {string} img
+        The image associated with the photo.
+      @param {string} title
+        The title of the photo.
+      @param {integer} quailty
+        The quailty of the photo.
+    ###
+
+    constructor: (@value, @washed, @img, @title, @quailty) ->
+
   ###
     Global variables and constants.
   ###
@@ -13,24 +55,45 @@ jQuery(document).ready ->
   validData = []
   gameGlobal = {
     init: {
-      isStory: false,
+      isStory: false
+      isPlus: false
       stats: {
         CAB: 1000, 
-        workingCapital: 0, 
+        workingCapital: 0
         assets: 0, 
         liabilities: 600
       }
     },
     trackers: {
-      monthPassed: 0,
-      photosSold: 0,
+      monthPassed: 0
+      photosSold: 0
       moneyEarned: 0
     },
     turnConsts: {
-      interest: 1.5,
-      pictureWashingTime: 14,
-      stdLiabilities: 600,
+      interest: 1.5
+      pictureWashingTime: 14
+      stdLiabilities: 600
       alert: false
+      randomEvents: [
+        new randomEvent('Machine Gun Fire!', 
+        'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', 
+        false, true, 20, effects = {insanity: 20}),
+        new randomEvent('German Bombs!', 
+        'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', 
+        false, true, 20, effects = {insanity: 30}),
+        new randomEvent('Air raid!', 
+        'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', 
+        false, true, 20, effects = {insanity: 20}),
+        new randomEvent('Landmines!', 
+        'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', 
+        false, true, 20, effects = {insanity: 10}),
+        new randomEvent('Dazed', 
+        'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', 
+        false, true, 20, effects = {insanity: 5}),
+        new randomEvent('The enemy charges!', 
+        'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', 
+        false, true, 20, effects = {insanity: 20})
+      ]
     }
   }
 
@@ -109,6 +172,7 @@ jQuery(document).ready ->
 
   try
     storyMode = getParam('story') == 'true'
+    plusMode = getParam('plus') == 'true'
     if storyMode
       gameGlobal.init.isStory = true
       $('.tutorial .init').text 'Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.'
@@ -124,6 +188,8 @@ jQuery(document).ready ->
         assets: 0, 
         liabilities: 1000
       }
+    if plusMode
+      gameGlobal.init.isPlus = true
 
   ###
     Skips the game when in story mode. Completes the chapter for the user.
@@ -383,6 +449,9 @@ jQuery(document).ready ->
       $('#takePic').show()
       updateMarkers()
       @updateStats(newStats)
+      if gameGlobal.init.isPlus
+        randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)]
+        gameEvents.addEvent randEvent
 
     ###
       Depreciates the player's inventory.
@@ -478,7 +547,6 @@ jQuery(document).ready ->
           @dateCounter = @dateCounter % 30
           break
 
-
     ###
       Increases the game time by months.
       @param {integer} months
@@ -536,7 +604,7 @@ jQuery(document).ready ->
       @param {DOMElement} domSelector
         The DOM element to display the event on.
     ###
-    constructor: (@domSelector) ->
+    constructor: (@domSelector, @domOverlay) ->
       @events = []
 
     ###
@@ -546,63 +614,40 @@ jQuery(document).ready ->
     ###
 
     addEvent: (event) ->
-      @events.push(event)
-      if event.warn
-        $('<div class="row">
-          <p class="time">' + event.time + '</p>
-          <p class="title warn">' + event.title + '</p>
-          <p class="content">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-      else if event.special
-        $('<div class="row">
-          <p class="time special">' + event.time + '</p>
-          <p class="title special">' + event.title + '</p>
-          <p class="content special">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
-      else 
-        $('<div class="row">
-          <p class="time">' + event.time + '</p>
-          <p class="title">' + event.title + '</p>
-          <p class="content">' + event.content + '</p>
-        </div>').hide().prependTo(@domSelector).fadeIn()
+      if event.time == 'currentTime' then event.time = gameTime.getFormatted()
+      if event.constructor.name == 'randomEvent'
+        if Math.random()*100 < event.chance then gameInsanity.updateBar(event.incInsanity)
+        if event.effects
+          for effectName in Object.keys(event.effects)
+            newStats = player.stats[effectName] += event.effects[effectName] 
+          player.updateStats(newStats)
+        @domOverlay.show()
+      else
+        @events.push(event)
+        if event.warn
+          $('<div class="row">
+            <p class="time">' + event.time + '</p>
+            <p class="title warn">' + event.title + '</p>
+            <p class="content">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
+        else if event.special
+          $('<div class="row">
+            <p class="time special">' + event.time + '</p>
+            <p class="title special">' + event.title + '</p>
+            <p class="content special">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
+        else 
+          $('<div class="row">
+            <p class="time">' + event.time + '</p>
+            <p class="title">' + event.title + '</p>
+            <p class="content">' + event.content + '</p>
+          </div>').hide().prependTo(@domSelector).fadeIn()
 
-  class event
+  class playerInsanity
+    constructor: (@domSelector, @initVal) ->
 
-    ###
-      Constructs the event object.
-      @constructor
-      @param {string} title
-        Title of the event.
-      @param {string} time
-        The game time of when the event occurred.
-      @param {string} content
-        The description of the event.
-      @param {boolean} special
-        Whether if the event is a special event.
-      @param {boolean} warn
-        Whether if the event is a warning.
-    ###
-
-    constructor: (@title, @time, @content, @special=false, @warn=false) ->
-
-  class gamePhoto
-
-    ###
-      Constructs the game photo object.
-      @constructor
-      @param {integer} value
-        The value of the photo.
-      @param {boolean} washed
-        Whether if the photo has been washed
-      @param {string} img
-        The image associated with the photo.
-      @param {string} title
-        The title of the photo.
-      @param {integer} quailty
-        The quailty of the photo.
-    ###
-
-    constructor: (@value, @washed, @img, @title, @quailty) ->
+    updateBar: (value) ->
+      #console.log value
 
   ###
     Processes and validates an array of data.
@@ -669,9 +714,10 @@ jQuery(document).ready ->
     Instantiate the game components.
   ###
 
-  gameEvents = new eventManager $('#eventLog .eventContainer')
+  gameEvents = new eventManager $('#eventLog .eventContainer'), $('#randomEventOverlay')
   gameTime = new timeManager [1939, 1, 1, 0]
   gameTutorial = new tutorialHandler $('.tutorial')
+  gameInsanity = new playerInsanity $('#insanityBar'), 0
 
   player = new playerMarker {lat: -25.363, lng: 151.044}, 'player', {'type':'self'} ,'https://developers.google.com/maps/documentation/javascript/images/custom-marker.png'
   player.initTo googleMap

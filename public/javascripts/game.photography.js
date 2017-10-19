@@ -10,16 +10,88 @@ Handles the functionality of the photography game.
     hasProp = {}.hasOwnProperty;
 
   jQuery(document).ready(function() {
+    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, effects, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameInsanity, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerInsanity, playerMarker, plusMode, processData, randomEvent, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
+    event = (function() {
+
+      /*
+        Constructs the event object.
+        @constructor
+        @param {string} title
+          Title of the event.
+        @param {string} time
+          The game time of when the event occurred.
+        @param {string} content
+          The description of the event.
+        @param {boolean} special
+          Whether if the event is a special event.
+        @param {boolean} warn
+          Whether if the event is a warning.
+       */
+      function event(title, time, content, special, warn) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.warn = warn != null ? warn : false;
+      }
+
+      return event;
+
+    })();
+    randomEvent = (function(superClass) {
+      extend(randomEvent, superClass);
+
+      function randomEvent(title, time, content, special, popup, chance, effects1) {
+        this.title = title;
+        this.time = time;
+        this.content = content;
+        this.special = special != null ? special : false;
+        this.popup = popup != null ? popup : false;
+        this.chance = chance;
+        this.effects = effects1;
+        randomEvent.__super__.constructor.call(this, this.title, this.time, this.content, this.special, this.warn);
+      }
+
+      return randomEvent;
+
+    })(event);
+    gamePhoto = (function() {
+
+      /*
+        Constructs the game photo object.
+        @constructor
+        @param {integer} value
+          The value of the photo.
+        @param {boolean} washed
+          Whether if the photo has been washed
+        @param {string} img
+          The image associated with the photo.
+        @param {string} title
+          The title of the photo.
+        @param {integer} quailty
+          The quailty of the photo.
+       */
+      function gamePhoto(value1, washed, img1, title, quailty1) {
+        this.value = value1;
+        this.washed = washed;
+        this.img = img1;
+        this.title = title;
+        this.quailty = quailty1;
+      }
+
+      return gamePhoto;
+
+    })();
 
     /*
       Global variables and constants.
      */
-    var addShotToInv, calculatePicValue, closeParent, currentGame, deg2rad, displayInv, distanceTravelled, endGame, endTurn, event, eventManager, gameEvents, gameGlobal, gameLocation, gamePhoto, gameTime, gameTutorial, generateMarkers, getParam, locations, photographyGame, player, playerMarker, processData, retrieveResources, saveItem, saveScore, setValue, showResStatus, storyMode, submitUserData, timeManager, tutorialHandler, updateMarkers, validData;
     locations = [];
     validData = [];
     gameGlobal = {
       init: {
         isStory: false,
+        isPlus: false,
         stats: {
           CAB: 1000,
           workingCapital: 0,
@@ -36,7 +108,22 @@ Handles the functionality of the photography game.
         interest: 1.5,
         pictureWashingTime: 14,
         stdLiabilities: 600,
-        alert: false
+        alert: false,
+        randomEvents: [
+          new randomEvent('Machine Gun Fire!', 'currentTime', 'You wake up in a cold sweat. The sound of a german machine gun barks out from the window. How coud this be? Germans in Australia? You grab your rifle from under your pillow and rush to the window. You ready your rifle and aim, looking for the enemy. BANG! BANG! BARK! YAP! You look at the neighbours small terrier. Barking...', false, true, 20, effects = {
+            insanity: 20
+          }), new randomEvent('German Bombs!', 'currentTime', 'A loud explosion shakes the ground and you see a building crumble into dust in the distance. Sirens. We have been attacked! You rush to see the chaos, pushing the bystanders aside. They are not running, strangely calm. Do they not recognize death when the see it? Then you see it. A construction crew. Dynamite.', false, true, 20, effects = {
+            insanity: 30
+          }), new randomEvent('Air raid!', 'currentTime', 'The sound of engines fills the air. The twins propellers of a German byplane. You look up to the sky, a small dot. It may be far now, but the machine guns will be upon us soon. Cover. Need to get safe. You yell to the people around you. GET INSIDE! GET INSIDE NOW! They look at you confused. They dont understand. You look up again. A toy. You look to your side, a car.', false, true, 20, effects = {
+            insanity: 20
+          }), new randomEvent('Landmines!', 'currentTime', 'You scan the ground carefully as you walk along the beaten dirt path. A habit you learned after one of your squadmate had his legs blown off by a German M24 mine. You stop. Under a pile of leaves you spot it. The glimmer of metal. Shrapnel to viciously tear you apart. You are no sapper but this could kill someone. You throw a rock a it. The empty can of beans rolls away.', false, true, 20, effects = {
+            insanity: 10
+          }), new randomEvent('Dazed', 'currentTime', 'You aim the camera at the young couple who had asked you for a picture. Slowly. 3. 2. 1. Click. FLASH. You open your eyes. The fields. The soldiers are readying for a charge. OVER THE TOP. You shake yourself awake. The couple is looking at you worryingly. How long was I out?', false, true, 20, effects = {
+            insanity: 5
+          }), new randomEvent('The enemy charges!', 'currentTime', 'You are pacing along the street. Footsteps... You turn round and see a man running after you. Yelling. Immediately you run at him. Disarm and subdue you think. Disarm. You tackle him to the ground. He falls with a thud. Subdue. You raise your fist. As you prepare to bring it down on your assailant. Its your wallet. "Please stop! You dropped your wallet! Take it!', false, true, 20, effects = {
+            insanity: 20
+          })
+        ]
       }
     };
 
@@ -119,6 +206,7 @@ Handles the functionality of the photography game.
      */
     try {
       storyMode = getParam('story') === 'true';
+      plusMode = getParam('plus') === 'true';
       if (storyMode) {
         gameGlobal.init.isStory = true;
         $('.tutorial .init').text('Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.');
@@ -135,6 +223,9 @@ Handles the functionality of the photography game.
           assets: 0,
           liabilities: 1000
         };
+      }
+      if (plusMode) {
+        gameGlobal.init.isPlus = true;
       }
     } catch (error) {}
 
@@ -421,7 +512,7 @@ Handles the functionality of the photography game.
        */
 
       playerMarker.prototype.moveTo = function(location) {
-        var newStats, timeTaken;
+        var newStats, randEvent, timeTaken;
         location.travelExpense = parseInt((distanceTravelled(this.position, location.position) * 0.6) / 10);
         location.travelTime = parseFloat((distanceTravelled(this.position, location.position) / 232).toFixed(2));
         this.position = location.position;
@@ -434,7 +525,11 @@ Handles the functionality of the photography game.
         gameEvents.addEvent(new event('Moved to', gameTime.getFormatted(), location.name + ' in ' + timeTaken.toFixed(2) + ' hours'));
         $('#takePic').show();
         updateMarkers();
-        return this.updateStats(newStats);
+        this.updateStats(newStats);
+        if (gameGlobal.init.isPlus) {
+          randEvent = gameGlobal.turnConsts.randomEvents[Math.floor(Math.random() * gameGlobal.turnConsts.randomEvents.length)];
+          return gameEvents.addEvent(randEvent);
+        }
       };
 
 
@@ -654,8 +749,9 @@ Handles the functionality of the photography game.
         @param {DOMElement} domSelector
           The DOM element to display the event on.
        */
-      function eventManager(domSelector) {
+      function eventManager(domSelector, domOverlay) {
         this.domSelector = domSelector;
+        this.domOverlay = domOverlay;
         this.events = [];
       }
 
@@ -667,71 +763,47 @@ Handles the functionality of the photography game.
        */
 
       eventManager.prototype.addEvent = function(event) {
-        this.events.push(event);
-        if (event.warn) {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title warn">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
-        } else if (event.special) {
-          return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+        var effectName, j, len, newStats, ref;
+        if (event.time === 'currentTime') {
+          event.time = gameTime.getFormatted();
+        }
+        if (event.constructor.name === 'randomEvent') {
+          if (Math.random() * 100 < event.chance) {
+            gameInsanity.updateBar(event.incInsanity);
+          }
+          if (event.effects) {
+            ref = Object.keys(event.effects);
+            for (j = 0, len = ref.length; j < len; j++) {
+              effectName = ref[j];
+              newStats = player.stats[effectName] += event.effects[effectName];
+            }
+            player.updateStats(newStats);
+          }
+          return this.domOverlay.show();
         } else {
-          return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          this.events.push(event);
+          if (event.warn) {
+            return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title warn">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          } else if (event.special) {
+            return $('<div class="row"> <p class="time special">' + event.time + '</p> <p class="title special">' + event.title + '</p> <p class="content special">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          } else {
+            return $('<div class="row"> <p class="time">' + event.time + '</p> <p class="title">' + event.title + '</p> <p class="content">' + event.content + '</p> </div>').hide().prependTo(this.domSelector).fadeIn();
+          }
         }
       };
 
       return eventManager;
 
     })();
-    event = (function() {
-
-      /*
-        Constructs the event object.
-        @constructor
-        @param {string} title
-          Title of the event.
-        @param {string} time
-          The game time of when the event occurred.
-        @param {string} content
-          The description of the event.
-        @param {boolean} special
-          Whether if the event is a special event.
-        @param {boolean} warn
-          Whether if the event is a warning.
-       */
-      function event(title, time, content, special, warn) {
-        this.title = title;
-        this.time = time;
-        this.content = content;
-        this.special = special != null ? special : false;
-        this.warn = warn != null ? warn : false;
+    playerInsanity = (function() {
+      function playerInsanity(domSelector, initVal) {
+        this.domSelector = domSelector;
+        this.initVal = initVal;
       }
 
-      return event;
+      playerInsanity.prototype.updateBar = function(value) {};
 
-    })();
-    gamePhoto = (function() {
-
-      /*
-        Constructs the game photo object.
-        @constructor
-        @param {integer} value
-          The value of the photo.
-        @param {boolean} washed
-          Whether if the photo has been washed
-        @param {string} img
-          The image associated with the photo.
-        @param {string} title
-          The title of the photo.
-        @param {integer} quailty
-          The quailty of the photo.
-       */
-      function gamePhoto(value, washed, img1, title, quailty1) {
-        this.value = value;
-        this.washed = washed;
-        this.img = img1;
-        this.title = title;
-        this.quailty = quailty1;
-      }
-
-      return gamePhoto;
+      return playerInsanity;
 
     })();
 
@@ -826,9 +898,10 @@ Handles the functionality of the photography game.
     /*
       Instantiate the game components.
      */
-    gameEvents = new eventManager($('#eventLog .eventContainer'));
+    gameEvents = new eventManager($('#eventLog .eventContainer'), $('#randomEventOverlay'));
     gameTime = new timeManager([1939, 1, 1, 0]);
     gameTutorial = new tutorialHandler($('.tutorial'));
+    gameInsanity = new playerInsanity($('#insanityBar'), 0);
     player = new playerMarker({
       lat: -25.363,
       lng: 151.044
