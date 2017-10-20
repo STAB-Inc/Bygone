@@ -1,11 +1,14 @@
 <?php
 
+  # Default file.
   $file = 'users.json';
 
+  # Check if file exists.
   if (!file_exists($file)) {
     fopen($file, 'w') or die('err');
   }
   
+  #Create a new user.
   if($_POST['method'] == 'new') {
     $users = getUsers($file);
     foreach ($users as $user) {
@@ -32,6 +35,7 @@
     returnMsg('success', 'success');
   }
 
+  #Login a user.
   elseif ($_POST['method'] == 'login') {
     global $file;
     foreach (getUsers($file) as $user) {
@@ -49,6 +53,7 @@
     returnMsg('error', 'User does not exist');
   }
 
+  #Get the current logged user.
   elseif ($_POST['method'] == 'getActiveUser') {
     if (!empty($_COOKIE['activeUserId'])) {
       returnMsg('success', $_COOKIE['activeUserId']);
@@ -57,15 +62,18 @@
     }
   }
 
+  #Get user data by user id.
   elseif ($_POST['method'] == 'getUserData') {
     echo json_encode(getUserDataById($_POST['id']));
   }
 
+  #Logs a user out.
   elseif ($_POST['method'] == 'logout') {
     setcookie('activeUserId', '', time() - 3600, '/');
     returnMsg('success', 'success');
   }
 
+  #Deletes a user account.
   elseif ($_POST['method'] == 'deleteUser') {
     global $file;
     $users = getUsers($file);
@@ -80,6 +88,7 @@
     returnMsg('success', 'success');
   }
 
+  #Completes a chapter.
   elseif ($_POST['method'] == 'chapterComplete') {
     global $file;
     $users = getUsers($file);
@@ -92,6 +101,7 @@
     returnMsg('success', 'success');
   }
 
+  #Saves the score of a user.
   elseif ($_POST['method'] == 'saveScore') {
     global $file;
     $users = getUsers($file);
@@ -109,6 +119,7 @@
     }
   }
 
+  #Adds a item to the user's collection.
   elseif ($_POST['method'] == 'saveItem') {
     global $file;
     $users = getUsers($file);
@@ -126,6 +137,7 @@
     }
   }
 
+  #Get all user data.
   elseif ($_POST['method'] == 'getAll') {
     global $file;
     $users = array();
@@ -138,6 +150,7 @@
     echo json_encode($users);
   }
 
+  #Get user data by a given user id.
   function getUserDataById($id) {
     global $file;
     foreach (getUsers($file) as $user) {
@@ -147,10 +160,12 @@
     }
   }
 
+  #Get all user data.
   function getUsers($file) {
     return json_decode(file_get_contents($file), true);
   }
 
+  #Returns the response to the request origin.
   function returnMsg($status, $msg) {
     $res['status'] = $status;
     $res['message'] = $msg;
