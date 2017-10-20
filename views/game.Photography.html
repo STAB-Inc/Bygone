@@ -306,20 +306,12 @@
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
 <script src="../public/javascripts/main_script.js"></script>
-<script src="../public/javascripts/game.base.js"></script>
+<script src="../public/javascripts/mapOptions.js"></script>
 <script>
-  googleMap = null
+  googleMap = null;
+  mapStyle = mapStyle
   function initMap(){
-    return googleMap = new google.maps.Map(document.getElementById('map'), {
-      zoom: 6,
-      center: {
-        lat: -27.4698,
-        lng: 153.0251
-      },
-      streetViewControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false
-    });
+    return googleMap = new google.maps.Map(document.getElementById('map'), mapOptions);
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>
