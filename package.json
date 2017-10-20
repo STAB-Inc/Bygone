@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/STAB-Inc/DECO1800-Project#readme",
   "dependencies": {
+    "coffee-script": "^1.12.7",
     "mocha": "^3.5.0",
+    "node-sass": "^4.5.3",
     "request": "^2.81.0"
   }
 }
