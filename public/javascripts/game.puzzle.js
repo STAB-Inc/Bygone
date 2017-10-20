@@ -114,8 +114,11 @@ Handles the functionality of the puzzle game.
           row = 0;
           while (row < this.xsplit) {
             tile = $(tileTemplate.clone());
+
+            /*
+              jQuery UI draggable plugin.
+             */
             tile.draggable({
-              containment: $('#gameArea'),
               snap: true,
               snapMode: "both"
             });

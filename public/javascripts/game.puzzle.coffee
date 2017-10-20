@@ -92,11 +92,13 @@ jQuery(document).ready ->
         row = 0
         while row < @xsplit
           tile = $(tileTemplate.clone())
-          tile.draggable({
-            containment:$('#gameArea'),
-            snap: true,
+          ###
+            jQuery UI draggable plugin.
+          ###
+          tile.draggable {
+            snap: true
             snapMode: "both"
-            })
+            }
           tile.show()
           tile.addClass 'tile'
           tile.removeAttr 'id', ''

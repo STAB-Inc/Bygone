@@ -1,3 +1,7 @@
+
+/*
+  Google map options.
+  */
 var mapOptions = {
   zoom: 6,
   center: {
