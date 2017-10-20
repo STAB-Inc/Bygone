@@ -874,10 +874,14 @@ jQuery(document).ready ->
   ###
 
   endTurn = (date) ->
-    if gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6 
-      $('#gameEnd h4').text 'You recieve a letter from the army. Now you can finally join the front lines.'
+    if gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6
+      if gameGlobal.init.isPlus
+        $('#gameEnd h4').text 'You wake up one day, you feel pain all across your body...'
+      else
+        $('#gameEnd h4').text 'You recieve a letter from the army. Now you can finally join the front lines.'
       $('#gameEnd .score').hide()
       endGame()
+    
     gameGlobal.turnConsts.interest = (Math.random()*5).toFixed(2)
     gameEvents.addEvent(new event 'The month comes to an end.', date, 'Paid $' + player.stats.liabilities + ' in expenses', true)
     newStats = player.stats

@@ -1091,7 +1091,11 @@ Handles the functionality of the photography game.
     endTurn = function(date) {
       var j, len, location, newStats, results1, show;
       if (gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6) {
-        $('#gameEnd h4').text('You recieve a letter from the army. Now you can finally join the front lines.');
+        if (gameGlobal.init.isPlus) {
+          $('#gameEnd h4').text('You wake up one day, you feel pain all across your body...');
+        } else {
+          $('#gameEnd h4').text('You recieve a letter from the army. Now you can finally join the front lines.');
+        }
         $('#gameEnd .score').hide();
         endGame();
       }
