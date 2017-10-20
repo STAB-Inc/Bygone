@@ -191,8 +191,12 @@ jQuery(document).ready ->
       $('#playAgain').text 'Continue'
       $('#playAgain').parent().attr 'href', 'chapter3.html'
       $('.skip').show()
-      $('.save').hide()
+      $('.save, #endGame .score').hide()
       $('#playAgain').addClass('continue')
+      if plusMode
+        $('.continueScreen h3').text 'Chapter 4 Completed'
+        $('.continueScreen p').remove()
+        $('.continueScreen').append '<p>Photography Game Mode Plus Now Avaliable</p>'
     if getParam('diff') == 'extended'
       gameGlobal.init.stats = {
         CAB: 2500, 
@@ -452,6 +456,7 @@ jQuery(document).ready ->
     ###
     
     moveTo: (location) ->
+      location.marker.setVisible false
       location.travelExpense = parseInt((distanceTravelled(this.position, location.position)*0.6)/10)
       location.travelTime = parseFloat((distanceTravelled(this.position, location.position)/232).toFixed(2))
       @position = location.position
