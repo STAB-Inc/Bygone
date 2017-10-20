@@ -564,8 +564,15 @@ jQuery(document).ready ->
     ###
     
     incrementDays: (days) ->
-      @dateCounter += days
-      player.depreciateInv()
+      i = 0
+      while i <= days
+        @dateCounter++
+        player.depreciateInv()
+        gameInsanity.setBar(gameInsanity.value * 0.95)
+        i++
+        if i >= days
+          i = 0
+          break
       while @dateCounter >= 30
         @incrementMonths(1)
         @dateCounter -= 30

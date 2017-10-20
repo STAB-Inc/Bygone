@@ -678,9 +678,18 @@ Handles the functionality of the photography game.
        */
 
       timeManager.prototype.incrementDays = function(days) {
-        var results1;
-        this.dateCounter += days;
-        player.depreciateInv();
+        var i, results1;
+        i = 0;
+        while (i <= days) {
+          this.dateCounter++;
+          player.depreciateInv();
+          gameInsanity.setBar(gameInsanity.value * 0.95);
+          i++;
+          if (i >= days) {
+            i = 0;
+            break;
+          }
+        }
         results1 = [];
         while (this.dateCounter >= 30) {
           this.incrementMonths(1);
