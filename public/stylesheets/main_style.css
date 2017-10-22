@@ -5987,13 +5987,12 @@ nav#global {
             float: left; } }
   #index section#freeMode {
     width: 100%;
-    height: 300px;
     background-color: #340F0F; }
     @media (max-width: 1280px) {
       #index section#freeMode h3 {
         font-size: 16px; } }
     #index section#freeMode .game {
-      height: 100%;
+      height: 300px;
       position: relative; }
       #index section#freeMode .game .lockedOverlay {
         position: absolute;
@@ -6093,6 +6092,46 @@ nav#global {
       left: initial;
       cursor: pointer;
       font-size: 2.5em; }
+  #index section#about header {
+    background-color: #2f3844; }
+    #index section#about header h1 {
+      text-align: center;
+      padding-top: 20px;
+      margin: 0; }
+  #index section#about .post {
+    height: 300px;
+    padding: 50px; }
+    #index section#about .post .pic {
+      height: 100%; }
+      @media (max-width: 768px) {
+        #index section#about .post .pic {
+          height: 50%; } }
+    #index section#about .post img {
+      height: initial;
+      width: initial;
+      position: static;
+      max-height: 100%;
+      max-width: 100%;
+      border-radius: 50%; }
+    #index section#about .post .des strong {
+      font-size: 2em; }
+  #index section#about .post:nth-of-type(2) {
+    background-color: #2f3844; }
+  #index section#about .post:nth-of-type(3) {
+    background-color: #394658; }
+  #index section#about .post:nth-of-type(4) {
+    background-color: #46637e; }
+  #index section#about .post:nth-of-type(5) {
+    background-color: #52768a; }
+  #index section#about .post:nth-of-type(6) {
+    height: initial;
+    background-color: #65312d; }
+    #index section#about .post:nth-of-type(6) p,
+    #index section#about .post:nth-of-type(6) h3,
+    #index section#about .post:nth-of-type(6) h4 {
+      text-align: center; }
+    #index section#about .post:nth-of-type(6) h4 {
+      text-decoration: underline; }
 
 #highscores {
   background-color: #2f3844; }

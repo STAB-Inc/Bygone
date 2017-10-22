@@ -250,7 +250,6 @@
   }
   section#freeMode {
     width: 100%;
-    height: 300px;
     background-color: #340F0F;
     @media (max-width: 1280px) {
       h3 {
@@ -258,7 +257,7 @@
       }
     }
     .game {
-      height: 100%;
+      height: 300px;
       position: relative;
       .lockedOverlay {
         position: absolute;
@@ -370,6 +369,63 @@
       left: initial;
       cursor: pointer;
       font-size: 2.5em;
+    }
+  }
+  section#about {
+    header {
+      background-color: $theme4;
+      h1 {
+        text-align: center;
+        padding-top: 20px;
+        margin: 0;
+      }
+    }
+    .post {
+      height: 300px;
+      padding: 50px;
+      .pic {
+        height: 100%;
+        @media (max-width: 768px) {
+          height: 50%;
+        }
+      }
+      img {
+        height: initial;
+        width: initial;
+        position: static;
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 50%;
+      }
+      .des {
+        strong {
+          font-size: 2em;
+        }
+      }
+    }
+    .post:nth-of-type(2) {
+      background-color: $theme4;
+    }
+    .post:nth-of-type(3) {
+      background-color: $theme3;
+    }
+    .post:nth-of-type(4) {
+      background-color: $theme2;
+    }
+    .post:nth-of-type(5) {
+      background-color: $theme1;
+    }
+    .post:nth-of-type(6) {
+      height: initial;
+      background-color: #65312d;
+      p,
+      h3,
+      h4 {
+        text-align: center;
+      }
+      h4 {
+        text-decoration: underline;
+      }
     }
   }
 }
