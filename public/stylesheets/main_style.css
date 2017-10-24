@@ -5778,7 +5778,6 @@ nav#global {
     top: 50px;
     background-color: rgba(0, 0, 0, 0.7);
     padding: 10px;
-    cursor: pointer;
     z-index: 5; }
     #index #userLoginToggle p,
     #index #activeUserMsg p,
@@ -5800,16 +5799,17 @@ nav#global {
   #index #userActions {
     position: absolute;
     width: 175px;
-    height: 300px;
     top: 100px;
-    right: -200px;
+    right: 50px;
     cursor: auto;
+    opacity: 0.7;
     transition: all 0.2s ease;
     -webkit-transition: all 0.2s ease;
     -moz-transition: all 0.2s ease; }
+    #index #userActions:hover {
+      opacity: 1; }
     #index #userActions .buttonContainer {
-      width: 100%;
-      margin-top: 100px; }
+      width: 100%; }
       #index #userActions .buttonContainer button {
         margin: 2px;
         width: 100%; }

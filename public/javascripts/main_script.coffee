@@ -132,13 +132,6 @@ $(document).ready ->
     userLogToggle()
 
   ###
-    Toggles user actions.
-  ###
-
-  $('#activeUserMsg').click ->
-    $('#userActions').toggleClass('showActions')
-
-  ###
     Scrolls the user to a section.
     @param {string} hash - the element with the hash to scroll to.
   ###
