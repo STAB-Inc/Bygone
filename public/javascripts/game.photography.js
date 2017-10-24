@@ -220,7 +220,7 @@ Handles the functionality of the photography game.
       plusMode = getParam('plus') === 'true';
       if (storyMode) {
         gameGlobal.init.isStory = true;
-        $('.tutorial .init').text('Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.');
+        $('.tutorial .init').text('Welcome to the photography game. As Mark, you must do your job for at least 4 month. Do not let your Working Capital drop below -$2000.');
         $('#playAgain').text('Continue');
         $('#playAgain').parent().attr('href', 'chapter3.html');
         $('.skip').show();
@@ -229,7 +229,8 @@ Handles the functionality of the photography game.
         if (plusMode) {
           $('.continueScreen h3').text('Chapter 4 Completed');
           $('.continueScreen p').remove();
-          $('.continueScreen').append('<p>Photography Game Mode Plus Now Avaliable</p>');
+          $('.continueScreen h3').after('<p>Photography Game Mode Plus Now Avaliable</p>');
+          $('.continueScreen .buttonContainer a:first-child').attr('href', 'end.html').find('button').text('Continue to Finale');
         }
       }
       if (getParam('diff') === 'extended') {
@@ -252,11 +253,16 @@ Handles the functionality of the photography game.
       Skips the game when in story mode. Completes the chapter for the user.
      */
     $('.skip, .continue').click(function(e) {
+      var id;
       $('.continueScreen').show();
       $('#selectionArea, #gameArea').hide();
+      id = '2';
+      if (gameGlobal.init.isPlus) {
+        id = '4';
+      }
       return submitUserData({
         method: 'chapterComplete',
-        chapterId: '2'
+        chapterId: id
       }).then(function(res) {
         res = JSON.parse(res);
         if (res.status === 'success') {
@@ -1047,10 +1053,9 @@ Handles the functionality of the photography game.
 
       photographyGame.prototype.saveScore = function() {
         var gameId;
+        gameId = '2';
         if (gameGlobal.init.isPlus) {
           gameId = '4';
-        } else {
-          gameId = '2';
         }
         return submitUserData({
           method: 'saveScore',
@@ -1099,7 +1104,7 @@ Handles the functionality of the photography game.
      */
     endTurn = function(date) {
       var j, len, location, newStats, results1, show;
-      if (gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6) {
+      if (gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 3) {
         if (gameGlobal.init.isPlus) {
           $('#gameEnd h4').text('You wake up one day, you feel pain all across your body...');
         } else {

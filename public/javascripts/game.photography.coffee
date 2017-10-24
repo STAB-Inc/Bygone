@@ -187,7 +187,7 @@ jQuery(document).ready ->
     plusMode = getParam('plus') == 'true'
     if storyMode
       gameGlobal.init.isStory = true
-      $('.tutorial .init').text 'Welcome to the photography game. As Mark, you must do your job for at least 6 month. Do not let your Working Capital drop below -$2000.'
+      $('.tutorial .init').text 'Welcome to the photography game. As Mark, you must do your job for at least 4 month. Do not let your Working Capital drop below -$2000.'
       $('#playAgain').text 'Continue'
       $('#playAgain').parent().attr 'href', 'chapter3.html'
       $('.skip').show()
@@ -196,7 +196,8 @@ jQuery(document).ready ->
       if plusMode
         $('.continueScreen h3').text 'Chapter 4 Completed'
         $('.continueScreen p').remove()
-        $('.continueScreen').append '<p>Photography Game Mode Plus Now Avaliable</p>'
+        $('.continueScreen h3').after '<p>Photography Game Mode Plus Now Avaliable</p>'
+        $('.continueScreen .buttonContainer a:first-child').attr('href', 'end.html').find('button').text 'Continue to Finale'
     if getParam('diff') == 'extended'
       gameGlobal.init.stats = {
         CAB: 2500, 
@@ -216,9 +217,11 @@ jQuery(document).ready ->
   $('.skip, .continue').click (e) ->
     $('.continueScreen').show()
     $('#selectionArea, #gameArea').hide()
+    id = '2'
+    if gameGlobal.init.isPlus then id = '4'
     submitUserData({
       method: 'chapterComplete'
-      chapterId: '2'
+      chapterId: id
     }).then (res) ->
       res = JSON.parse res
       if res.status == 'success'
@@ -840,7 +843,8 @@ jQuery(document).ready ->
     ###
 
     saveScore: ->
-      if gameGlobal.init.isPlus then gameId = '4' else gameId = '2'
+      gameId = '2'
+      if gameGlobal.init.isPlus then gameId = '4'
       submitUserData({
         method: 'saveScore'
         gameId: gameId
@@ -881,7 +885,7 @@ jQuery(document).ready ->
   ###
 
   endTurn = (date) ->
-    if gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 6
+    if gameGlobal.init.isStory && gameGlobal.trackers.monthPassed >= 3
       if gameGlobal.init.isPlus
         $('#gameEnd h4').text 'You wake up one day, you feel pain all across your body...'
       else
