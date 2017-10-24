@@ -277,6 +277,7 @@
       h3 {
         display: inline-block;
         position: absolute;
+        white-space: nowrap;
         @include centerXY();
         top: 35%;
         &:before,

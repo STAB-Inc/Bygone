@@ -6016,6 +6016,7 @@ nav#global {
       #index section#freeMode .game h3 {
         display: inline-block;
         position: absolute;
+        white-space: nowrap;
         left: 50%;
         transform: translateX(-50%);
         top: 50%;
