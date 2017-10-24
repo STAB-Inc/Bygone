@@ -5605,6 +5605,9 @@ p {
 .buttonContainer h3 {
   font-weight: 300; }
 
+#end p {
+  font-size: 24px; }
+
 nav#global {
   position: fixed;
   width: 100%;
@@ -6505,3 +6508,34 @@ main#puzzleGame {
 #photographyGame #tutorial .t4 {
   left: 650px;
   top: 50%; }
+
+#end {
+  background-color: #2f3844;
+  height: 100vh;
+  transition: all ease-out 5s;
+  -webkit-transition: all ease-out 5s;
+  -moz-transition: all ease-out 5s; }
+  #end .left,
+  #end .right {
+    position: relative;
+    width: 50%;
+    float: left;
+    padding: 100px; }
+  #end .left {
+    text-align: right; }
+    #end .left p {
+      margin-top: 50px; }
+  #end .right {
+    position: absolute;
+    bottom: 0;
+    left: 50%; }
+  #end img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: scale(1.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: all ease-out 2s;
+    -webkit-transition: all ease-out 2s;
+    -moz-transition: all ease-out 2s; }

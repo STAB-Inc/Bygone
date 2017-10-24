@@ -1,0 +1,32 @@
+#end {
+  background-color: $theme4;
+  height: 100vh;
+  @include transition(ease-out, 5s);
+  .left,
+  .right {
+    position: relative;
+    width: 50%;
+    float: left;
+    padding: 100px;
+  }
+  .left {
+    text-align: right;
+    p {
+      margin-top: 50px;
+    }
+  }
+  .right {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+  }
+  img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: scale(1.2);
+    pointer-events: none;
+    opacity: 0;
+    @include transition(ease-out, 2s);
+  }
+}
