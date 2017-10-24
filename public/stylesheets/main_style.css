@@ -5800,6 +5800,7 @@ nav#global {
       text-align: left;
       margin-left: 30px; }
   #index #userActions {
+    display: none;
     position: absolute;
     width: 175px;
     top: 100px;

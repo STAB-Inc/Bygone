@@ -32,7 +32,7 @@ $(document).ready ->
           id: res.message
         }).then (userData) ->
           userData = JSON.parse userData
-          $('#activeUserMsg').show()
+          $('#activeUserMsg, #userActions').show()
           $('#activeUserMsg p').text 'Welcome ' + userData.username
           for key in Object.keys userData.unlockables
             if userData.unlockables[key]
