@@ -45,13 +45,13 @@
             <p>Kill some time in these minigames.</p>
           </div>
         </a>
-        <a href="/highscores.html">
+        <a href="../views/highscores.html">
           <div class="col-lg-6 col-sm-6 navButton">
             <h3>HIGH SCORES</h3>
             <p>Checkout the best players.</p>
           </div>
         </a>
-        <a href="">
+        <a href="../index.html#about">
           <div class="col-lg-6 col-sm-6 navButton">
             <h3>ABOUT</h3>
             <p>See the D4NK people behind BYGONE.</p>
@@ -152,6 +152,7 @@
       <button id="washPic">Wash</button>
       <button id="sellPic">Sell</button>
       <button id="takeLoan">Take Loan</button>
+      <button id="takeDrink" class="pPlus">Go to Pub</button>
       <button id="takePic">Take Picture</button>
     </div>
     <div id="locationInfoOverlay">
@@ -195,10 +196,22 @@
         </div>
       </div>
     </div>
+    <div id="randomEventOverlay" class="overlay pPlus">
+      <h4 class="title"></h4>
+      <p class="content"></p>
+      <button class="break confirm">Take a small break from everything (5 days)</button>
+      <button class="seeDoc confirm">Go see a doctor ($500)</button>
+      <div class="close">Close</div>
+    </div>
+    <div id="insanityBar" class="pPlus">
+      <div class="barOutline">
+        <div class="bar"></div>
+      </div>
+    </div>
     <div class="continueScreen">
       <h3>Chapter 2 Completed</h3>
-      <p>Photography Game Mode Now avaliable</p>
-      <p>Chapter 3 Now avaliable</p>
+      <p>Photography Game Mode Now Avaliable</p>
+      <p>Chapter 3 Now Avaliable</p>
       <div class="buttonContainer">
         <a href="chapter3.html">
           <button>Continue to Chapter 3</button>
@@ -210,8 +223,9 @@
     </div>
     <div id="tutorial">
       <div class="tutorial main">
-        <p class="init">Welcome to the photography game. In this game your goal is to try to survive as long as possible. Do not let your <b>Working Capital</b> drop below $2000.</p>
+        <p class="init">Welcome to the photography game. In this game your goal is to try to survive as long as possible. Do not let your <b>Working Capital</b> drop below -$2000.</p>
         <p>You can end this tutorial at any time. Click next to continue the tutorial.</p>
+        <p class="pPlus"></p>
         <div class="close">Close</div>
       </div>
       <div class="tutorial t1">
@@ -292,20 +306,14 @@
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../bower_components/imagesloaded/imagesloaded.pkgd.min.js"></script>
 <script src="../public/javascripts/main_script.js"></script>
-<script src="../public/javascripts/game.base.js"></script>
+<script src="../public/javascripts/mapOptions.js"></script>
 <script>
-  googleMap = null
+  googleMap = null;
+  /*
+    Initialize google maps.
+  */
   function initMap(){
-    return googleMap = new google.maps.Map(document.getElementById('map'), {
-      zoom: 6,
-      center: {
-        lat: -27.4698,
-        lng: 153.0251
-      },
-      streetViewControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false
-    });
+    return googleMap = new google.maps.Map(document.getElementById('map'), mapOptions);
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0tZ9JkyOxPPGTkxQYEctdxiqUXcqq6HY&callback=initMap"></script>

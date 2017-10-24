@@ -2,6 +2,51 @@ var vid = document.getElementById("audio");
 var gunshot = new sound("audio/gunshot.mp3")
 var machinegunsound = new sound("audio/machinegun.mp3")
 
+submitUserData = function(data) {
+	return $.ajax({
+		url: '/routes/user.php',
+		type: 'POST',
+		data: data
+	});
+};
+
+// submitUserData({
+// 	method: 'chapterComplete',
+// 	chapterId: '2'
+//   }).then(function(res) {
+// 	res = JSON.parse(res);
+// 	if (res.status === 'success') {
+
+// 	}
+
+saveScore = function(score) {
+	return submitUserData({
+		method: 'saveScore',
+		gameId: '2',
+		value: score
+		}).then(function(res) {
+		return showResStatus('#gameEnd .status', JSON.parse(res));
+	});
+};
+
+saveItem = function(img, des) {
+	return submitUserData({
+		method: 'saveItem',
+		image: img,
+		description: des
+		}).then(function(res) {
+		return showResStatus('#savePicOverlay .status', JSON.parse(res));
+	});
+};
+
+getParam = function(name) {
+	var results;
+	results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+	return results[1] || 0;
+};
+
+console.log(getParam('diff'))
+
 function sound(src) {
 	this.sound = document.createElement("audio");
 	this.sound.src = src;
@@ -52,6 +97,24 @@ function createsoldier(){
 	document.getElementById("soldiers").appendChild(x);
 }
 
+function createmelee(){
+	var x = document.createElement("IMG");
+	if (imgtype == 0) {
+		x.setAttribute("src", "images/melee1.png");
+		imgtype = 1;
+	} else if (imgtype == 1){
+		x.setAttribute("src", "images/melee2.png");
+		imgtype = 2;
+	} else if (imgtype == 2){
+		x.setAttribute("src", "images/melee3.png");
+		imgtype = 0;
+	}
+	x.setAttribute("width", "400");
+	x.setAttribute("height", "400");
+	x.setAttribute("class", "melee");
+	document.getElementById("soldiers").appendChild(x);
+}
+
 function createmachinegun(){
 	var x = document.createElement("IMG");
 	x.setAttribute("src", "images/machineguncrew.png");
@@ -91,52 +154,7 @@ function wingame(score){
 	$('#teamlist').append("<input type='button' value='Next Level' onClick='level2()'>");
 }
 
-function level2(){
-	$('#soldiers').hide();
-	$("body").css("background-image",'url("../views/images/trenches.jpeg")');
-}
-
-function retrieveResources(amount) {
-	var reqParam;
-	reqParam = {
-	  resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
-	  limit: amount
-	};
-	return $.ajax({
-	  url: 'https://data.gov.au/api/action/datastore_search',
-	  data: reqParam,
-	  dataType: 'jsonp',
-	  cache: true
-	});
-};
-function processData(data) {
-	var item, j, len, processedData, ref;
-	processedData = [];
-	ref = data.result.records;
-	for (j = 0, len = ref.length; j < len; j++) {
-	  item = ref[j];
-	  if (item['High resolution image']) {
-		processedData.push(item);
-	  }
-	}
-	return processedData;
-};
-
-
-$(document).ready(function(){
-	$("#level2").hide()
-	battalionnum = 10
-	enableAutoplay();
-	retrieveResources(100).then(function(res) {
-        iterateRecords(processData(res), battalionnum);
-      });
-
-	$(document).mousemove(function(e){
-		$('.scope').css('left',e.pageX+"px");
-		$('.scope').css('top',e.pageY+"px");
-	});
-
-
+function level1(){
 	for (i = 0; i < battalionnum; i++) { 
 		var randx = Math.floor((Math.random() * 200));
 		var randy = Math.floor((Math.random() * 200) + 400);
@@ -185,9 +203,70 @@ $(document).ready(function(){
 			}, 10000)
 		}
 	},20000);
+}
+
+function level2(){
+	$("#level2").show()
+	var parent = document.getElementById("level1");
+	parent.removeChild(document.getElementById("soldiers"));
+	parent.removeChild(document.getElementById("enemy"));
+	$('#level1').hide();
+	var x = document.createElement("DIV");
+	x.setAttribute("id", "soldiers");
+	document.getElementById("level2").appendChild(x);  
+	$("body").css("background-image",'url("../views/images/trenches.jpeg")');
+
+	for (i = 0; i < 1; i++) { 
+		createmelee();
+		$("#soldiers img:nth-of-type(" + (i+1) + ")").css("position", "absolute");
+		$("#soldiers img:nth-of-type(" + (i+1) + ")").css("left", 500);
+		$("#soldiers img:nth-of-type(" + (i+1) + ")").css("float", "left");
+		$("#soldiers img:nth-of-type(" + (i+1) + ")").css("top", 500);
+	}
+}
+
+function retrieveResources(amount) {
+	var reqParam;
+	reqParam = {
+	  resource_id: 'cf6e12d8-bd8d-4232-9843-7fa3195cee1c',
+	  limit: amount
+	};
+	return $.ajax({
+	  url: 'https://data.gov.au/api/action/datastore_search',
+	  data: reqParam,
+	  dataType: 'jsonp',
+	  cache: true
+	});
+};
+function processData(data) {
+	var item, j, len, processedData, ref;
+	processedData = [];
+	ref = data.result.records;
+	for (j = 0, len = ref.length; j < len; j++) {
+	  item = ref[j];
+	  if (item['High resolution image']) {
+		processedData.push(item);
+	  }
+	}
+	return processedData;
+};
 
 
+$(document).ready(function(){
+	$("#level2").hide()
+	battalionnum = 10
+	enableAutoplay();
+	retrieveResources(100).then(function(res) {
+        iterateRecords(processData(res), battalionnum);
+      });
 
+	$(document).mousemove(function(e){
+		$('.scope').css('left',e.pageX+"px");
+		$('.scope').css('top',e.pageY+"px");
+	});
+
+	level1();
+	
 	var shoot = 0
 	$("*").click(function(){
 		if (shoot == 0){

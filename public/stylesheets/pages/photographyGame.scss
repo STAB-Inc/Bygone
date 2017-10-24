@@ -80,7 +80,8 @@
   #gameEnd,
   #takingPic,
   #washPicOverlay,
-  #savePicOverlay  {
+  #savePicOverlay,
+  #randomEventOverlay {
     width: 600px;
     height: 300px;
   }
@@ -169,8 +170,28 @@
     }
   }
   #insanityBar {
-    width: 100px;
+    width: 60px;
     left: 440px;
+    .bar,
+    .barOutline {
+      position: absolute;
+      bottom: 0;
+      width: 10px;
+      height: 0%;
+      background-color: lime;
+      @include centerX;
+    }
+    .barOutline {
+      bottom: 25px;
+      height: 150px;
+      border: solid 1px white;
+      background-color: transparent;
+      z-index: 1;
+    }
+    .bar {
+      width: 100%;
+      @include transition(50ms, ease-in-out);
+    }
   }
   #locationInfoOverlay {
     height: 30%;
@@ -228,8 +249,11 @@
       padding-top: 40px;
       @include centerXY;
     }
+    .pPlus {
+      color: red;
+    }
     .t1 {
-      left: 650px;
+      left: 720px;
       top: initial;
       bottom: -115px;
     }

@@ -5515,7 +5515,8 @@ a {
   left: 10px;
   opacity: 1;
   font-weight: 300;
-  text-shadow: none; }
+  text-shadow: none;
+  font-size: 16px; }
   .close:hover {
     color: #dadad2;
     opacity: 1; }
@@ -5603,6 +5604,9 @@ p {
 
 .buttonContainer h3 {
   font-weight: 300; }
+
+#end p {
+  font-size: 24px; }
 
 nav#global {
   position: fixed;
@@ -5777,7 +5781,6 @@ nav#global {
     top: 50px;
     background-color: rgba(0, 0, 0, 0.7);
     padding: 10px;
-    cursor: pointer;
     z-index: 5; }
     #index #userLoginToggle p,
     #index #activeUserMsg p,
@@ -5797,18 +5800,20 @@ nav#global {
       text-align: left;
       margin-left: 30px; }
   #index #userActions {
+    display: none;
     position: absolute;
     width: 175px;
-    height: 300px;
     top: 100px;
-    right: -200px;
+    right: 50px;
     cursor: auto;
+    opacity: 0.7;
     transition: all 0.2s ease;
     -webkit-transition: all 0.2s ease;
     -moz-transition: all 0.2s ease; }
+    #index #userActions:hover {
+      opacity: 1; }
     #index #userActions .buttonContainer {
-      width: 100%;
-      margin-top: 100px; }
+      width: 100%; }
       #index #userActions .buttonContainer button {
         margin: 2px;
         width: 100%; }
@@ -5986,13 +5991,12 @@ nav#global {
             float: left; } }
   #index section#freeMode {
     width: 100%;
-    height: 300px;
     background-color: #340F0F; }
     @media (max-width: 1280px) {
       #index section#freeMode h3 {
         font-size: 16px; } }
     #index section#freeMode .game {
-      height: 100%;
+      height: 300px;
       position: relative; }
       #index section#freeMode .game .lockedOverlay {
         position: absolute;
@@ -6012,6 +6016,7 @@ nav#global {
       #index section#freeMode .game h3 {
         display: inline-block;
         position: absolute;
+        white-space: nowrap;
         left: 50%;
         transform: translateX(-50%);
         top: 50%;
@@ -6092,6 +6097,46 @@ nav#global {
       left: initial;
       cursor: pointer;
       font-size: 2.5em; }
+  #index section#about header {
+    background-color: #2f3844; }
+    #index section#about header h1 {
+      text-align: center;
+      padding-top: 20px;
+      margin: 0; }
+  #index section#about .post {
+    height: 300px;
+    padding: 50px; }
+    #index section#about .post .pic {
+      height: 100%; }
+      @media (max-width: 768px) {
+        #index section#about .post .pic {
+          height: 50%; } }
+    #index section#about .post img {
+      height: initial;
+      width: initial;
+      position: static;
+      max-height: 100%;
+      max-width: 100%;
+      border-radius: 50%; }
+    #index section#about .post .des strong {
+      font-size: 2em; }
+  #index section#about .post:nth-of-type(2) {
+    background-color: #2f3844; }
+  #index section#about .post:nth-of-type(3) {
+    background-color: #394658; }
+  #index section#about .post:nth-of-type(4) {
+    background-color: #46637e; }
+  #index section#about .post:nth-of-type(5) {
+    background-color: #52768a; }
+  #index section#about .post:nth-of-type(6) {
+    height: initial;
+    background-color: #65312d; }
+    #index section#about .post:nth-of-type(6) p,
+    #index section#about .post:nth-of-type(6) h3,
+    #index section#about .post:nth-of-type(6) h4 {
+      text-align: center; }
+    #index section#about .post:nth-of-type(6) h4 {
+      text-decoration: underline; }
 
 #highscores {
   background-color: #2f3844; }
@@ -6105,8 +6150,7 @@ nav#global {
   #highscores .g .row {
     margin: 0; }
   #highscores .g .current {
-    background-color: #515e6f;
-    border-radius: 2px; }
+    background-color: #515e6f; }
 
 main#puzzleGame {
   width: 1200px;
@@ -6283,7 +6327,8 @@ main#puzzleGame {
 #photographyGame #gameEnd,
 #photographyGame #takingPic,
 #photographyGame #washPicOverlay,
-#photographyGame #savePicOverlay {
+#photographyGame #savePicOverlay,
+#photographyGame #randomEventOverlay {
   width: 600px;
   height: 300px; }
 
@@ -6372,8 +6417,28 @@ main#puzzleGame {
     text-align: left; }
 
 #photographyGame #insanityBar {
-  width: 100px;
+  width: 60px;
   left: 440px; }
+  #photographyGame #insanityBar .bar,
+  #photographyGame #insanityBar .barOutline {
+    position: absolute;
+    bottom: 0;
+    width: 10px;
+    height: 0%;
+    background-color: lime;
+    left: 50%;
+    transform: translateX(-50%); }
+  #photographyGame #insanityBar .barOutline {
+    bottom: 25px;
+    height: 150px;
+    border: solid 1px white;
+    background-color: transparent;
+    z-index: 1; }
+  #photographyGame #insanityBar .bar {
+    width: 100%;
+    transition: all 50ms ease-in-out;
+    -webkit-transition: all 50ms ease-in-out;
+    -moz-transition: all 50ms ease-in-out; }
 
 #photographyGame #locationInfoOverlay {
   height: 30%;
@@ -6426,8 +6491,11 @@ main#puzzleGame {
   transform: translateY(-50%);
   transform: translate(-50%, -50%); }
 
+#photographyGame #tutorial .pPlus {
+  color: red; }
+
 #photographyGame #tutorial .t1 {
-  left: 650px;
+  left: 720px;
   top: initial;
   bottom: -115px; }
 
@@ -6442,3 +6510,34 @@ main#puzzleGame {
 #photographyGame #tutorial .t4 {
   left: 650px;
   top: 50%; }
+
+#end {
+  background-color: #2f3844;
+  height: 100vh;
+  transition: all ease-out 5s;
+  -webkit-transition: all ease-out 5s;
+  -moz-transition: all ease-out 5s; }
+  #end .left,
+  #end .right {
+    position: relative;
+    width: 50%;
+    float: left;
+    padding: 100px; }
+  #end .left {
+    text-align: right; }
+    #end .left p {
+      margin-top: 50px; }
+  #end .right {
+    position: absolute;
+    bottom: 0;
+    left: 50%; }
+  #end img {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: scale(1.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: all ease-out 2s;
+    -webkit-transition: all ease-out 2s;
+    -moz-transition: all ease-out 2s; }
