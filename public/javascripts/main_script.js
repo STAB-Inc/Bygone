@@ -37,7 +37,7 @@
         }).then(function(userData) {
           var amt, i, item, j, key, len, len1, ref, ref1;
           userData = JSON.parse(userData);
-          $('#activeUserMsg').show();
+          $('#activeUserMsg, #userActions').show();
           $('#activeUserMsg p').text('Welcome ' + userData.username);
           ref = Object.keys(userData.unlockables);
           for (i = 0, len = ref.length; i < len; i++) {
