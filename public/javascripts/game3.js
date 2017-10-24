@@ -45,7 +45,12 @@ getParam = function(name) {
 	return results[1] || 0;
 };
 
-console.log(getParam('diff'))
+try {
+	storyMode = getParam('story') === 'true';
+	if (storyMode) {
+		$('.skip').show();
+	}
+} catch (error) {}
 
 function sound(src) {
 	this.sound = document.createElement("audio");

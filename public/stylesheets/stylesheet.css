@@ -1,4 +1,6 @@
 .scope {
+	width: 200vw;
+	height: 200vh;
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -25,7 +27,7 @@ body {
 	background-image: url("../../views/images/field.jpg");
 	background-size: 100%;
 	background-repeat: no-repeat;
-	background-position: 0% 10%; 
+	background-position: 0% 0%; 
 }
 
 #soldiers {
